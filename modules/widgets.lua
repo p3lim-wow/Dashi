@@ -20,7 +20,7 @@ function addon:CreateButton(...)
 	local button = CreateFrame(...)
 	Mixin(button, addon.eventMixin)
 
-	button:RegisterEvent('CVAR_UPDATE', updateKeyDirection)
+	button:RegisterEvent('CVAR_UPDATE', onCVarUpdate)
 
 	return button
 end
