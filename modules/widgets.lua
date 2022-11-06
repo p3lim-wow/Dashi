@@ -11,7 +11,7 @@ local function updateKeyDirection(self)
 end
 
 local function onCVarUpdate(self, cvar)
-	if not cvar or cvar == KEY_DIRECTION_CVAR then
+	if cvar == KEY_DIRECTION_CVAR then
 		addon:Defer(updateKeyDirection, self)
 	end
 end
@@ -21,6 +21,9 @@ function addon:CreateButton(...)
 	Mixin(button, addon.eventMixin)
 
 	button:RegisterEvent('CVAR_UPDATE', onCVarUpdate)
+
+	-- the CVar doesn't trigger during login, so we'll have to trigger the handlers ourselves
+	onCVarUpdate(button, KEY_DIRECTION_CVAR)
 
 	return button
 end
