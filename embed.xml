@@ -5,4 +5,5 @@
 	<Script file='modules/defer.lua'/>
 	<Script file='modules/locale.lua'/>
 	<Script file='modules/load.lua'/>
+	<Script file='modules/widgets.lua'/>
 </Ui>
