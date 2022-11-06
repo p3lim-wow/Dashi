@@ -2,4 +2,5 @@
 	<Script file='modules/event.lua'/>
 	<Script file='modules/input.lua'/>
 	<Script file='modules/output.lua'/>
+	<Script file='modules/defer.lua'/>
 </Ui>
