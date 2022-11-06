@@ -1,4 +1,5 @@
 <Ui>
 	<Script file='modules/event.lua'/>
 	<Script file='modules/input.lua'/>
+	<Script file='modules/output.lua'/>
 </Ui>
