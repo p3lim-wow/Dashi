@@ -94,3 +94,6 @@ addon = setmetatable(addon, {
 		end
 	end,
 })
+
+-- mixin to namespace
+Mixin(addon, eventMixin)
