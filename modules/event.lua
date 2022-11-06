@@ -70,3 +70,27 @@ end)
 
 -- expose mixin
 addon.eventMixin = eventMixin
+
+-- anonymous event registration
+addon = setmetatable(addon, {
+	__index = function(t, key)
+		if C_EventUtils.IsEventValid(key) then
+			-- addon:EVENT_NAME([arg1[, ...]])
+			return function(_, ...)
+				eventMixin.TriggerEvent(t, key, ...)
+			end
+		else
+			-- default table behaviour
+			return rawget(t, key)
+		end
+	end,
+	__newindex = function(t, key, value)
+		if C_EventUtils.IsEventValid(key) then
+			-- addon:EVENT_NAME(...) = function() end
+			eventMixin.RegisterEvent(t, key, value)
+		else
+			-- default table behaviour
+			rawset(t, key, value)
+		end
+	end,
+})
