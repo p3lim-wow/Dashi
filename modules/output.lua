@@ -1,8 +1,7 @@
 local addonName, addon = ...
 
 function addon:Print(...)
-	local msg = ... -- TODO: join message
-	DEFAULT_CHAT_FRAME:AddMessage('|cff33ff99' .. addonName .. '|r: ' .. msg)
+	DEFAULT_CHAT_FRAME:AddMessage('|cff33ff99' .. addonName .. '|r: ' .. string.join(' ', ...))
 end
 
 function addon:Printf(fmt, ...)
