@@ -18,8 +18,6 @@ function addon:RegisterSlash(...)
 				failed = true
 				break
 			else
-				-- print('SLASH_' .. name .. index)
-				-- print(slash)
 				_G['SLASH_' .. name .. index] = slash
 			end
 		end
