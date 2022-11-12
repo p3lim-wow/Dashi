@@ -59,3 +59,8 @@ do
 		return ITEM_LINK_FORMAT:format(itemID)
 	end
 end
+
+function addon:GetPlayerMapID()
+	-- TODO: maybe use HBD data if it's available
+	return C_Map.GetBestMapForUnit('player') or -1
+end
