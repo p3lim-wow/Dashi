@@ -15,12 +15,7 @@ end
 
 local unitValidator = CreateFrame('Frame')
 local function IsUnitValid(unit)
-	if unit == nil or unit == '' then
-		return false -- BUG: RegisterUnitEvent lets these through
-	end
-
-	local isValid = pcall(unitValidator.RegisterUnitEvent, unitValidator, 'UNIT_HEALTH', unit)
-	if isValid then
+	if unitValidator:RegisterUnitEvent('UNIT_HEALTH', unit) then
 		local _, registeredUnit = unitValidator:IsEventRegistered('UNIT_HEALTH')
 		unitValidator:UnregisterEvent('UNIT_HEALTH')
 		return not not registeredUnit -- it will be nil if the registered unit is invalid
