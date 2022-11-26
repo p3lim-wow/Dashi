@@ -146,7 +146,7 @@ function eventMixin:UnregisterUnitEvent(event, ...)
 		if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
 			for index, data in next, unitEventCallbacks[unit][event] do
 				if data.owner == self and data.callback == callback then
-					callbacks[event][index] = nil
+					unitEventCallbacks[unit][event][index] = nil
 					break
 				end
 			end
