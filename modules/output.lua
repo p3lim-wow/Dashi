@@ -5,11 +5,7 @@ function addon:Print(...)
 	local msg = ''
 	for index = 1, select('#', ...) do
 		local arg = select(index, ...)
-		if arg == nil then
-			arg = 'nil'
-		end
-
-		msg = msg .. arg .. ' '
+		msg = msg .. tostring(arg) .. ' '
 	end
 
 	DEFAULT_CHAT_FRAME:AddMessage('|cff33ff99' .. addonName .. '|r: ' .. msg:trim())
