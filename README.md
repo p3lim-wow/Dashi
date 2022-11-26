@@ -1,6 +1,6 @@
 # Dashi
 
-Dashi is a framework that simplifies addon creation.
+Dashi is a boilerplate that simplifies addon creation.
 
 Yes, the name is a pun.  
 Yes, you can use this if you want.  
