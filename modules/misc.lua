@@ -44,14 +44,16 @@ end
 
 -- random utilities
 do
-	local NPC_ID_PATTERN = '%w+%-.-%-.-%-.-%-.-%-(.-)%-'
-	function addon:GetNPCID(unit)
-		if unit then
-			local npcGUID = UnitGUID(unit)
-			if npcGUID then
-				return tonumber(npcGUID:match(NPC_ID_PATTERN))
-			end
-		end
+	local GUID_PATTERN = '%w+%-.-%-.-%-.-%-.-%-(.-)%-'
+	function addon:ExtractIDFromGUID(guid)
+		return tonumber(guid:match(GUID_PATTERN))
+	end
+end
+
+function addon:GetNPCID(unit)
+	if unit then
+		local npcGUID = UnitGUID(unit)
+		return npcGUID and addon:ExtractIDFromGUID(npcGUID)
 	end
 end
 
