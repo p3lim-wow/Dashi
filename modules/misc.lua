@@ -68,3 +68,9 @@ function addon:GetPlayerMapID()
 	-- TODO: maybe use HBD data if it's available
 	return C_Map.GetBestMapForUnit('player') or -1
 end
+
+function addon:SetPixelScale(object)
+	local _, screenHeight = GetPhysicalScreenSize()
+	object:SetIgnoreParentScale(true)
+	object:SetScale(768 / screenHeight)
+end
