@@ -33,10 +33,12 @@ function addon:Hide(object, ...)
 		end
 	end
 
-	object:SetParent(hidden)
+	if object then
+		object:SetParent(hidden)
 
-	if object.UnregisterAllEvents then
-		object:UnregisterAllEvents()
+		if object.UnregisterAllEvents then
+			object:UnregisterAllEvents()
+		end
 	end
 end
 
