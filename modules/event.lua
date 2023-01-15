@@ -109,7 +109,7 @@ function eventMixin:RegisterUnitEvent(event, ...)
 	for i = 1, select('#', ...) - 1 do
 		local unit = select(i, ...)
 		assert(IsUnitValid(unit), 'arg' .. (i + 1) .. ' must be a valid unit')
-		assert(IsUnitEventValid(event, unit), 'event is not valid for the given unit')
+		assert(IsUnitEventValid(event, unit), 'event "' .. event .. '" is not valid for the given unit')
 
 		if not unitEventCallbacks[unit] then
 			unitEventCallbacks[unit] = {}
@@ -151,7 +151,7 @@ function eventMixin:UnregisterUnitEvent(event, ...)
 				end
 			end
 
-			if #unitEventCallbacks[unit][event] then
+			if #unitEventCallbacks[unit][event] == 0 then
 				getUnitEventHandler(unit):UnregisterEvent(event)
 			end
 		end
