@@ -189,6 +189,56 @@ function eventMixin:TriggerUnitEvent(event, unit, ...)
 	end
 end
 
+-- special handling for combat events
+local combatEventCallbacks = {}
+do
+	local function internalTrigger(_, event, _, ...)
+		if combatEventCallbacks[event] then
+			for _, data in next, combatEventCallbacks[event] do
+				if data.callback(data.owner, ...) then
+					eventMixin.UnregisterCombatEvent(data.owner, event, data.callback)
+				end
+			end
+		end
+	end
+
+	function eventMixin:TriggerCombatEvent()
+		internalTrigger(CombatLogGetCurrentEventInfo())
+	end
+end
+
+function eventMixin:RegisterCombatEvent(event, callback)
+	assert(type(event) == 'string', 'arg1 must be a string')
+	assert(type(callback) == 'function', 'arg2 must be a function')
+
+	if not combatEventCallbacks[event] then
+		combatEventCallbacks[event] = {}
+	end
+
+	table.insert(combatEventCallbacks[event], {
+		callback = callback,
+		owner = self,
+	})
+
+	if not self:IsEventRegistered('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent) then
+		self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent)
+	end
+end
+
+function eventMixin:UnregisterCombatEvent(event, callback)
+	assert(type(event) == 'string', 'arg1 must be a string')
+	assert(type(callback) == 'function', 'arg2 must be a function')
+
+	if combatEventCallbacks[event] then
+		for index, data in next, combatEventCallbacks[event] do
+			if data.owner == self and data.callback == callback then
+				combatEventCallbacks[event][index] = nil
+				break
+			end
+		end
+	end
+end
+
 -- expose mixin
 addon.eventMixin = eventMixin
 
