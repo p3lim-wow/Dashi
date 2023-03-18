@@ -84,6 +84,37 @@ function addon:tsize(t)
 	return size
 end
 
+do
+	local function auraSlotsWrapper(unit, spellID, token, ...)
+		local slot, data
+		for index = 1, select('#', ...) do
+			slot = select(index, ...)
+			data = C_UnitAuras.GetAuraDataBySlot(unit, slot)
+			if spellID == data.spellId and data.sourceUnit and (UnitIsUnit('player', data.sourceUnit) or UnitIsOwnerOrControllerOfUnit('player', data.sourceUnit)) then
+				return nil, data
+			end
+		end
+
+		return token
+	end
+
+	--[[ addon:GetUnitAura(_unitID_, _spellID_, _filter_)
+	Returns the aura by spellID on the unit, if it exists.
+
+	* [`unitID`](https://wowpedia.fandom.com/wiki/UnitId)
+	* `spellID` - spell ID to check for
+	* `filter` - aura filter, see [UnitAura](https://wowpedia.fandom.com/wiki/API_UnitAura#Filters)
+	--]]
+	function addon:GetUnitAura(unit, spellID, filter)
+		local token, data
+		repeat
+			token, data = auraSlotsWrapper(unit, spellID, UnitAuraSlots(unit, filter, nil, token))
+		until token == nil
+
+		return data
+	end
+end
+
 function addon:GetPlayerPosition(mapID)
 	local pos = C_Map.GetPlayerMapPosition(mapID, 'player')
 	return pos and pos:GetXY()
