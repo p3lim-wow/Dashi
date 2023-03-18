@@ -83,3 +83,8 @@ function addon:tsize(t)
 	end
 	return size
 end
+
+function addon:GetPlayerPosition(mapID)
+	local pos = C_Map.GetPlayerMapPosition(mapID, 'player')
+	return pos and pos:GetXY()
+end
