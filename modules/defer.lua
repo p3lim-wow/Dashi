@@ -1,22 +1,22 @@
 local _, addon = ...
 
-local deferQueue = {}
+local queue = {}
 local function iterateQueue()
-	for _, info in next, deferQueue do
-		if info.parent and info.method then
-			info.parent[info.method](unpack(info.args))
-		elseif info.callback then
+	for _, info in next, queue do
+		if info.callback then
 			info.callback(unpack(info.args))
+		elseif info.object then
+			info.object[info.method](unpack(info.args))
 		end
 	end
 
-	table.wipe(deferQueue)
+	table.wipe(queue)
 	return true -- unregister itself
 end
 
 local function deferFunction(callback, ...)
 	if InCombatLockdown() then
-		table.insert(deferQueue, {
+		table.insert(queue, {
 			callback = callback,
 			args = {...},
 		})
@@ -29,31 +29,32 @@ local function deferFunction(callback, ...)
 	end
 end
 
-local function deferMethod(parent, method, ...)
+local function deferMethod(object, method, ...)
 	if InCombatLockdown() then
-		table.insert(deferQueue, {
-			parent = parent,
+		table.insert(queue, {
+			object = object,
 			method = method,
-			args = {parent, ...},
+			args = {...},
 		})
 
 		if not addon:IsEventRegistered('PLAYER_REGEN_ENABLED', iterateQueue) then
 			addon:RegisterEvent('PLAYER_REGEN_ENABLED', iterateQueue)
 		end
 	else
-		parent[method](parent, ...)
+		object[method](...)
 	end
 end
 
 -- defer execution until after combat, or immediately if not in combat
 -- usage: addon:Defer(callback, arg1[, ...])
---        addon:Defer(parent, 'method', arg1[, ...])
+--        addon:Defer(object, 'method'[, arg1[, ...]])
 function addon:Defer(...)
 	if type(select(1, ...)) == 'table' then
 		assert(type(select(2, ...)) == 'string', 'arg2 must be the name of a method')
 		assert(type(select(1, ...)[select(2, ...)]) == 'function', 'arg2 must be the name of a method')
 		deferMethod(...)
 	elseif type(select(1, ...)) == 'function' then
+		assert(type(select(1, ...)) == 'function', 'arg1 must be a function')
 		deferFunction(...)
 	else
 		error('Invalid arguments passed to Defer')
