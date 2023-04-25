@@ -3,12 +3,26 @@ local _, addon = ...
 local eventHandler = CreateFrame('Frame')
 local callbacks = {}
 
-local eventValidator = CreateFrame('Frame')
+local IsEventValid
+if addon:IsRetail() then
+	IsEventValid = C_EventUtils.IsEventValid
+else
+	local eventValidator = CreateFrame('Frame')
+	function IsEventValid(event)
+		local isValid = pcall(eventValidator.RegisterEvent, eventValidator, event)
+		if isValid then
+			eventValidator:UnregisterEvent(event)
+		end
+		return isValid
+	end
+end
+
+local unitEventValidator = CreateFrame('Frame')
 local function IsUnitEventValid(event, unit)
 	-- C_EventUntils.IsEventValid doesn't cover unit events, so we'll have to do this the old fashioned way
-	local isValid = pcall(eventValidator.RegisterUnitEvent, eventValidator, event, unit)
+	local isValid = pcall(unitEventValidator.RegisterUnitEvent, unitEventValidator, event, unit)
 	if isValid then
-		eventValidator:UnregisterEvent(event)
+		unitEventValidator:UnregisterEvent(event)
 	end
 	return isValid
 end
@@ -24,7 +38,7 @@ end
 
 local eventMixin = {}
 function eventMixin:RegisterEvent(event, callback)
-	assert(C_EventUtils.IsEventValid(event), 'arg1 must be an event')
+	assert(IsEventValid(event), 'arg1 must be an event')
 	assert(type(callback) == 'function', 'arg2 must be a function')
 
 	if not callbacks[event] then
@@ -42,7 +56,7 @@ function eventMixin:RegisterEvent(event, callback)
 end
 
 function eventMixin:UnregisterEvent(event, callback)
-	assert(C_EventUtils.IsEventValid(event), 'arg1 must be an event')
+	assert(IsEventValid(event), 'arg1 must be an event')
 	assert(type(callback) == 'function', 'arg2 must be a function')
 
 	if callbacks[event] then
@@ -60,7 +74,7 @@ function eventMixin:UnregisterEvent(event, callback)
 end
 
 function eventMixin:IsEventRegistered(event, callback)
-	assert(C_EventUtils.IsEventValid(event), 'arg1 must be an event')
+	assert(IsEventValid(event), 'arg1 must be an event')
 	assert(type(callback) == 'function', 'arg2 must be a function')
 
 	if callbacks[event] then
@@ -102,7 +116,7 @@ end
 
 local unitEventCallbacks = {}
 function eventMixin:RegisterUnitEvent(event, ...)
-	assert(C_EventUtils.IsEventValid(event), 'arg1 must be an event')
+	assert(IsEventValid(event), 'arg1 must be an event')
 	local callback = select(select('#', ...), ...)
 	assert(type(callback) == 'function', 'last argument must be a function')
 
@@ -134,7 +148,7 @@ function eventMixin:RegisterUnitEvent(event, ...)
 end
 
 function eventMixin:UnregisterUnitEvent(event, ...)
-	assert(C_EventUtils.IsEventValid(event), 'arg1 must be an event')
+	assert(IsEventValid(event), 'arg1 must be an event')
 	local callback = select(select('#', ...), ...)
 	assert(type(callback) == 'function', 'last argument must be a function')
 
@@ -159,7 +173,7 @@ function eventMixin:UnregisterUnitEvent(event, ...)
 end
 
 function eventMixin:IsUnitEventRegistered(event, ...)
-	assert(C_EventUtils.IsEventValid(event), 'arg1 must be an event')
+	assert(IsEventValid(event), 'arg1 must be an event')
 	local callback = select(select('#', ...), ...)
 	assert(type(callback) == 'function', 'last argument must be a function')
 
@@ -245,7 +259,7 @@ addon.eventMixin = eventMixin
 -- anonymous event registration
 addon = setmetatable(addon, {
 	__index = function(t, key)
-		if C_EventUtils.IsEventValid(key) then
+		if IsEventValid(key) then
 			-- addon:EVENT_NAME([arg1[, ...]])
 			return function(_, ...)
 				eventMixin.TriggerEvent(t, key, ...)
@@ -256,7 +270,7 @@ addon = setmetatable(addon, {
 		end
 	end,
 	__newindex = function(t, key, value)
-		if C_EventUtils.IsEventValid(key) then
+		if IsEventValid(key) then
 			-- addon:EVENT_NAME(...) = function() end
 			eventMixin.RegisterEvent(t, key, value)
 		else
