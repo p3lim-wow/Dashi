@@ -75,7 +75,7 @@ function addon:SetPixelScale(object)
 	object:SetScale(768 / screenHeight)
 end
 
-function addon:tsize(t)
+function addon:tsize(tbl)
 	-- would really like Lua 5.2 for this
 	local size = 0
 	for _ in next, tbl do
