@@ -2,19 +2,19 @@ local _, addon = ...
 
 -- game version API
 function addon:IsRetail()
-	return _G.WOW_PROJECT_ID == 'WOW_PROJECT_MAINLINE'
+	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE
 end
 
 function addon:IsClassic()
-	return _G.WOW_PROJECT_ID == 'WOW_PROJECT_CLASSIC'
+	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
 end
 
 function addon:IsClassicTBC()
-	return _G.WOW_PROJECT_ID == 'WOW_PROJECT_BURNING_CRUSADE_CLASSIC'
+	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 end
 
 function addon:IsClassicWrath()
-	return _G.WOW_PROJECT_ID == 'WOW_PROJECT_WRATH_CLASSIC'
+	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC
 end
 
 -- easy frame "removal"
