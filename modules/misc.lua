@@ -35,6 +35,7 @@ function addon:Hide(object, ...)
 
 	if object then
 		object:SetParent(hidden)
+		object.SetParent = nop
 
 		if object.UnregisterAllEvents then
 			object:UnregisterAllEvents()
