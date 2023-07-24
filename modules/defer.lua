@@ -29,6 +29,10 @@ local function deferFunction(callback, ...)
 	end
 end
 
+local function deferGlobalFunction(func, ...)
+	deferFunction(_G[func], ...)
+end
+
 local function deferMethod(object, method, ...)
 	if InCombatLockdown() then
 		table.insert(queue, {
@@ -56,6 +60,9 @@ function addon:Defer(...)
 	elseif type(select(1, ...)) == 'function' then
 		assert(type(select(1, ...)) == 'function', 'arg1 must be a function')
 		deferFunction(...)
+	elseif type(select(1, ...)) == 'string' and type(_G[select(1, ...)]) == 'function' then
+		assert(type(_G[select(1, ...)]) == 'function', 'arg1 must be a function')
+		deferGlobalFunction(...)
 	else
 		error('Invalid arguments passed to Defer')
 	end
