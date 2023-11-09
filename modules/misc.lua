@@ -54,7 +54,7 @@ end
 function addon:GetNPCID(unit)
 	if unit then
 		local npcGUID = UnitGUID(unit)
-		return npcGUID and addon:ExtractIDFromGUID(npcGUID)
+		return npcGUID and addon:ExtractIDFromGUID(npcGUID), npcGUID
 	end
 end
 
