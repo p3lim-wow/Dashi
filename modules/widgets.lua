@@ -1,5 +1,9 @@
 local _, addon = ...
 
+function addon:CreateFrame(...)
+	return Mixin(CreateFrame(...), addon.eventMixin)
+end
+
 local KEY_DIRECTION_CVAR = 'ActionButtonUseKeyDown'
 
 local function updateKeyDirection(self)
@@ -17,9 +21,7 @@ local function onCVarUpdate(self, cvar)
 end
 
 function addon:CreateButton(...)
-	local button = CreateFrame(...)
-	Mixin(button, addon.eventMixin)
-
+	local button = addon:CreateFrame(...)
 	button:RegisterEvent('CVAR_UPDATE', onCVarUpdate)
 
 	-- the CVar doesn't trigger during login, so we'll have to trigger the handlers ourselves
