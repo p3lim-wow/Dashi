@@ -104,7 +104,7 @@ do
 
 	* [`unitID`](https://wowpedia.fandom.com/wiki/UnitId)
 	* `spellID` - spell ID to check for
-	* `filter` - aura filter, see [UnitAura](https://wowpedia.fandom.com/wiki/API_UnitAura#Filters)
+	* `filter` - aura filter, see [UnitAura](https://warcraft.wiki.gg/wiki/API_UnitAura#Filters)
 	--]]
 	function addon:GetUnitAura(unit, spellID, filter)
 		local token, data
