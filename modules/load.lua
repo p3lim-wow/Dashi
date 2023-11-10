@@ -3,7 +3,7 @@ local _, addon = ...
 local addonCallbacks = {}
 function addon:HookAddOn(addonName, callback)
 	if IsAddOnLoaded(addonName) then
-		callback()
+		callback(self)
 	else
 		table.insert(addonCallbacks, {
 			addonName = addonName,
