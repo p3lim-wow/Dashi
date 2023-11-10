@@ -1,5 +1,7 @@
 local _, addon = ...
 
+local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+
 local addonCallbacks = {}
 function addon:HookAddOn(addonName, callback)
 	if IsAddOnLoaded(addonName) then
