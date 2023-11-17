@@ -1,5 +1,7 @@
 local _, addon = ...
 
+-- TODO: remove these after resolving dependents
+
 function addon:OpenSettings(name)
 	if addon:IsRetail() then
 		Settings.OpenToCategory(name)
