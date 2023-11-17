@@ -1,4 +1,4 @@
-local _, addon = ...
+local addonName, addon = ...
 
 local eventHandler = CreateFrame('Frame')
 local callbacks = {}
@@ -273,7 +273,16 @@ addon = setmetatable(addon, {
 		end
 	end,
 	__newindex = function(t, key, value)
-		if IsEventValid(key) then
+		if key == 'OnLoad' then
+			-- addon:OnLoad() = function() end
+			-- shorthand for ADDON_LOADED
+			addon:RegisterEvent('ADDON_LOADED', function(self, name)
+				if name == addonName then
+					pcall(value, self)
+					return true -- unregister event
+				end
+			end)
+		elseif IsEventValid(key) then
 			-- addon:EVENT_NAME(...) = function() end
 			eventMixin.RegisterEvent(t, key, value)
 		else
