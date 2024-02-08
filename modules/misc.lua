@@ -66,12 +66,6 @@ function addon:GetPlayerMapID()
 	return C_Map.GetBestMapForUnit('player') or -1
 end
 
-function addon:SetPixelScale(object)
-	local _, screenHeight = GetPhysicalScreenSize()
-	object:SetIgnoreParentScale(true)
-	object:SetScale(768 / screenHeight)
-end
-
 function addon:tsize(tbl)
 	-- would really like Lua 5.2 for this
 	local size = 0
