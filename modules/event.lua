@@ -89,9 +89,13 @@ end
 function eventMixin:TriggerEvent(event, ...)
 	if callbacks[event] then
 		for _, data in next, callbacks[event] do
-			local _, shouldUnregister = pcall(data.callback, data.owner, ...)
-			if shouldUnregister then
-				-- callbacks can unregister themselves by returning positively
+			local successful, ret = pcall(data.callback, data.owner, ...)
+			if not successful then
+				-- ret contains the error
+				error(ret)
+			elseif ret then
+				-- callbacks can unregister themselves by returning positively,
+				-- ret contains the boolean
 				eventMixin.UnregisterEvent(data.owner, event, data.callback)
 			end
 		end
@@ -196,8 +200,10 @@ end
 function eventMixin:TriggerUnitEvent(event, unit, ...)
 	if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
 		for _, data in next, unitEventCallbacks[unit][event] do
-			local _, shouldUnregister = pcall(data.callback, data.owner, ...)
-			if shouldUnregister then
+			local successful, ret = pcall(data.callback, data.owner, ...)
+			if not successful then
+				error(ret)
+			elseif ret then
 				-- callbacks can unregister themselves by returning positively
 				eventMixin.UnregisterUnitEvent(data.owner, event, unit, data.callback)
 			end
@@ -211,8 +217,10 @@ do
 	local function internalTrigger(_, event, _, ...)
 		if combatEventCallbacks[event] then
 			for _, data in next, combatEventCallbacks[event] do
-				local _, shouldUnregister = pcall(data.callback, data.owner, ...)
-				if shouldUnregister then
+				local successful, ret = pcall(data.callback, data.owner, ...)
+				if not successful then
+					error(ret)
+				elseif ret then
 					eventMixin.UnregisterCombatEvent(data.owner, event, data.callback)
 				end
 			end
@@ -278,8 +286,12 @@ addon = setmetatable(addon, {
 			-- shorthand for ADDON_LOADED
 			addon:RegisterEvent('ADDON_LOADED', function(self, name)
 				if name == addonName then
-					pcall(value, self)
-					return true -- unregister event
+					local successful, ret = pcall(value, self)
+					if not successful then
+						error(ret)
+					else
+						return true -- unregister event
+					end
 				end
 			end)
 		elseif IsEventValid(key) then
