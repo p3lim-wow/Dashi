@@ -1,16 +1,17 @@
 local _, addon = ...
 
 -- game version API
+local _, _, _, interfaceVersion = GetBuildInfo()
 function addon:IsRetail()
-	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE
+	return interfaceVersion >= 10000
 end
 
 function addon:IsClassic()
-	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC and GetClientDisplayExpansionLevel() ~= _G.LE_EXPANSION_CLASSIC
+	return interfaceVersion >= 20000 and interfaceVersion < 10000
 end
 
 function addon:IsClassicEra()
-	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC and GetClientDisplayExpansionLevel() == _G.LE_EXPANSION_CLASSIC
+	return interfaceVersion < 20000
 end
 
 -- easy frame "removal"
