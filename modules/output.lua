@@ -18,3 +18,8 @@ end
 function addon:Dump(value, startKey)
 	DevTools_Dump(value, startKey)
 end
+
+function addon:DumpUI(value)
+	UIParentLoadAddOn('Blizzard_DebugTools')
+	DisplayTableInspectorWindow(value)
+end
