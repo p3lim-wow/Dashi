@@ -3,11 +3,11 @@ local _, addon = ...
 -- game version API
 local _, _, _, interfaceVersion = GetBuildInfo()
 function addon:IsRetail()
-	return interfaceVersion >= 10000
+	return interfaceVersion >= 100000
 end
 
 function addon:IsClassic()
-	return interfaceVersion >= 20000 and interfaceVersion < 10000
+	return interfaceVersion >= 20000 and interfaceVersion < 100000
 end
 
 function addon:IsClassicEra()
