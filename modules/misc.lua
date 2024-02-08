@@ -6,11 +6,11 @@ function addon:IsRetail()
 end
 
 function addon:IsClassic()
-	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC and GetClientDisplayExpansionLevel() == _G.LE_EXPANSION_CLASSIC
+	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC and GetClientDisplayExpansionLevel() ~= _G.LE_EXPANSION_CLASSIC
 end
 
 function addon:IsClassicEra()
-	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC and GetClientDisplayExpansionLevel() ~= _G.LE_EXPANSION_CLASSIC
+	return _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC and GetClientDisplayExpansionLevel() == _G.LE_EXPANSION_CLASSIC
 end
 
 -- easy frame "removal"
