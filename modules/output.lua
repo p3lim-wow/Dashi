@@ -1,5 +1,8 @@
 local addonName, addon = ...
 
+--[[ namespace:Print(_..._)
+Prints out a message in the chat frame, prefixed with the addon name in color.
+--]]
 function addon:Print(...)
 	-- can't use string join, it fails on nil values
 	local msg = ''
@@ -11,14 +14,23 @@ function addon:Print(...)
 	DEFAULT_CHAT_FRAME:AddMessage('|cff33ff99' .. addonName .. '|r: ' .. msg:trim())
 end
 
+--[[ namespace:Printf(_fmt_, _..._)
+Wrapper for `namespace:Print(...)` and `string.format`.
+--]]
 function addon:Printf(fmt, ...)
 	self:Print(fmt:format(...))
 end
 
+--[[ namespace:Dump(_object_[, _startKey_])
+Wrapper for `DevTools_Dump`.
+--]]
 function addon:Dump(value, startKey)
 	DevTools_Dump(value, startKey)
 end
 
+--[[ namespace:DumpUI(_object_)
+Similar to `namespace:Dump(object)`; a wrapper for the graphical version.
+--]]
 function addon:DumpUI(value)
 	UIParentLoadAddOn('Blizzard_DebugTools')
 	DisplayTableInspectorWindow(value)

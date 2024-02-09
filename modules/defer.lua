@@ -49,9 +49,14 @@ local function deferMethod(object, method, ...)
 	end
 end
 
--- defer execution until after combat, or immediately if not in combat
--- usage: addon:Defer(callback, arg1[, ...])
---        addon:Defer(object, 'method'[, arg1[, ...]])
+--[[ namespace:Defer(_callback_[, _..._])
+Defers a function `callback` (with optional arguments) until after combat ends.  
+Immediately triggers if player is not in combat.
+--]]
+--[[ namespace:Defer(_object_, _method_[, _..._])
+Defers a method `method` on `object` (with optional arguments) until after combat ends.  
+Immediately triggers if player is not in combat.
+--]]
 function addon:Defer(...)
 	if type(select(1, ...)) == 'table' then
 		assert(type(select(2, ...)) == 'string', 'arg2 must be the name of a method')

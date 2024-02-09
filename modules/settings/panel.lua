@@ -61,6 +61,46 @@ local function internalRegisterSettings(savedvariable, settings)
 end
 
 local isRegistered
+--[[ namespace:RegisterSettings(_savedvariables_, _settings_)
+Registers a set of `settings` with the interface options panel.  
+The values will be stored by the `settings`' objects' `key` in `savedvariables`.
+
+Should be used with the options methods below.
+
+Usage:
+```lua
+namespace:RegisterSettings('MyAddOnDB', {
+    {
+        key = 'myToggle',
+        title = 'My Toggle',
+        tooltip = 'Longer description of the toggle in a tooltip',
+        default = false,
+    }
+    {
+        key = 'mySlider',
+        type = 'slider',
+        title = 'My Slider',
+        tooltip = 'Longer description of the slider in a tooltip',
+        default = 0.5,
+        minValue = 0.1,
+        maxValue = 1.0,
+        valueStep = 0.01,
+        valueFormat = formatter, -- callback function or a string for string.format
+    },
+    {
+        key = 'myMenu',
+        type = 'menu',
+        title = 'My Menu',
+        tooltip = 'Longer description of the menu in a tooltip',
+        options = {
+            key1 = 'First option',
+            key2 = 'Second option',
+            key3 = 'Third option',
+        }
+    }
+})
+```
+--]]
 function addon:RegisterSettings(savedvariable, settings)
 	assert(not isRegistered, "can't register settings more than once")
 	isRegistered = true
@@ -80,6 +120,9 @@ function addon:RegisterSettings(savedvariable, settings)
 	end
 end
 
+--[[ namespace:RegisterSettingsSlash(_..._)
+Wrapper for `namespace:RegisterSlash(...)`, except the callback is provided and will open the interface options for this addon.
+--]]
 function addon:RegisterSettingsSlash(...)
 	-- gotta do this dumb shit because `..., callback` is not valid Lua
 	local data = {...}

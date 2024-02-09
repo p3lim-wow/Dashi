@@ -1,5 +1,8 @@
 local _, addon = ...
 
+--[[ namespace:CreateFrame(_..._)
+A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API_CreateFrame), mixed in with `namespace.eventMixin`.
+--]]
 function addon:CreateFrame(...)
 	return Mixin(CreateFrame(...), addon.eventMixin)
 end
@@ -20,6 +23,10 @@ local function onCVarUpdate(self, cvar)
 	end
 end
 
+--[[ namespace:CreateButton(...)
+A wrapper for `namespace:CreateFrame(...)`, but will handle key direction preferences of the client.  
+Use this specifically to create clickable buttons.
+--]]
 function addon:CreateButton(...)
 	local button = addon:CreateFrame(...)
 	button:RegisterEvent('CVAR_UPDATE', onCVarUpdate)

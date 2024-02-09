@@ -2,14 +2,23 @@ local _, addon = ...
 
 -- game version API
 local _, _, _, interfaceVersion = GetBuildInfo()
+--[[ namespace:IsRetail()
+Checks if the current client is running the "retail" version.
+--]]
 function addon:IsRetail()
 	return interfaceVersion >= 100000
 end
 
+--[[ namespace:IsClassic()
+Checks if the current client is running the "classic" version.
+--]]
 function addon:IsClassic()
 	return interfaceVersion >= 20000 and interfaceVersion < 100000
 end
 
+--[[ namespace:IsClassicEra()
+Checks if the current client is running the "classic era" version (e.g. vanilla).
+--]]
 function addon:IsClassicEra()
 	return interfaceVersion < 20000
 end
@@ -18,6 +27,10 @@ end
 local hidden = CreateFrame('Frame')
 hidden:Hide()
 
+--[[ namespace:Hide(_object_[, _child_,...])
+Forcefully hide an `object`, or its `child`.  
+It will recurse down to the last child if provided.
+--]]
 function addon:Hide(object, ...)
 	if type(object) == 'string' then
 		object = _G[object]
@@ -43,11 +56,17 @@ end
 -- random utilities
 do
 	local GUID_PATTERN = '%w+%-.-%-.-%-.-%-.-%-(.-)%-'
+	--[[ namespace:ExtractIDFromGUID(_guid_)
+	Returns the integer `id` from the given [`guid`](https://warcraft.wiki.gg/wiki/GUID).
+	--]]
 	function addon:ExtractIDFromGUID(guid)
 		return tonumber(guid:match(GUID_PATTERN))
 	end
 end
 
+--[[ namespace:GetNPCID(_unit_)
+Returns the integer `id` of the given [`unit`](https://warcraft.wiki.gg/wiki/UnitId).
+--]]
 function addon:GetNPCID(unit)
 	if unit then
 		local npcGUID = UnitGUID(unit)
@@ -57,16 +76,37 @@ end
 
 do
 	local ITEM_LINK_FORMAT = '|Hitem:%d|h'
+	--[[ namespace:GetItemLinkFromID(_itemID_)
+	Generates an [item link](https://warcraft.wiki.gg/wiki/ItemLink) from an `itemID`.  
+	This is a crude generation and won't have valid data for complex items.
+	--]]
 	function addon:GetItemLinkFromID(itemID)
 		return ITEM_LINK_FORMAT:format(itemID)
 	end
 end
 
+--[[ namespace:GetPlayerMapID()
+Returns the ID of the current map the zone the player is located in.
+--]]
 function addon:GetPlayerMapID()
 	-- TODO: maybe use HBD data if it's available
 	return C_Map.GetBestMapForUnit('player') or -1
 end
 
+--[[ namespace:GetPlayerPosition(_mapID_)
+Returns the `x` and `y` coordinates for the player in the given `mapID` (if they are valid).
+--]]
+function addon:GetPlayerPosition(mapID)
+	local pos = C_Map.GetPlayerMapPosition(mapID, 'player')
+	if pos then
+		return pos:GetXY()
+	end
+end
+
+--[[ namespace:tsize(_table_)
+Returns the number of entries in the `table`.  
+Works for associative tables as opposed to `#table`.
+--]]
 function addon:tsize(tbl)
 	-- would really like Lua 5.2 for this
 	local size = 0
@@ -90,10 +130,10 @@ do
 		return token
 	end
 
-	--[[ addon:GetUnitAura(_unitID_, _spellID_, _filter_)
-	Returns the aura by spellID on the unit, if it exists.
+	--[[ namespace:GetUnitAura(_unit_, _spellID_, _filter_)
+	Returns the aura by `spellID` on the [`unit`](https://warcraft.wiki.gg/wiki/UnitId), if it exists.
 
-	* [`unitID`](https://wowpedia.fandom.com/wiki/UnitId)
+	* [`unitID`](https://warcraft.wiki.gg/wiki/UnitId)
 	* `spellID` - spell ID to check for
 	* `filter` - aura filter, see [UnitAura](https://warcraft.wiki.gg/wiki/API_UnitAura#Filters)
 	--]]
@@ -105,9 +145,4 @@ do
 
 		return data
 	end
-end
-
-function addon:GetPlayerPosition(mapID)
-	local pos = C_Map.GetPlayerMapPosition(mapID, 'player')
-	return pos and pos:GetXY()
 end

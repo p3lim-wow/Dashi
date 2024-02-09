@@ -1,5 +1,15 @@
 local addonName, addon = ...
 
+--[[ namespace:RegisterSlash(_command_[, _commandN,..._], _callback_)
+Registers chat slash `command`(s) with a `callback` function.
+
+Usage:
+```lua
+namespace:RegisterSlash('/hello', '/hi', function(input)
+    print('Hi')
+end)
+```
+--]]
 function addon:RegisterSlash(...)
 	local name = addonName .. 'Slash' .. math.random()
 	local failed

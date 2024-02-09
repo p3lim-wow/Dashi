@@ -1,5 +1,11 @@
 local addonName, addon = ...
 
+--[[ namespace.eventMixin
+A multi-purpose [event](https://warcraft.wiki.gg/wiki/Events)-[mixin](https://en.wikipedia.org/wiki/Mixin).
+
+These methods are also available as methods directly on `namespace`.
+--]]
+
 local eventHandler = CreateFrame('Frame')
 local callbacks = {}
 
@@ -37,6 +43,10 @@ local function IsUnitValid(unit)
 end
 
 local eventMixin = {}
+--[[ namespace.eventMixin:RegisterEvent(_event_, _callback_)
+Registers a [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `callback` function.  
+If the callback returns positive it will be unregistered.
+--]]
 function eventMixin:RegisterEvent(event, callback)
 	assert(IsEventValid(event), 'arg1 must be an event')
 	assert(type(callback) == 'function', 'arg2 must be a function')
@@ -55,6 +65,9 @@ function eventMixin:RegisterEvent(event, callback)
 	end
 end
 
+--[[ namespace.eventMixin:UnregisterEvent(_event_, _callback_)
+Unregisters a [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
+--]]
 function eventMixin:UnregisterEvent(event, callback)
 	assert(IsEventValid(event), 'arg1 must be an event')
 	assert(type(callback) == 'function', 'arg2 must be a function')
@@ -73,6 +86,9 @@ function eventMixin:UnregisterEvent(event, callback)
 	end
 end
 
+--[[ namespace.eventMixin:IsEventRegistered(_event_, _callback_)
+Checks if the [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
+--]]
 function eventMixin:IsEventRegistered(event, callback)
 	assert(IsEventValid(event), 'arg1 must be an event')
 	assert(type(callback) == 'function', 'arg2 must be a function')
@@ -86,6 +102,10 @@ function eventMixin:IsEventRegistered(event, callback)
 	end
 end
 
+--[[ namespace.eventMixin:TriggerEvent(_event_[, _..._])
+Manually trigger the `event` (with optional arguments) on all registered callbacks.  
+If the callback returns positive it will be unregistered.
+--]]
 function eventMixin:TriggerEvent(event, ...)
 	if callbacks[event] then
 		for _, data in next, callbacks[event] do
@@ -120,6 +140,10 @@ local function getUnitEventHandler(unit)
 end
 
 local unitEventCallbacks = {}
+--[[ namespace.eventMixin:RegisterUnitEvent(_event_, _unit_[, _unitN,..._], _callback_)
+Registers a [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `callback` function.  
+If the callback returns positive it will be unregistered for that unit.
+--]]
 function eventMixin:RegisterUnitEvent(event, ...)
 	assert(IsEventValid(event), 'arg1 must be an event')
 	local callback = select(select('#', ...), ...)
@@ -152,6 +176,9 @@ function eventMixin:RegisterUnitEvent(event, ...)
 	end
 end
 
+--[[ namespace.eventMixin:UnregisterUnitEvent(_event_, _unit_[, _unitN,..._], _callback_)
+Unregisters a [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
+--]]
 function eventMixin:UnregisterUnitEvent(event, ...)
 	assert(IsEventValid(event), 'arg1 must be an event')
 	local callback = select(select('#', ...), ...)
@@ -177,6 +204,9 @@ function eventMixin:UnregisterUnitEvent(event, ...)
 	end
 end
 
+--[[ namespace.eventMixin:IsUnitEventRegistered(_event_, _unit_[, _unitN,..._], _callback_)
+Checks if the [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
+--]]
 function eventMixin:IsUnitEventRegistered(event, ...)
 	assert(IsEventValid(event), 'arg1 must be an event')
 	local callback = select(select('#', ...), ...)
@@ -197,6 +227,10 @@ function eventMixin:IsUnitEventRegistered(event, ...)
 	end
 end
 
+--[[ namespace.eventMixin:TriggerEvent(_event_, _unit_[, _unitN,..._][, _..._])
+Manually trigger the [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific `event` (with optional arguments) on all registered callbacks.  
+If the callback returns positive it will be unregistered.
+--]]
 function eventMixin:TriggerUnitEvent(event, unit, ...)
 	if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
 		for _, data in next, unitEventCallbacks[unit][event] do
@@ -213,6 +247,51 @@ end
 
 -- special handling for combat events
 local combatEventCallbacks = {}
+--[[ namespace.eventMixin:RegisterCombatEvent(_subEvent_, _callback_)
+Registers a [combat `subEvent`](https://warcraft.wiki.gg/wiki/COMBAT_LOG_EVENT) with the `callback` function.  
+If the callback returns positive it will be unregistered.
+--]]
+function eventMixin:RegisterCombatEvent(event, callback)
+	assert(type(event) == 'string', 'arg1 must be a string')
+	assert(type(callback) == 'function', 'arg2 must be a function')
+
+	if not combatEventCallbacks[event] then
+		combatEventCallbacks[event] = {}
+	end
+
+	table.insert(combatEventCallbacks[event], {
+		callback = callback,
+		owner = self,
+	})
+
+	if not self:IsEventRegistered('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent) then
+		self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent)
+	end
+end
+
+--[[ namespace.eventMixin:UnregisterCombatEvent(_subEvent_, _callback_)
+Unregisters a [combat `subEvent`](https://warcraft.wiki.gg/wiki/COMBAT_LOG_EVENT) from the `callback` function.
+--]]
+function eventMixin:UnregisterCombatEvent(event, callback)
+	assert(type(event) == 'string', 'arg1 must be a string')
+	assert(type(callback) == 'function', 'arg2 must be a function')
+
+	if combatEventCallbacks[event] then
+		for index, data in next, combatEventCallbacks[event] do
+			if data.owner == self and data.callback == callback then
+				combatEventCallbacks[event][index] = nil
+				break
+			end
+		end
+	end
+end
+
+--[[ namespace.eventMixin:TriggerCombatEvent(_subEvent_)
+Manually trigger the [combat `subEvent`](https://warcraft.wiki.gg/wiki/COMBAT_LOG_EVENT) on all registered callbacks.  
+If the callback returns positive it will be unregistered.
+
+* Note: this is pretty useless on it's own, and should only ever be triggered by the event system.
+--]]
 do
 	local function internalTrigger(_, event, _, ...)
 		if combatEventCallbacks[event] then
@@ -232,58 +311,23 @@ do
 	end
 end
 
-function eventMixin:RegisterCombatEvent(event, callback)
-	assert(type(event) == 'string', 'arg1 must be a string')
-	assert(type(callback) == 'function', 'arg2 must be a function')
-
-	if not combatEventCallbacks[event] then
-		combatEventCallbacks[event] = {}
-	end
-
-	table.insert(combatEventCallbacks[event], {
-		callback = callback,
-		owner = self,
-	})
-
-	if not self:IsEventRegistered('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent) then
-		self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent)
-	end
-end
-
-function eventMixin:UnregisterCombatEvent(event, callback)
-	assert(type(event) == 'string', 'arg1 must be a string')
-	assert(type(callback) == 'function', 'arg2 must be a function')
-
-	if combatEventCallbacks[event] then
-		for index, data in next, combatEventCallbacks[event] do
-			if data.owner == self and data.callback == callback then
-				combatEventCallbacks[event][index] = nil
-				break
-			end
-		end
-	end
-end
-
 -- expose mixin
 addon.eventMixin = eventMixin
 
 -- anonymous event registration
 addon = setmetatable(addon, {
-	__index = function(t, key)
-		if IsEventValid(key) then
-			-- addon:EVENT_NAME([arg1[, ...]])
-			return function(_, ...)
-				eventMixin.TriggerEvent(t, key, ...)
-			end
-		else
-			-- default table behaviour
-			return rawget(t, key)
-		end
-	end,
 	__newindex = function(t, key, value)
 		if key == 'OnLoad' then
-			-- addon:OnLoad() = function() end
-			-- shorthand for ADDON_LOADED
+			--[[ namespace:OnLoad()
+			Shorthand for the [`ADDON_LOADED`](https://warcraft.wiki.gg/wiki/ADDON_LOADED) for the addon.
+
+			Usage:
+			```lua
+			function namespace:OnLoad()
+			    -- I'm loaded!
+			end
+			```
+			--]]
 			addon:RegisterEvent('ADDON_LOADED', function(self, name)
 				if name == addonName then
 					local successful, ret = pcall(value, self)
@@ -295,11 +339,38 @@ addon = setmetatable(addon, {
 				end
 			end)
 		elseif IsEventValid(key) then
-			-- addon:EVENT_NAME(...) = function() end
+			--[[ namespace:_event_
+			Registers a  to an anonymous function.
+
+			Usage:
+			```lua
+			function namespace:BAG_UPDATE(bagID)
+			    -- do something
+			end
+			```
+			--]]
 			eventMixin.RegisterEvent(t, key, value)
 		else
 			-- default table behaviour
 			rawset(t, key, value)
+		end
+	end,
+	__index = function(t, key)
+		if IsEventValid(key) then
+			--[[ namespace:_event_([_..._])
+			Manually trigger all registered anonymous `event` callbacks, with optional arguments.
+
+			Usage:
+			```lua
+			namespace:BAG_UPDATE(1) -- triggers the above example
+			```
+			--]]
+			return function(_, ...)
+				eventMixin.TriggerEvent(t, key, ...)
+			end
+		else
+			-- default table behaviour
+			return rawget(t, key)
 		end
 	end,
 })
