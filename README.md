@@ -15,6 +15,8 @@ In each example `namespace` refers to the 2nd value of the addon vararg, e.g:
 local _, namespace = ...
 ```
 
+***
+
 <!-- DOCSTART -->
 ### namespace:IsRetail()
 
