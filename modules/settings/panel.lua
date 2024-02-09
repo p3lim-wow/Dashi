@@ -111,7 +111,7 @@ function addon:RegisterSettings(savedvariable, settings)
 		internalRegisterSettings(savedvariable, settings)
 	else
 		-- don't abuse OnLoad internally
-		addon:RegisterEvent('ADDON_LOADED', function(self, name)
+		addon:RegisterEvent('ADDON_LOADED', function(_, name)
 			if name == addonName then
 				internalRegisterSettings(savedvariable, settings)
 				return true -- unregister

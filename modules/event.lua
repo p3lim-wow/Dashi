@@ -218,7 +218,7 @@ function eventMixin:IsUnitEventRegistered(event, ...)
 		assert(IsUnitEventValid(event, unit), 'event is not valid for the given unit')
 
 		if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
-			for index, data in next, unitEventCallbacks[unit][event] do
+			for _, data in next, unitEventCallbacks[unit][event] do
 				if data.callback == callback then
 					return true
 				end
