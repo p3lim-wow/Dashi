@@ -9,5 +9,4 @@
 	<Script file='modules/widgets.lua'/>
 	<Script file='modules/settings/savedvariables.lua'/>
 	<Script file='modules/settings/panel.lua'/>
-	<Script file='modules/settings/deprecated.lua'/>
 </Ui>
