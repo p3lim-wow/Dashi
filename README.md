@@ -18,21 +18,53 @@ local _, namespace = ...
 ***
 
 <!-- DOCSTART -->
+### namespace:HookAddOn(_addonName_, _callback_)
+
+Registers a hook for when an addon with the name `addonName` loads with a `callback` function.
+
+***
+
+### namespace:OnLogin()
+
+Shorthand for the [`PLAYER_LOGIN`](https://warcraft.wiki.gg/wiki/PLAYER_LOGIN).
+
+Usage:
+```lua
+function namespace:OnLogin()
+    -- player has logged in!
+end
+```
+
+***
+
+### namespace:RegisterSlash(_command_[, _commandN,..._], _callback_)
+
+Registers chat slash `command`(s) with a `callback` function.
+
+Usage:
+```lua
+namespace:RegisterSlash('/hello', '/hi', function(input)
+    print('Hi')
+end)
+```
+
+***
+
 ### namespace:IsRetail()
 
 Checks if the current client is running the "retail" version.
 
 ***
 
-### namespace:IsClassic()
-
-Checks if the current client is running the "classic" version.
-
-***
-
 ### namespace:IsClassicEra()
 
 Checks if the current client is running the "classic era" version (e.g. vanilla).
+
+***
+
+### namespace:IsClassic()
+
+Checks if the current client is running the "classic" version.
 
 ***
 
@@ -91,38 +123,6 @@ Returns the aura by `spellID` on the [`unit`](https://warcraft.wiki.gg/wiki/Unit
 
 ***
 
-### namespace:HookAddOn(_addonName_, _callback_)
-
-Registers a hook for when an addon with the name `addonName` loads with a `callback` function.
-
-***
-
-### namespace:OnLogin()
-
-Shorthand for the [`PLAYER_LOGIN`](https://warcraft.wiki.gg/wiki/PLAYER_LOGIN).
-
-Usage:
-```lua
-function namespace:OnLogin()
-    -- player has logged in!
-end
-```
-
-***
-
-### namespace:CreateFrame(_..._)
-
-A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API_CreateFrame), mixed in with `namespace.eventMixin`.
-
-***
-
-### namespace:CreateButton(...)
-
-A wrapper for `namespace:CreateFrame(...)`, but will handle key direction preferences of the client.  
-Use this specifically to create clickable buttons.
-
-***
-
 ### namespace:Defer(_callback_[, _..._])
 
 Defers a function `callback` (with optional arguments) until after combat ends.  
@@ -134,30 +134,6 @@ Immediately triggers if player is not in combat.
 
 Defers a method `method` on `object` (with optional arguments) until after combat ends.  
 Immediately triggers if player is not in combat.
-
-***
-
-### namespace:Print(_..._)
-
-Prints out a message in the chat frame, prefixed with the addon name in color.
-
-***
-
-### namespace:Printf(_fmt_, _..._)
-
-Wrapper for `namespace:Print(...)` and `string.format`.
-
-***
-
-### namespace:Dump(_object_[, _startKey_])
-
-Wrapper for `DevTools_Dump`.
-
-***
-
-### namespace:DumpUI(_object_)
-
-Similar to `namespace:Dump(object)`; a wrapper for the graphical version.
 
 ***
 
@@ -186,16 +162,27 @@ print(namespace.L['Unknown']) --> "Unknown" on all clients since there are no lo
 
 ***
 
-### namespace:RegisterSlash(_command_[, _commandN,..._], _callback_)
+### namespace:Print(_..._)
 
-Registers chat slash `command`(s) with a `callback` function.
+Prints out a message in the chat frame, prefixed with the addon name in color.
 
-Usage:
-```lua
-namespace:RegisterSlash('/hello', '/hi', function(input)
-    print('Hi')
-end)
-```
+***
+
+### namespace:Printf(_fmt_, _..._)
+
+Wrapper for `namespace:Print(...)` and `string.format`.
+
+***
+
+### namespace:Dump(_object_[, _startKey_])
+
+Wrapper for `DevTools_Dump`.
+
+***
+
+### namespace:DumpUI(_object_)
+
+Similar to `namespace:Dump(object)`; a wrapper for the graphical version.
 
 ***
 
@@ -315,6 +302,19 @@ Usage:
 ```lua
 namespace:BAG_UPDATE(1) -- triggers the above example
 ```
+
+***
+
+### namespace:CreateFrame(_..._)
+
+A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API_CreateFrame), mixed in with `namespace.eventMixin`.
+
+***
+
+### namespace:CreateButton(...)
+
+A wrapper for `namespace:CreateFrame(...)`, but will handle key direction preferences of the client.  
+Use this specifically to create clickable buttons.
 
 ***
 
