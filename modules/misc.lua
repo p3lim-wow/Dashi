@@ -6,14 +6,7 @@ local _, _, _, interfaceVersion = GetBuildInfo()
 Checks if the current client is running the "retail" version.
 --]]
 function addon:IsRetail()
-	return interfaceVersion >= 100000
-end
-
---[[ namespace:IsClassic()
-Checks if the current client is running the "classic" version.
---]]
-function addon:IsClassic()
-	return interfaceVersion >= 20000 and interfaceVersion < 100000
+	return interfaceVersion > 100000
 end
 
 --[[ namespace:IsClassicEra()
@@ -21,6 +14,13 @@ Checks if the current client is running the "classic era" version (e.g. vanilla)
 --]]
 function addon:IsClassicEra()
 	return interfaceVersion < 20000
+end
+
+--[[ namespace:IsClassic()
+Checks if the current client is running the "classic" version.
+--]]
+function addon:IsClassic()
+	return not addon:IsRetail() and not addon:IsClassicEra()
 end
 
 -- easy frame "removal"
