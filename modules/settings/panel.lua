@@ -1,6 +1,11 @@
 local addonName, addon = ...
 
 local function onSettingChanged(owner, setting, value)
+	if setting.owner ~= addonName then
+		-- avoid phantom updates from addons having settings with the same key name
+		return
+	end
+
 	if owner then
 		-- triggered by player changing settings in the panel
 		addon:SetOption(setting:GetVariable(), value)
@@ -16,6 +21,8 @@ end
 
 local function registerSetting(category, info)
 	local setting = Settings.RegisterAddOnSetting(category, info.title, info.key, type(info.default), info.default)
+	setting.owner = addonName -- unique flag on the setting per-addon to avoid phantom updates
+
 	if info.type == 'toggle' then
 		Settings.CreateCheckBox(category, setting, info.tooltip)
 	elseif info.type == 'slider' then
