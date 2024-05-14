@@ -79,6 +79,7 @@ Usage:
 namespace:RegisterSettings('MyAddOnDB', {
     {
         key = 'myToggle',
+        type = 'toggle',
         title = 'My Toggle',
         tooltip = 'Longer description of the toggle in a tooltip',
         default = false,
