@@ -122,7 +122,7 @@ do
 		for index = 1, select('#', ...) do
 			slot = select(index, ...)
 			data = C_UnitAuras.GetAuraDataBySlot(unit, slot)
-			if spellID == data.spellId and data.sourceUnit and (UnitIsUnit('player', data.sourceUnit) or UnitIsOwnerOrControllerOfUnit('player', data.sourceUnit)) then
+			if spellID == data.spellId and data.sourceUnit then
 				return nil, data
 			end
 		end
@@ -140,7 +140,7 @@ do
 	function addon:GetUnitAura(unit, spellID, filter)
 		local token, data
 		repeat
-			token, data = auraSlotsWrapper(unit, spellID, UnitAuraSlots(unit, filter, nil, token))
+			token, data = auraSlotsWrapper(unit, spellID, C_UnitAuras.GetAuraSlots(unit, filter, nil, token))
 		until token == nil
 
 		return data
