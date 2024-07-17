@@ -46,6 +46,10 @@ local function registerSetting(category, info)
 		Settings.CreateDropDown(category, setting, getMenuOptions, info.tooltip)
 	end
 
+	if info.new then
+		setting:SetNewTagShown(true)
+	end
+
 	-- hook into both the Settings object and Dashi's option callback for value changes
 	Settings.SetOnValueChangedCallback(info.key, onSettingChanged)
 	addon:RegisterOptionCallback(info.key, GenerateClosure(onSettingChanged, nil, setting))
@@ -83,6 +87,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         title = 'My Toggle',
         tooltip = 'Longer description of the toggle in a tooltip',
         default = false,
+        new = false,
     }
     {
         key = 'mySlider',
@@ -94,6 +99,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         maxValue = 1.0,
         valueStep = 0.01,
         valueFormat = formatter, -- callback function or a string for string.format
+        new = true,
     },
     {
         key = 'myMenu',
@@ -104,7 +110,8 @@ namespace:RegisterSettings('MyAddOnDB', {
             key1 = 'First option',
             key2 = 'Second option',
             key3 = 'Third option',
-        }
+        },
+        new = false,
     }
 })
 ```
