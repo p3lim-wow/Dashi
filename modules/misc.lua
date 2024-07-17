@@ -60,7 +60,7 @@ do
 	Returns the integer `id` from the given [`guid`](https://warcraft.wiki.gg/wiki/GUID).
 	--]]
 	function addon:ExtractIDFromGUID(guid)
-		return tonumber(guid:match(GUID_PATTERN))
+		return guid and tonumber(guid:match(GUID_PATTERN))
 	end
 end
 
