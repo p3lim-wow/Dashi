@@ -106,6 +106,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         type = 'menu',
         title = 'My Menu',
         tooltip = 'Longer description of the menu in a tooltip',
+        default = 'key1',
         options = {
             key1 = 'First option',
             key2 = 'Second option',
