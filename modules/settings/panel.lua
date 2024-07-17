@@ -24,7 +24,7 @@ local function registerSetting(category, info)
 	setting.owner = addonName -- unique flag on the setting per-addon to avoid phantom updates
 
 	if info.type == 'toggle' then
-		Settings.CreateCheckBox(category, setting, info.tooltip)
+		(Settings.CreateCheckBox or Settings.CreateCheckbox)(category, setting, info.tooltip) -- TODO: TWW cleanup
 	elseif info.type == 'slider' then
 		local sliderOptions = Settings.CreateSliderOptions(info.minValue, info.maxValue, info.valueStep or 1)
 		local valueFormat
