@@ -27,10 +27,14 @@ read_globals = {
 
 	-- FrameXML objects
 	'MinimalSliderWithSteppersMixin',
+	'ScrollUtil',
 	'Settings',
 	'SettingsPanel',
 
 	-- FrameXML functions
+	'CreateDataProvider',
+	'CreateScrollBoxListLinearView',
+	'CreateScrollBoxListGridView',
 	'DisplayTableInspectorWindow',
 	'UIParentLoadAddOn',
 	'DevTools_Dump',
@@ -54,6 +58,7 @@ read_globals = {
 	'GetBuildInfo',
 	'GetLocale',
 	'InCombatLockdown',
+	'UnitExists',
 	'UnitGUID',
 	'debugstack',
 }
