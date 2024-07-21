@@ -73,9 +73,9 @@ local function internalRegisterSettings(savedvariable, settings)
 
 	-- iterate through the provided settings table and generate settings objects and defaults
 	local defaults = {}
-	for _, info in next, settings do
-		registerSetting(category, info)
-		defaults[info.key] = info.default
+	for _, setting in next, settings do
+		registerSetting(category, setting)
+		defaults[setting.key] = setting.default
 	end
 
 	-- register category and load the savedvariables
