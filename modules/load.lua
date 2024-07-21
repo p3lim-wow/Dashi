@@ -1,13 +1,11 @@
 local _, addon = ...
 
-local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
-
 local addonCallbacks = {}
 --[[ namespace:HookAddOn(_addonName_, _callback_)
 Registers a hook for when an addon with the name `addonName` loads with a `callback` function.
 --]]
 function addon:HookAddOn(addonName, callback)
-	if IsAddOnLoaded(addonName) then
+	if C_AddOns.IsAddOnLoaded(addonName) then
 		callback(self)
 	else
 		table.insert(addonCallbacks, {
