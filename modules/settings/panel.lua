@@ -55,7 +55,7 @@ local function registerSetting(category, info)
 			end
 			return container:GetData()
 		end
-		Settings.CreateDropDown(category, setting, getMenuOptions, info.tooltip)
+		(Settings.CreateDropDown or Settings.CreateDropdown)(category, setting, getMenuOptions, info.tooltip)
 	end
 
 	if info.new then
