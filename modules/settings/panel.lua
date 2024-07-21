@@ -19,9 +19,21 @@ local function formatCustom(fmt, value)
 	return fmt:format(value)
 end
 
+-- they removed the new flag for no apparent reason
+local settingMixin = {}
+function settingMixin:SetNewTagShown(state)
+	self.newTagShown = state
+end
+
+function settingMixin:IsNewTagShown() -- override method
+	return self.newTagShown
+end
+
 local function registerSetting(category, info)
 	local setting = Settings.RegisterAddOnSetting(category, info.title, info.key, type(info.default), info.default)
 	setting.owner = addonName -- unique flag on the setting per-addon to avoid phantom updates
+
+	Mixin(setting, settingMixin)
 
 	if info.type == 'toggle' then
 		(Settings.CreateCheckBox or Settings.CreateCheckbox)(category, setting, info.tooltip) -- TODO: TWW cleanup
