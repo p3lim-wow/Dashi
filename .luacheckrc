@@ -23,24 +23,23 @@ globals = {
 
 read_globals = {
 	table = {fields = {'wipe'}},
+	string = {fields = {'join'}},
 
 	-- FrameXML objects
-	'DEFAULT_CHAT_FRAME', -- FrameXML/ChatFrame.lua
+	'MinimalSliderWithSteppersMixin',
+	'Settings',
+	'SettingsPanel',
 
 	-- FrameXML functions
-	'DisplayTableInspectorWindow', -- AddOns/Blizzard_DebugTools/Blizzard_TableInspector.lua
-	'UIParentLoadAddOn', -- FrameXML/UIParent.lua
-	'nop', -- FrameXML/UIParent.lua
+	'DisplayTableInspectorWindow',
+	'UIParentLoadAddOn',
+	'DevTools_Dump',
+	'GenerateClosure',
+	'Mixin',
+	'nop',
 
-	-- SharedXML objects
-	'MinimalSliderWithSteppersMixin', -- SharedXML/Slider/MinimalSlider.lua
-	'Settings', -- SharedXML/Settings/Blizzard_Settings.lua
-	'SettingsPanel', -- SharedXML/Settings/Blizzard_SettingsPanel.xml
-
-	-- SharedXML functions
-	'DevTools_Dump', -- SharedXML/Dump.lua
-	'GenerateClosure', -- SharedXML/FunctionUtil.lua
-	'Mixin', -- SharedXML/Mixin.lua
+	-- FrameXML constants
+	'DEFAULT_CHAT_FRAME',
 
 	-- namespaces
 	'C_AddOns',
@@ -55,9 +54,6 @@ read_globals = {
 	'GetBuildInfo',
 	'GetLocale',
 	'InCombatLockdown',
-	'IsAddOnLoaded', -- until wrath classic bumps API
-	'UnitAuraSlots',
 	'UnitGUID',
-	'UnitIsOwnerOrControllerOfUnit',
-	'UnitIsUnit',
+	'debugstack',
 }
