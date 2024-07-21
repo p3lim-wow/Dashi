@@ -152,7 +152,7 @@ do
 
 	* [`unitID`](https://warcraft.wiki.gg/wiki/UnitId)
 	* `spellID` - spell ID to check for
-	* `filter` - aura filter, see [UnitAura](https://warcraft.wiki.gg/wiki/API_UnitAura#Filters)
+	* `filter` - aura filter, see [UnitAura](https://warcraft.wiki.gg/wiki/API_C_UnitAuras.GetAuraDataByIndex#Filters)
 	--]]
 	function addon:GetUnitAura(unit, spellID, filter)
 		local token, data
