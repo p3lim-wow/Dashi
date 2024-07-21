@@ -32,6 +32,30 @@ function addon:LoadOptions(savedvariable, defaults)
 	end
 end
 
+--[[ namespace:LoadExtraOptions(_defaults_)
+Loads a set of extra savedvariables, with `defaults` being set if they don't exist.  
+Requires options to be loaded.
+
+Will trigger `namespace:TriggerOptionCallback(key, value)` for each pair.
+--]]
+function addon:LoadExtraOptions(defaults)
+	assert(self.optionsName, "options not loaded")
+
+	-- migrate or load defaults
+	for key, value in next, defaults do
+		if _G[self.optionsName][key] == nil then
+			_G[self.optionsName][key] = value
+		end
+	end
+
+	-- trigger callbacks
+	for key, value in next, _G[self.optionsName] do
+		if defaults[key] ~= nil then
+			self:TriggerOptionCallbacks(key, value)
+		end
+	end
+end
+
 --[[ namespace:GetOption(_key_)
 Returns the value for the given option `key`.
 --]]

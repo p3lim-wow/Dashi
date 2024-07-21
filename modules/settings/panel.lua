@@ -67,6 +67,7 @@ local function registerSetting(category, info)
 	addon:RegisterOptionCallback(info.key, GenerateClosure(onSettingChanged, nil, setting))
 end
 
+local children = {}
 local function internalRegisterSettings(savedvariable, settings)
 	-- create a vertical layout category, handing off all elements to Blizzard
 	local category = Settings.RegisterVerticalLayoutCategory(C_AddOns.GetAddOnMetadata(addonName, 'Title'))
@@ -81,6 +82,20 @@ local function internalRegisterSettings(savedvariable, settings)
 	-- register category and load the savedvariables
 	Settings.RegisterAddOnCategory(category)
 	addon:LoadOptions(savedvariable, defaults)
+
+	-- deal with sub-categories
+	for _, info in next, children do
+		local sub = Settings.RegisterVerticalLayoutSubcategory(category, info.name)
+		table.wipe(defaults)
+
+		for _, setting in next, info.settings do
+			registerSetting(sub, setting)
+			defaults[setting.key] = setting.default
+		end
+
+		Settings.RegisterAddOnCategory(sub)
+		addon:LoadExtraOptions(savedvariable, defaults)
+	end
 end
 
 local isRegistered
@@ -146,6 +161,22 @@ function addon:RegisterSettings(savedvariable, settings)
 			end
 		end)
 	end
+end
+
+--[[ namespace:RegisterSubSettings(_name_, _settings_)
+Registers a set of `settings` as a sub-category. `name` must be unique.  
+The values will be stored by the `settings`' objects' `key` in the previously created savedvariables.
+
+The `settings` are identical to that of `namespace:RegisterSettings`.
+--]]
+function addon:RegisterSubSettings(name, settings)
+	assert(isRegistered, "can't register sub-settings without main settings")
+
+	table.insert(children, {
+		kind = 'settings',
+		name = name,
+		settings = settings,
+	})
 end
 
 --[[ namespace:RegisterSettingsSlash(_..._)
