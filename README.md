@@ -6,6 +6,10 @@ Yes, the name is a pun.
 Yes, you can use this if you want.  
 No, you should not depend on it being stable.
 
+## Legal
+
+This repository is dedicated to the [public domain](https://en.wikipedia.org/wiki/Public-domain_software).
+
 ## Documentation
 
 List of what this brings to the addon loading it.
@@ -409,7 +413,3 @@ Register a `callback` function with the option `key`.
 
 Trigger all registered option callbacks for the given `key`, supplying the `value`.
 <!-- DOCEND -->
-
-## Legal
-
-This repository is dedicated to the [public domain](https://en.wikipedia.org/wiki/Public-domain_software).
