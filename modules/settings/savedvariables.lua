@@ -89,6 +89,36 @@ function addon:SetOption(key, value)
 	self:TriggerOptionCallbacks(key, value)
 end
 
+function addon:SetOptionDefault(key, value)
+	assert(self:AreOptionsLoaded(), "options aren't loaded")
+	addon:ArgCheck(key, 1, 'string')
+
+	self.optionsDefaults[key] = value
+
+	if _G[self.optionsName][key] == nil then
+		self:SetOption(key, value)
+	end
+end
+
+do
+	local function startswith(str, start)
+		return str:sub(1, #start) == start
+	end
+
+	function addon:GetOptions(prefix)
+		assert(self:AreOptionsLoaded(), "options aren't loaded")
+
+		local options = {}
+		for key, value in next, _G[self.optionsName] do
+			if not prefix or startswith(key, prefix) then
+				options[key] = value
+			end
+		end
+
+		return options
+	end
+end
+
 --[[ namespace:AreOptionsLoaded()
 Checks to see if the savedvariables has been loaded in the game.
 --]]
