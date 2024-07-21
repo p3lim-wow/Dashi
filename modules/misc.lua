@@ -85,7 +85,7 @@ end
 Returns the integer `id` of the given [`unit`](https://warcraft.wiki.gg/wiki/UnitId).
 --]]
 function addon:GetNPCID(unit)
-	if unit then
+	if unit and UnitExists(unit) then
 		local npcGUID = UnitGUID(unit)
 		return npcGUID and addon:ExtractIDFromGUID(npcGUID), npcGUID
 	end
