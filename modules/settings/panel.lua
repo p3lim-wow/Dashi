@@ -67,6 +67,49 @@ local function registerSetting(category, info)
 	addon:RegisterOptionCallback(info.key, GenerateClosure(onSettingChanged, nil, setting))
 end
 
+local canvasMixin = {}
+function canvasMixin:SetDefaultsHandler(callback)
+	local DefaultsButton = self:GetParent().Header.DefaultsButton
+	DefaultsButton:Show()
+	DefaultsButton:SetScript('OnClick', callback)
+end
+
+local function createCanvas(name)
+	local frame = CreateFrame('Frame')
+
+	-- replicate header from SettingsListTemplate
+	local header = CreateFrame('Frame', nil, frame)
+	header:SetPoint('TOPLEFT')
+	header:SetPoint('TOPRIGHT')
+	header:SetHeight(50)
+	frame.Header = header
+
+	local title = header:CreateFontString(nil, 'ARTWORK', 'GameFontHighlightHuge')
+	title:SetPoint('TOPLEFT', 7, -22)
+	title:SetJustifyH('LEFT')
+	title:SetText(string.format('%s - %s', addonName, name))
+	header.Title = title
+
+	local defaults = CreateFrame('Button', nil, header, 'UIPanelButtonTemplate')
+	defaults:SetPoint('TOPRIGHT', -36, -16)
+	defaults:SetSize(96, 22)
+	defaults:SetText(_G.SETTINGS_DEFAULTS)
+	defaults:Hide()
+	header.DefaultsButton = defaults
+
+	local divider = header:CreateTexture(nil, 'ARTWORK')
+	divider:SetPoint('TOP', 0, -50)
+	divider:SetAtlas('Options_HorizontalDivider', true)
+
+	-- exposed container the addon can use
+	local canvas = Mixin(CreateFrame('Frame', nil, frame), canvasMixin)
+	canvas:SetPoint('BOTTOMLEFT', 0, 5)
+	canvas:SetPoint('BOTTOMRIGHT', -12, 5)
+	canvas:SetPoint('TOP', 0, -56)
+
+	return frame, canvas
+end
+
 local children = {}
 local function internalRegisterSettings(savedvariable, settings)
 	-- create a vertical layout category, handing off all elements to Blizzard
@@ -85,16 +128,31 @@ local function internalRegisterSettings(savedvariable, settings)
 
 	-- deal with sub-categories
 	for _, info in next, children do
-		local sub = Settings.RegisterVerticalLayoutSubcategory(category, info.name)
-		table.wipe(defaults)
+		if info.kind == 'settings' then
+			local sub = Settings.RegisterVerticalLayoutSubcategory(category, info.name)
+			table.wipe(defaults)
 
-		for _, setting in next, info.settings do
-			registerSetting(sub, setting)
-			defaults[setting.key] = setting.default
+			for _, setting in next, info.settings do
+				registerSetting(sub, setting)
+				defaults[setting.key] = setting.default
+			end
+
+			Settings.RegisterAddOnCategory(sub)
+			addon:LoadExtraOptions(savedvariable, defaults)
+		elseif info.kind == 'canvas' then
+			local frame, canvas = createCanvas(info.name)
+			local sub = Settings.RegisterCanvasLayoutSubcategory(category, frame, info.name)
+			Settings.RegisterAddOnCategory(sub)
+
+			-- delay callback until settings are shown
+			local shown
+			SettingsPanel:HookScript('OnShow', function()
+				if not shown then
+					info.callback(canvas)
+					shown = true
+				end
+			end)
 		end
-
-		Settings.RegisterAddOnCategory(sub)
-		addon:LoadExtraOptions(savedvariable, defaults)
 	end
 end
 
@@ -176,6 +234,24 @@ function addon:RegisterSubSettings(name, settings)
 		kind = 'settings',
 		name = name,
 		settings = settings,
+	})
+end
+
+--[[ namespace:RegisterSubSettingsCanvas(_name_, _callback_)
+Registers a canvas sub-category. This does not handle savedvariables.
+
+`name` must be unique, and `callback` is called with a canvas `frame` as payload.
+
+Canvas frame has a custom method `SetDefaultsHandler` which takes a callback as arg1.
+This callback is triggered when the "Defaults" button is clicked.
+--]]
+function addon:RegisterSubCanvas(name, callback)
+	assert(isRegistered, "can't register sub-canvas without main settings")
+
+	table.insert(children, {
+		kind = 'canvas',
+		name = name,
+		callback = callback,
 	})
 end
 
