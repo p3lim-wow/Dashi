@@ -233,6 +233,12 @@ Returns the aura by `spellID` on the [`unit`](https://warcraft.wiki.gg/wiki/Unit
 
 ***
 
+### namespace:CreateColor(r, g, b[, a])
+
+Wrapper for CreateColor that can handle >1-255 range as well.
+
+***
+
 ### namespace:CreateFrame(_..._)
 
 A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API_CreateFrame), mixed in with `namespace.eventMixin`.
@@ -319,14 +325,15 @@ Similar to `namespace:Dump(object)`; a wrapper for the graphical version.
 ### namespace:Defer(_callback_[, _..._])
 
 Defers a function `callback` (with optional arguments) until after combat ends.  
-Immediately triggers if player is not in combat.
+Callback can be the global name of a function.  
+Triggers immediately if player is not in combat.
 
 ***
 
-### namespace:Defer(_object_, _method_[, _..._])
+### namespace:DeferMethod(_object_, _method_[, _..._])
 
-Defers a method `method` on `object` (with optional arguments) until after combat ends.  
-Immediately triggers if player is not in combat.
+Defers a `method` on `object` (with optional arguments) until after combat ends.  
+Triggers immediately if player is not in combat.
 
 ***
 
