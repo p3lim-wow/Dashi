@@ -1,38 +1,29 @@
 name: Generate docs
 on: push
 
-permissions:
-  contents: write
-
 jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Create docs directory
-        # lua-doc-parser should really handle this
-        run: |
-          mkdir .docs
+      - name: Clone wiki
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: .wiki
 
       - name: Parse and generate docs
         uses: p3lim/lua-doc-parser@v2
         with:
-          output: .docs
-
-      - name: Inject docs into readme
-        run: |
-          ex README.md << EOF
-          /DOCSTART/+1,/DOCEND/-1 d
-          -1 r .docs/*.md
-          wq
-          EOF
+          output: .wiki
 
       - name: Push docs
         run: |
-          git config user.name 'GitHub Actions'
-          git config user.email noreply@github.com
-          git add README.md
-          git diff --quiet HEAD || git commit -m 'ci: update documentation'
+          cd .wiki
+          git config user.name CI
+          git config user.email "<>"
+          git add .
+          git diff --quiet HEAD || git commit -m '$GITHUB_SHA'
           git push
