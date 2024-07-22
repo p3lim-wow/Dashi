@@ -163,3 +163,13 @@ do
 		return data
 	end
 end
+
+--[[ namespace:CreateColor(r, g, b[, a])
+Wrapper for CreateColor that can handle >1-255 range as well.
+--]]
+function addon:CreateColor(r, g, b, a)
+	if r > 1 then r = r / 255 end
+	if g > 1 then g = g / 255 end
+	if b > 1 then b = b / 255 end
+	return CreateColor(r, g, b, a)
+end
