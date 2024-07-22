@@ -6,7 +6,17 @@ Yes, the name is a pun.
 Yes, you can use this if you want.  
 No, you should not depend on it being stable.
 
-Please see [the wiki](https://github.com/p3lim-wow/Dashi/wiki) for usage and features.
+It contains, among many things, simplifications for:
+
+- event handling
+- [deferring](https://en.wikipedia.org/wiki/Futures_and_promises)
+- localization management
+- settings and savedvariables
+- widgets (buttons, scrollboxes, etc)
+- input and output
+- misc utility
+
+Please see [the wiki](https://github.com/p3lim-wow/Dashi/wiki) for usage.
 
 ## Legal
 
