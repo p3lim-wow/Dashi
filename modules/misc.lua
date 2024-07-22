@@ -1,5 +1,13 @@
 local _, addon = ...
 
+--[[ namespace:header
+In each example `namespace` refers to the 2nd value of the addon vararg, e.g:
+
+```lua
+local _, namespace = ...
+```
+--]]
+
 -- game version API
 local _, _, _, interfaceVersion = GetBuildInfo()
 --[[ namespace:IsRetail()
