@@ -32,6 +32,7 @@ read_globals = {
 	'SettingsPanel',
 
 	-- FrameXML functions
+	'CreateColor',
 	'CreateDataProvider',
 	'CreateScrollBoxListLinearView',
 	'CreateScrollBoxListGridView',
