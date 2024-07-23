@@ -337,6 +337,24 @@ addon = setmetatable(addon, {
 					return true -- unregister event
 				end
 			end)
+		elseif key == 'OnLogin' then
+			--[[ namespace:OnLogin()
+			Shorthand for the [`PLAYER_LOGIN`](https://warcraft.wiki.gg/wiki/PLAYER_LOGIN).
+
+			Usage:
+			```lua
+			function namespace:OnLogin()
+			    -- player has logged in!
+			end
+			```
+			--]]
+			addon:RegisterEvent('PLAYER_LOGIN', function(self)
+				local successful, ret = pcall(value, self)
+				if not successful then
+					error(ret)
+				end
+				return true -- unregister event
+			end)
 		elseif IsEventValid(key) then
 			--[[ namespace:_event_
 			Registers a  to an anonymous function.
