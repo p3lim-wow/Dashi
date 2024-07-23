@@ -7,7 +7,7 @@ These methods are also available as methods directly on `namespace`, e.g:
 
 ```lua
 addon:RegisterEvent('BAG_UPDATE', function(self, ...)
-	-- do something
+    -- do something
 end)
 ```
 --]]
