@@ -29,6 +29,91 @@ function settingMixin:IsNewTagShown() -- override method
 	return self.newTagShown
 end
 
+local CreateColorPicker -- I wish Settings.CreateColorPicker was a thing
+do
+	local colorPickerMixin = {}
+	function colorPickerMixin:OnSettingValueChanged(setting, value)
+		local r, g, b, a = addon:CreateColor(value):GetRGBA()
+		self.Swatch:SetColorRGB(r, g, b)
+
+		-- modify colorInfo for next run
+		self.colorInfo.r = r
+		self.colorInfo.g = g
+		self.colorInfo.b = b
+		self.colorInfo.a = a
+	end
+
+	local function onClick(self)
+		local parent = self:GetParent()
+		local info = parent.colorInfo
+		if info.hasOpacity then
+			parent.oldValue = CreateColor(info.r, info.g, info.b, info.a):GenerateHexColor()
+		else
+			parent.oldValue = CreateColor(info.r, info.g, info.b):GenerateHexColorNoAlpha()
+		end
+
+		ColorPickerFrame:SetupColorPickerAndShow(info)
+	end
+
+	local function onColorChanged(self, setting)
+		local r, g, b = ColorPickerFrame:GetColorRGB()
+		if self.colorInfo.hasOpacity then
+			local a = ColorPickerFrame:GetColorAlpha()
+			setting:SetValue(CreateColor(r, g, b, a):GenerateHexColor())
+		else
+			setting:SetValue(CreateColor(r, g, b):GenerateHexColorNoAlpha())
+		end
+	end
+
+	local function onColorCancel(self, setting)
+		setting:SetValue(self.oldValue)
+	end
+
+	local function initFrame(initializer, self)
+		SettingsListElementMixin.OnLoad(self)
+		SettingsListElementMixin.Init(self, initializer)
+		Mixin(self, colorPickerMixin)
+
+		self:SetSize(280, 26) -- templates have a size
+
+		-- creating widgets would be equal to :OnLoad()
+		self.Swatch = CreateFrame('Button', nil, self, 'ColorSwatchTemplate')
+		self.Swatch:SetSize(30, 30)
+		self.Swatch:SetPoint('LEFT', self, 'CENTER', -80, 0)
+		self.Swatch:SetScript('OnClick', onClick)
+
+		-- setting up state would be equal to :Init()
+		local setting = initializer:GetSetting()
+		local value = setting:GetValue()
+		local r, g, b, a = addon:CreateColor(value):GetRGBA()
+
+		self.colorInfo = {
+			swatchFunc = GenerateClosure(onColorChanged, self, setting),
+			opacityFunc = GenerateClosure(onColorChanged, self, setting),
+			cancelFunc = GenerateClosure(onColorCancel, self, setting),
+			r = r,
+			g = g,
+			b = b,
+			opacity = a,
+			hasOpacity = #value == 8
+		}
+
+		self.Swatch:SetColorRGB(r, g, b)
+
+		-- set up callbacks, see SettingsControlMixin.Init as an example
+		-- this is used to change common values, and is triggered by setting:SetValue(), thus also from defaults
+		self.cbrHandles:SetOnValueChangedCallback(setting:GetVariable(), self.OnSettingValueChanged, self)
+	end
+
+	function CreateColorPicker(category, setting, options, tooltip)
+		local data = Settings.CreateSettingInitializerData(setting, options, tooltip)
+		local init = Settings.CreateElementInitializer('SettingsListElementTemplate', data)
+		init.InitFrame = initFrame
+		init:AddSearchTags(setting:GetName())
+		SettingsPanel:GetLayout(category):AddInitializer(init)
+	end
+end
+
 local function registerSetting(category, info)
 	local setting = Settings.RegisterAddOnSetting(category, info.title, info.key, type(info.default), info.default)
 	setting.owner = addonName -- unique flag on the setting per-addon to avoid phantom updates
@@ -55,7 +140,9 @@ local function registerSetting(category, info)
 			end
 			return container:GetData()
 		end
-		(Settings.CreateDropDown or Settings.CreateDropdown)(category, setting, getMenuOptions, info.tooltip)
+		(Settings.CreateDropDown or Settings.CreateDropdown)(category, setting, getMenuOptions, info.tooltip) -- TODO: TWW cleanup
+	elseif info.type == 'colorpicker' then
+		CreateColorPicker(category, setting, nil, info.tooltip)
 	end
 
 	if info.new then
@@ -197,6 +284,14 @@ namespace:RegisterSettings('MyAddOnDB', {
             key2 = 'Second option',
             key3 = 'Third option',
         },
+        new = false,
+    },
+    {
+        key = 'myColor',
+        type = 'colorpicker',
+        title = 'My Color',
+        tooltip = 'Longer description of the color in a tooltip',
+        default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format
         new = false,
     }
 })
