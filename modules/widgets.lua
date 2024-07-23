@@ -37,126 +37,197 @@ function addon:CreateButton(...)
 	return button
 end
 
-
-local scrollDataMixin = {}
-function scrollDataMixin:AddData(...)
-	self._provider:Insert(...)
-end
-function scrollDataMixin:RemoveData(...)
-	self._provider:Remove(...)
-end
-function scrollDataMixin:ResetData()
-	self._provider:Flush()
-end
-
-local scrollMixin = {}
-function scrollMixin:SetElementType(kind)
-	self._elementType = kind
-end
-function scrollMixin:SetElementHeight(height)
-	self._view:SetElementExtent(height)
-	self._elementHeight = height
-end
-function scrollMixin:SetElementWidth(width)
-	self._view:SetStrideExtent(width)
-	self._elementWidth = width
-end
-function scrollMixin:SetElementSize(width, height)
-	self:SetElementWidth(width)
-	self:SetElementHeight(height or width)
-end
-function scrollMixin:SetElementCallback(callback)
-	-- assert(self.elementType)
-	self._view:SetElementInitializer(self._elementType, function(element, data)
-		if self._elementWidth then
-			element:SetWidth(self._elementWidth)
-		end
-		if self._elementHeight then
-			element:SetHeight(self._elementHeight)
-		end
-
-		callback(element, data)
-	end)
-end
-function scrollMixin:SetElementSortingMethod(callback)
-	self._provider:SetSortComparator(callback)
-end
-
-local function createScrollWidget(parent, kind, ...)
-	local box = CreateFrame('Frame', nil, parent, 'WowScrollBoxList')
-	box:SetPoint('TOPLEFT')
-	box:SetPoint('BOTTOMRIGHT', -8, 0) -- offset to not overlap scrollbar
-
-	local bar = CreateFrame('EventFrame', nil, parent, 'MinimalScrollBar')
-	bar:SetPoint('TOPLEFT', box, 'TOPRIGHT')
-	bar:SetPoint('BOTTOMLEFT', box, 'BOTTOMRIGHT')
-
-	local provider = CreateDataProvider()
-	provider:SetSortComparator(function(a, b)
+do -- scrollbox
+	local function defaultSort(a, b)
 		-- convert to string first so we can sort mixed types
 		return tostring(a) > tostring(b)
-	end, true)
-	box._provider = provider
-
-	local view
-	if kind == 'list' then
-		view = CreateScrollBoxListLinearView(...)
-	elseif kind == 'grid' then
-		view = CreateScrollBoxListGridView(...)
 	end
-	view:SetDataProvider(provider)
-	box._view = view
 
-	ScrollUtil.InitScrollBoxListWithScrollBar(box, bar, view)
-	ScrollUtil.AddManagedScrollBarVisibilityBehavior(box, bar) -- auto-hide the scroll bar
+	local function initialize(scroll)
+		if scroll._provider then
+			return
+		end
 
-	return Mixin(box, scrollMixin, scrollDataMixin)
-end
+		-- TODO: assertions
 
---[[ namespace:CreateScrollList(_parent_, [...])
-Creates and returns a scroll box with scroll bar and a data provider in a list representation.
+		local provider = CreateDataProvider()
+		provider:SetSortComparator(scroll._sort or defaultSort, true)
 
-The variable arguments are passed straight to `CreateScrollBoxListLinearView`.
+		local view
+		if scroll.kind == 'list' then
+			view = CreateScrollBoxListLinearView(scroll._insetTop, scroll._insetBottom, scroll._insetLeft, scroll._insetRight, scroll._spacingHorizontal)
+		elseif scroll.kind == 'grid' then
+			local width = scroll:GetWidth() - scroll.bar:GetWidth() - (scroll._insetLeft or 0) - (scroll._insetRight or 0)
+			local stride = math.floor((width - (scroll._spacingHorizontal or 0)) / (scroll._elementWidth + (scroll._spacingHorizontal or 0)))
+			view = CreateScrollBoxListGridView(stride, scroll._insetTop, scroll._insetBottom, scroll._insetLeft, scroll._insetRight, scroll._spacingHorizontal, scroll._spacingVertical)
+			view:SetStrideExtent(scroll._elementWidth)
+		end
 
-To initialize it you'll want to use the following methods to define the list elements:
+		view:SetDataProvider(provider)
+		view:SetElementExtent(scroll._elementHeight)
+		view:SetElementInitializer(scroll._elementType, function(element, data)
+			if scroll._elementWidth and scroll.kind == 'grid' then
+				element:SetWidth(scroll._elementWidth)
+			end
+			if scroll._elementHeight then
+				element:SetHeight(scroll._elementHeight)
+			end
 
-* `list:SetElementType(type)` - where `type` is either a [frame type](https://warcraft.wiki.gg/wiki/API_CreateFrame) or a [template](https://warcraft.wiki.gg/wiki/Virtual_XML_template) (required)
-* `list:SetElementHeight(height)` - set the height of each list element (required)
-* `list:SetElementCallback(callback)` - the `callback` is triggered whenever data is added to the list (required)
-    * the callback signature is `(element, data)`, see below for the `data`
-* `list:SetElementSortingMethod(callback)` - sorting function to override the default
+			if not element._initialized then
+				element._initialized = true
 
-There are methods available for manipulating the data in the list:
+				if scroll._scripts then
+					for script, callback in next, scroll._scripts do
+						element:SetScript(script, callback)
 
-* `list:AddData(...)`
-* `list:RemoveData(...)`
-* `list:ResetData()`
---]]
-function addon:CreateScrollList(parent, ...)
-	return createScrollWidget(parent, 'list', ...)
-end
+						if script == 'OnEnter' and not scroll._scripts.OnLeave then
+							element:SetScript('OnLeave', GameTooltip_Hide)
+						end
+					end
+				end
 
---[[ namespace:CreateScrollGrid(_parent_, [...])
-Creates and returns a scroll box with scroll bar and a data provider in a list representation.
+				if scroll._onLoad then
+					local successful, err = pcall(scroll._onLoad, element)
+					if not successful then
+						error(err)
+					end
+				end
+			end
 
-The variable arguments are passed straight to `CreateScrollBoxListGridView`.
+			element.data = data
 
-To initialize it you'll want to use the following methods to define the list elements:
+			if scroll._onUpdate then
+				local successful, err = pcall(scroll._onUpdate, element, data)
+				if not successful then
+					error(err)
+				end
+			end
+		end)
 
-* `list:SetElementType(type)` - where `type` is either a [frame type](https://warcraft.wiki.gg/wiki/API_CreateFrame) or a [template](https://warcraft.wiki.gg/wiki/Virtual_XML_template) (required)
-* `list:SetElementWidth(width)` - set the height of each list element (required)
-* `list:SetElementHeight(height)` - set the height of each list element (required)
-* `list:SetElementSize(width, height)` - same as running the above two methods
-* `list:SetElementCallback(callback)` - the `callback` is triggered whenever data is added to the list (required)
-    * the callback signature is `(element, data)`, see below for the `data`
-* `list:SetElementSortingMethod(callback)` - sorting function to override the default
+		ScrollUtil.InitScrollBoxListWithScrollBar(scroll, scroll.bar, view)
+		ScrollUtil.AddManagedScrollBarVisibilityBehavior(scroll, scroll.bar) -- auto-hide the scroll bar
 
-There are methods available for manipulating the data in the list:
+		scroll._provider = provider
+	end
 
-* `list:AddData(...)`
-* `list:RemoveData(...)`
-* `list:ResetData()`
---]]
-function addon:CreateScrollGrid(parent, ...)
-	return createScrollWidget(parent, 'grid', ...)
+	local scrollMixin = {}
+	function scrollMixin:SetInsets(top, bottom, left, right)
+		self._insetTop = top
+		self._insetBottom = bottom
+		self._insetLeft = left
+		self._insetRight = right
+	end
+	function scrollMixin:SetElementType(kind)
+		self._elementType = kind
+	end
+	function scrollMixin:SetElementHeight(height)
+		self._elementHeight = height
+	end
+	function scrollMixin:SetElementWidth(width)
+		self._elementWidth = width
+	end
+	function scrollMixin:SetElementSize(width, height)
+		self:SetElementWidth(width)
+		self:SetElementHeight(height or width)
+	end
+	function scrollMixin:SetElementSpacing(horizontal, vertical)
+		self._spacingHorizontal = horizontal
+		self._spacingVertical = vertical or horizontal
+	end
+	function scrollMixin:SetElementSortingMethod(callback)
+		self._sort = callback
+	end
+	function scrollMixin:SetElementOnLoad(callback)
+		self._onLoad = callback
+	end
+	function scrollMixin:SetElementOnScript(script, callback)
+		self._scripts = self._scripts or {}
+		self._scripts[script] = callback
+	end
+	function scrollMixin:SetElementOnUpdate(callback)
+		self._onUpdate = callback
+	end
+	function scrollMixin:AddData(...)
+		initialize(self)
+		self._provider:Insert(...)
+	end
+	function scrollMixin:AddDataByKeys(data)
+		for key, value in next, data do
+			if value then -- must be truthy
+				self:AddData(key)
+			end
+		end
+	end
+	function scrollMixin:RemoveData(...)
+		self._provider:Remove(...)
+	end
+	function scrollMixin:ResetData()
+		self._provider:Flush()
+	end
+
+	local function createScrollWidget(parent, kind)
+		local box = CreateFrame('Frame', nil, parent, 'WowScrollBoxList')
+		box:SetPoint('TOPLEFT')
+		box:SetPoint('BOTTOMRIGHT', -8, 0) -- offset to not overlap scrollbar
+		box.kind = kind
+
+		local bar = CreateFrame('EventFrame', nil, parent, 'MinimalScrollBar')
+		bar:SetPoint('TOPLEFT', box, 'TOPRIGHT')
+		bar:SetPoint('BOTTOMLEFT', box, 'BOTTOMRIGHT')
+		box.bar = bar
+
+		return Mixin(box, scrollMixin)
+	end
+
+	--[[ namespace:CreateScrollList(_parent_)
+	Creates and returns a scroll box with scroll bar and a data provider in a list representation.
+	It gets automatically sized to fill the space of the parent.
+
+	It provides the following methods, and is initialized whenever data is provided, so do that last.
+
+	* `list:SetInsets([_top_], [_bottom_], [_left_], [_right_])` - sets scroll box insets (all optional)
+	* `list:SetElementType(_kind_)` - sets the element type or template (required)
+	* `list:SetElementHeight(_height_)` - sets the element height (required)
+	* `list:SetElementSpacing(_spacing_)` - sets the spacing between elements (optional)
+	* `list:SetElementSortingMethod(_callback_)` - sets the sort method for element data (optional)
+	* `list:SetElementOnLoad(_callback_)` - sets the OnLoad method for each element (optional)
+	    * the callback signature is `(element)`
+	* `list:SetElementOnUpdate(_callback_)` - sets the callback for element data updates (optional)
+	    * the callback signature is `(element, data)`
+	* `list:SetElementOnScript(_script_, _callback_)` - sets the script handler for an element (optional)
+	* `list:AddData(_..._)`
+	* `list:AddDataByKeys(_data_)`
+	* `list:RemoveData(_..._)`
+	* `list:ResetData()`
+	--]]
+	function addon:CreateScrollList(parent)
+		return createScrollWidget(parent, 'list')
+	end
+
+	--[[ namespace:CreateScrollGrid(_parent_)
+	Creates and returns a scroll box with scroll bar and a data provider in a grid representation.  
+	It gets automatically sized to fill the space of the parent.
+
+	It provides the following methods, and is initialized whenever data is provided, so do that last.
+
+	* `list:SetInsets([_top_], [_bottom_], [_left_], [_right_])` - sets scroll box insets (all optional)
+	* `list:SetElementType(_kind_)` - sets the element type or template (required)
+	* `list:SetElementHeight(_height_)` - sets the element height (required)
+	* `list:SetElementWidth(_width_)` - sets the element width (required)
+	* `list:SetElementSize(_width_[, _height_])` - sets the element width and height, shorthand for the two above, height falls back to width if not provided
+	* `list:SetElementSpacing(_horizontal_[, _vertical_])` - sets the spacing between elements, vertical falls back to horizontal if not provided  (optional)
+	* `list:SetElementSortingMethod(_callback_)` - sets the sort method for element data (optional)
+	* `list:SetElementOnLoad(_callback_)` - sets the OnLoad method for each element (optional)
+	    * the callback signature is `(element)`
+	* `list:SetElementOnUpdate(_callback_)` - sets the callback for element data updates (optional)
+	    * the callback signature is `(element, data)`
+	* `list:SetElementOnScript(_script_, _callback_)` - sets the script handler for an element (optional)
+	* `list:AddData(_..._)`
+	* `list:AddDataByKeys(_data_)`
+	* `list:RemoveData(_..._)`
+	* `list:ResetData()`
+	--]]
+	function addon:CreateScrollGrid(parent)
+		return createScrollWidget(parent, 'grid')
+	end
 end
