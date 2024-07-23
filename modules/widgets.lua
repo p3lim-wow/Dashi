@@ -196,7 +196,7 @@ do -- scrollbox
 	    * the callback signature is `(element, data)`
 	* `list:SetElementOnScript(script, callback)` - sets the script handler for an element (optional)
 	* `list:AddData(...)`
-	* `list:AddDataByKeys(data)`
+	* `list:AddDataByKeys(table)`
 	* `list:RemoveData(...)`
 	* `list:ResetData()`
 	--]]
@@ -223,7 +223,7 @@ do -- scrollbox
 	    * the callback signature is `(element, data)`
 	* `grid:SetElementOnScript(script, callback)` - sets the script handler for an element (optional)
 	* `grid:AddData(...)`
-	* `grid:AddDataByKeys(data)`
+	* `grid:AddDataByKeys(table)`
 	* `grid:RemoveData(...)`
 	* `grid:ResetData()`
 	--]]
