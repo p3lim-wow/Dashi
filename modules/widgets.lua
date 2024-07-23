@@ -185,19 +185,19 @@ do -- scrollbox
 
 	It provides the following methods, and is initialized whenever data is provided, so do that last.
 
-	* `list:SetInsets([_top_], [_bottom_], [_left_], [_right_])` - sets scroll box insets (all optional)
-	* `list:SetElementType(_kind_)` - sets the element type or template (required)
-	* `list:SetElementHeight(_height_)` - sets the element height (required)
-	* `list:SetElementSpacing(_spacing_)` - sets the spacing between elements (optional)
-	* `list:SetElementSortingMethod(_callback_)` - sets the sort method for element data (optional)
-	* `list:SetElementOnLoad(_callback_)` - sets the OnLoad method for each element (optional)
+	* `list:SetInsets([top], [bottom], [left], [right])` - sets scroll box insets (all optional)
+	* `list:SetElementType(kind)` - sets the element type or template (required)
+	* `list:SetElementHeight(height)` - sets the element height (required)
+	* `list:SetElementSpacing(spacing)` - sets the spacing between elements (optional)
+	* `list:SetElementSortingMethod(callback)` - sets the sort method for element data (optional)
+	* `list:SetElementOnLoad(callback)` - sets the OnLoad method for each element (optional)
 	    * the callback signature is `(element)`
-	* `list:SetElementOnUpdate(_callback_)` - sets the callback for element data updates (optional)
+	* `list:SetElementOnUpdate(callback)` - sets the callback for element data updates (optional)
 	    * the callback signature is `(element, data)`
-	* `list:SetElementOnScript(_script_, _callback_)` - sets the script handler for an element (optional)
-	* `list:AddData(_..._)`
-	* `list:AddDataByKeys(_data_)`
-	* `list:RemoveData(_..._)`
+	* `list:SetElementOnScript(script, callback)` - sets the script handler for an element (optional)
+	* `list:AddData(...)`
+	* `list:AddDataByKeys(data)`
+	* `list:RemoveData(...)`
 	* `list:ResetData()`
 	--]]
 	function addon:CreateScrollList(parent)
@@ -210,22 +210,22 @@ do -- scrollbox
 
 	It provides the following methods, and is initialized whenever data is provided, so do that last.
 
-	* `list:SetInsets([_top_], [_bottom_], [_left_], [_right_])` - sets scroll box insets (all optional)
-	* `list:SetElementType(_kind_)` - sets the element type or template (required)
-	* `list:SetElementHeight(_height_)` - sets the element height (required)
-	* `list:SetElementWidth(_width_)` - sets the element width (required)
-	* `list:SetElementSize(_width_[, _height_])` - sets the element width and height, shorthand for the two above, height falls back to width if not provided
-	* `list:SetElementSpacing(_horizontal_[, _vertical_])` - sets the spacing between elements, vertical falls back to horizontal if not provided  (optional)
-	* `list:SetElementSortingMethod(_callback_)` - sets the sort method for element data (optional)
-	* `list:SetElementOnLoad(_callback_)` - sets the OnLoad method for each element (optional)
+	* `grid:SetInsets([top], [bottom], [left], [right])` - sets scroll box insets (all optional)
+	* `grid:SetElementType(kind)` - sets the element type or template (required)
+	* `grid:SetElementHeight(height)` - sets the element height (required)
+	* `grid:SetElementWidth(width)` - sets the element width (required)
+	* `grid:SetElementSize(width[, height])` - sets the element width and height, shorthand for the two above, height falls back to width if not provided
+	* `grid:SetElementSpacing(horizontal[, vertical])` - sets the spacing between elements, vertical falls back to horizontal if not provided  (optional)
+	* `grid:SetElementSortingMethod(callback)` - sets the sort method for element data (optional)
+	* `grid:SetElementOnLoad(callback)` - sets the OnLoad method for each element (optional)
 	    * the callback signature is `(element)`
-	* `list:SetElementOnUpdate(_callback_)` - sets the callback for element data updates (optional)
+	* `grid:SetElementOnUpdate(callback)` - sets the callback for element data updates (optional)
 	    * the callback signature is `(element, data)`
-	* `list:SetElementOnScript(_script_, _callback_)` - sets the script handler for an element (optional)
-	* `list:AddData(_..._)`
-	* `list:AddDataByKeys(_data_)`
-	* `list:RemoveData(_..._)`
-	* `list:ResetData()`
+	* `grid:SetElementOnScript(script, callback)` - sets the script handler for an element (optional)
+	* `grid:AddData(...)`
+	* `grid:AddDataByKeys(data)`
+	* `grid:RemoveData(...)`
+	* `grid:ResetData()`
 	--]]
 	function addon:CreateScrollGrid(parent)
 		return createScrollWidget(parent, 'grid')
