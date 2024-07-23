@@ -3,7 +3,13 @@ local addonName, addon = ...
 --[[ namespace.eventMixin
 A multi-purpose [event](https://warcraft.wiki.gg/wiki/Events)-[mixin](https://en.wikipedia.org/wiki/Mixin).
 
-These methods are also available as methods directly on `namespace`.
+These methods are also available as methods directly on `namespace`, e.g:
+
+```lua
+addon:RegisterEvent('BAG_UPDATE', function(self, ...)
+	-- do something
+end)
+```
 --]]
 
 local eventHandler = CreateFrame('Frame')
