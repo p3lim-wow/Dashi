@@ -8,6 +8,7 @@ ignore = {
 	'212/self', -- unused argument self
 	'212/event', -- unused argument event
 	'212/unit', -- unused argument unit
+	'212/setting', -- unused argument unit
 	'212/element', -- unused argument element
 	'312/event', -- unused value of argument event
 	'312/unit', -- unused value of argument unit
@@ -26,9 +27,11 @@ read_globals = {
 	string = {fields = {'join'}},
 
 	-- FrameXML objects
+	'ColorPickerFrame',
 	'MinimalSliderWithSteppersMixin',
 	'ScrollUtil',
 	'Settings',
+	'SettingsListElementMixin',
 	'SettingsPanel',
 
 	-- FrameXML functions
@@ -37,6 +40,7 @@ read_globals = {
 	'CreateScrollBoxListLinearView',
 	'CreateScrollBoxListGridView',
 	'DisplayTableInspectorWindow',
+	'GameTooltip_Hide',
 	'UIParentLoadAddOn',
 	'DevTools_Dump',
 	'GenerateClosure',
