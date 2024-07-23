@@ -173,11 +173,15 @@ do
 end
 
 --[[ namespace:CreateColor(r, g, b[, a])
-Wrapper for CreateColor that can handle >1-255 range as well.
+Wrapper for CreateColor that can handle >1-255 range as well.  
+Alpha (`a`) will always be in the 0-1 range.
 --]]
 function addon:CreateColor(r, g, b, a)
-	if r > 1 then r = r / 255 end
-	if g > 1 then g = g / 255 end
-	if b > 1 then b = b / 255 end
+	if r > 1 or g > 1 or b > 1 then
+		r = r / 255
+		g = g / 255
+		b = b / 255
+	end
+
 	return CreateColor(r, g, b, a)
 end
