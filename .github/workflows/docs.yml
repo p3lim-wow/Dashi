@@ -28,5 +28,5 @@ jobs:
           git config user.name CI
           git config user.email "<>"
           git add .
-          git diff --quiet HEAD || git commit -m '$GITHUB_SHA'
+          git diff --quiet HEAD || git commit -m '${{ github.sha }}'
           git push
