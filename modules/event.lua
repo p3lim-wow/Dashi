@@ -333,9 +333,8 @@ addon = setmetatable(addon, {
 					local successful, ret = pcall(value, self)
 					if not successful then
 						error(ret)
-					else
-						return true -- unregister event
 					end
+					return true -- unregister event
 				end
 			end)
 		elseif IsEventValid(key) then
