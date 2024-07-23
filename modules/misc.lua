@@ -176,8 +176,25 @@ end
 Wrapper for CreateColor that can handle >1-255 range as well.  
 Alpha (`a`) will always be in the 0-1 range.
 --]]
+--[[ namespace:CreateColor(hex)
+Wrapper for CreateColor that can handle hex colors (both `RRGGBB` and `AARRGGBB`).
+--]]
 function addon:CreateColor(r, g, b, a)
-	if r > 1 or g > 1 or b > 1 then
+	if type(r) == 'string' then
+		-- load from hex
+		local hex = r:gsub('#', '')
+		if #hex == 8 then
+			-- prefixed with alpha
+			a = tonumber(hex:sub(1, 2), 16) / 255
+			r = tonumber(hex:sub(3, 4), 16) / 255
+			g = tonumber(hex:sub(5, 6), 16) / 255
+			b = tonumber(hex:sub(7, 8), 16) / 255
+		elseif #hex == 6 then
+			r = tonumber(hex:sub(1, 2), 16) / 255
+			g = tonumber(hex:sub(3, 4), 16) / 255
+			b = tonumber(hex:sub(5, 6), 16) / 255
+		end
+	elseif r > 1 or g > 1 or b > 1 then
 		r = r / 255
 		g = g / 255
 		b = b / 255
