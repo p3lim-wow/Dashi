@@ -66,7 +66,11 @@ function addon:GetOption(key)
 	assert(self:AreOptionsLoaded(), "options aren't loaded")
 	addon:ArgCheck(key, 1, 'string')
 
-	return _G[self.optionsName][key] ~= nil and _G[self.optionsName][key] or self.optionsDefaults[key]
+	if _G[self.optionsName][key] ~= nil then
+		return _G[self.optionsName][key]
+	else
+		return self.optionsDefaults[key]
+	end
 end
 
 --[[ namespace:GetOptionDefault(_key_)
