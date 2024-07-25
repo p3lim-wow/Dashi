@@ -135,8 +135,10 @@ Works for associative tables as opposed to `#table`.
 function addon:tsize(tbl)
 	-- would really like Lua 5.2 for this
 	local size = 0
-	for _ in next, tbl do
-		size = size + 1
+	if tbl then
+		for _ in next, tbl do
+			size = size + 1
+		end
 	end
 	return size
 end
