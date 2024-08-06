@@ -114,8 +114,24 @@ do
 	end
 end
 
+local BETA = select(4, GetBuildInfo()) >= 110002
 local function registerSetting(category, info)
-	local setting = Settings.RegisterAddOnSetting(category, info.title, info.key, type(info.default), info.default)
+	local setting
+	if BETA then
+		local getter = function()
+			if addon:AreOptionsLoaded() then
+				return addon:GetOption(info.key)
+			else
+				return info.default
+			end
+		end
+		local setter = function(value)
+			addon:SetOption(info.key, value)
+		end
+		setting = Settings.RegisterProxySetting(category, info.key, type(info.default), info.title, info.default, getter, setter)
+	else
+		setting = Settings.RegisterAddOnSetting(category, info.title, info.key, type(info.default), info.default)
+	end
 	setting.owner = addonName -- unique flag on the setting per-addon to avoid phantom updates
 
 	Mixin(setting, settingMixin)
@@ -150,7 +166,9 @@ local function registerSetting(category, info)
 	end
 
 	-- hook into both the Settings object and Dashi's option callback for value changes
-	Settings.SetOnValueChangedCallback(info.key, onSettingChanged)
+	if not BETA then
+		Settings.SetOnValueChangedCallback(info.key, onSettingChanged)
+	end
 	addon:RegisterOptionCallback(info.key, GenerateClosure(onSettingChanged, nil, setting))
 end
 
