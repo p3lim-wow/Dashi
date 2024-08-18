@@ -130,7 +130,7 @@ do
 		self.cbrHandles:SetOnValueChangedCallback(setting:GetVariable(), self.OnSettingValueChanged, self)
 	end
 
-	function CreateColorPicker(category, setting, options, tooltip)
+	function createColorPicker(category, setting, options, tooltip)
 		local data = Settings.CreateSettingInitializerData(setting, options, tooltip)
 		local init = Settings.CreateElementInitializer('SettingsListElementTemplate', data)
 		init.InitFrame = initFrame
@@ -166,7 +166,6 @@ local function registerSetting(category, savedvariable, info)
 			options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, info.valueFormat)
 		end
 
-		options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, valueFormat)
 		Settings.CreateSlider(category, setting, options, info.tooltip)
 	elseif info.type == 'menu' then
 		addon:ArgCheck(info.options, 3, 'table')
