@@ -20,6 +20,7 @@ ignore = {
 globals = {
 	-- FrameXML objects we mutate
 	'SlashCmdList', -- FrameXML/ChatFrame.lua
+	'NewSettings',
 }
 
 read_globals = {

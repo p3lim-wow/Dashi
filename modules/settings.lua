@@ -4,9 +4,9 @@ local function onSettingChanged(setting, value)
 	addon:TriggerOptionCallback(setting.variableKey, value)
 end
 
-local function onOptionChanged(setting, value)
-	setting:SetValue(value, true)
-end
+-- local function onOptionChanged(setting, value)
+-- 	setting:SetValue(value, true)
+-- end
 
 local createCanvas
 do
