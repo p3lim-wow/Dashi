@@ -19,7 +19,7 @@ ignore = {
 
 globals = {
 	-- FrameXML objects we mutate
-	'SlashCmdList', -- FrameXML/ChatFrame.lua
+	'SlashCmdList',
 	'NewSettings',
 }
 
@@ -29,6 +29,7 @@ read_globals = {
 
 	-- FrameXML objects
 	'ColorPickerFrame',
+	'EventRegistry',
 	'MinimalSliderWithSteppersMixin',
 	'ScrollUtil',
 	'Settings',
