@@ -184,7 +184,13 @@ local function registerSetting(category, savedvariable, info)
 		return
 	end
 
-	if info.new then
+	if info.new and not _G[savedvariable][info.key .. '_seen'] then
+		EventRegistry:RegisterCallback('Settings.CategoryChanged', function(_, cat)
+			if cat == category then
+				_G[savedvariable][info.key .. '_seen'] = true
+			end
+		end)
+
 		-- possibly tainty, and not that clean (it adds new tag to the category list too)
 		local version = GetBuildInfo()
 		if not NewSettings[version] then
