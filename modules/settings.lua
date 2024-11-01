@@ -468,3 +468,168 @@ function addon:TriggerOptionCallback(key, value)
 		end
 	end
 end
+
+do
+	-- sliders aren't supported in menus, so we create our own custom element
+	local function resetSlider(frame)
+		frame.slider:UnregisterCallback('OnValueChanged', frame)
+		frame.slider:Release()
+	end
+
+	local function createSlider(root, name, getter, setter, minValue, maxValue, steps, formatter)
+		local element = root:CreateButton(name):CreateFrame()
+		if addon:HasBuild(57361, 110007) then
+			element:AddResetter(resetSlider)
+		end
+		element:AddInitializer(function(frame)
+			local slider = frame:AttachTemplate('MinimalSliderWithSteppersTemplate')
+			slider:SetPoint('TOPLEFT', 0, -1)
+			slider:SetSize(150, 25)
+			slider:RegisterCallback('OnValueChanged', setter, frame)
+			slider:Init(getter(), minValue, maxValue, (maxValue - minValue) / steps, {
+				[MinimalSliderWithSteppersMixin.Label.Right] = formatter
+			})
+			frame.slider = slider -- ref for resetter
+
+			if not addon:HasBuild(57361, 110007) then
+				-- there's no way to properly reset an element from the menu, so we'll need to use
+				-- a dummy element we can hook OnHide onto
+				-- https://github.com/Stanzilla/WoWUIBugs/issues/652
+				local dummy = frame:AttachFrame('Frame')
+				dummy:SetScript('OnHide', function()
+					resetSlider(frame)
+				end)
+			end
+
+			local pad = 30 -- for the label
+			return slider:GetWidth() + pad, slider:GetHeight()
+		end)
+
+		return element
+	end
+
+	local function colorPickerClick(data)
+		ColorPickerFrame:SetupColorPickerAndShow(data)
+	end
+	local function colorPickerChange(setting)
+		local r, g, b = ColorPickerFrame:GetColorRGB()
+		if #setting.default == 8 then
+			local a = ColorPickerFrame:GetColorAlpha()
+			addon:SetOption(setting.key, addon:CreateColor(r, g, b, a):GenerateHexColor())
+		else
+			addon:SetOption(setting.key, addon:CreateColor(r, g, b):GenerateHexColorNoAlpha())
+		end
+	end
+	local function colorPickerReset(setting, previousColor)
+		local color = addon:CreateColor(previousColor)
+		if #setting.default == 8 then
+			addon:SetOption(setting.key, color:GenerateHexColor())
+		else
+			addon:SetOption(setting.key, color:GenerateHexColorNoAlpha())
+		end
+	end
+
+	local function menuGetter(setting, value)
+		return addon:GetOption(setting.key) == value
+	end
+	local function menuSetter(setting, value)
+		addon:SetOption(setting.key, value)
+	end
+
+	local function registerMapSettings(savedvariable, settings)
+		if not addon.registeredVariables then
+			-- these savedvariables are not handled by other means, let's deal with defaults and
+			-- merging ourselves
+			if not _G[savedvariable] then
+				_G[savedvariable] = {}
+			end
+
+			for _, setting in next, settings do
+				-- merge or default
+				if _G[savedvariable][setting.key] == nil then
+					_G[savedvariable][setting.key] = setting.default
+				end
+			end
+
+			addon.registeredVariables = savedvariable
+		end
+
+		-- TODO: menus also has "new feature" flags/textures, see if we can hook into that
+
+		Menu.ModifyMenu('MENU_WORLD_MAP_TRACKING', function(_, root)
+			root:CreateDivider()
+			root:CreateTitle((addonName:gsub('(%l)(%u)', '%1 %2')) .. HEADER_COLON)
+
+			for _, setting in next, settings do
+				if setting.type == 'toggle' then
+					root:CreateCheckbox(setting.title, function()
+						return addon:GetOption(setting.key)
+					end, function()
+						addon:SetOption(setting.key, not addon:GetOption(setting.key))
+					end)
+				elseif setting.type == 'slider' then
+					local formatter
+					if type(setting.valueFormat) == 'string' then
+						formatter = GenerateClosure(formatCustom, setting.valueFormat)
+					elseif type(setting.valueFormat) == 'function' then
+						formatter = setting.valueFormat
+					end
+
+					createSlider(root, setting.title, function()
+						return addon:GetOption(setting.key)
+					end, function(_, value)
+						addon:SetOption(setting.key, value)
+					end, setting.minValue, setting.maxValue, setting.valueStep or 1, formatter)
+				elseif setting.type == 'color' then
+					local value = addon:GetOption(setting.key)
+					local r, g, b, a = addon:CreateColor(value):GetRGBA()
+					root:CreateColorSwatch(setting.title, colorPickerClick, {
+						swatchFunc = GenerateClosure(colorPickerChange, setting),
+						opacityFunc = GenerateClosure(colorPickerChange, setting),
+						cancelFunc = GenerateClosure(colorPickerReset, setting),
+						r = r,
+						g = g,
+						b = b,
+						opacity = a,
+						hasOpacity = #value == 8,
+					})
+				elseif setting.type == 'menu' then
+					local menu = root:CreateButton(setting.title)
+					for _, option in next, setting.options do
+						local radio = menu:CreateRadio(
+							option.label,
+							GenerateClosure(menuGetter, setting),
+							GenerateClosure(menuSetter, setting),
+							option.value
+						)
+					end
+				end
+			end
+		end)
+	end
+
+	--[[ namespace:RegisterMapSettings(_savedvariable_, _settings_)
+	Registers a set of `settings` with the interface options panel.  
+	The values will be stored by the `settings`' objects' `key` in `savedvariables`.
+
+	The `settings` object is identical to the one for [RegisterSetting](namespaceregistersettingssavedvariables-settings).  
+	--]]
+	function addon:RegisterMapSettings(savedvariable, settings)
+		addon:ArgCheck(savedvariable, 1, 'string')
+		addon:ArgCheck(settings, 2, 'table')
+
+		-- ensure we only add the settings after savedvariables are available to the client
+		local _, isReady = C_AddOns.IsAddOnLoaded(addonName)
+		if isReady then
+			registerMapSettings(savedvariable, settings)
+		else
+			-- don't abuse OnLoad internally
+			addon:RegisterEvent('ADDON_LOADED', function(_, name)
+				if name == addonName then
+					registerMapSettings(savedvariable, settings)
+					return true -- unregister
+				end
+			end)
+		end
+	end
+end
