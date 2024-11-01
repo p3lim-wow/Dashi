@@ -184,20 +184,37 @@ local function registerSetting(category, savedvariable, info)
 		return
 	end
 
-	if info.new and not _G[savedvariable][info.key .. '_seen'] then
-		EventRegistry:RegisterCallback('Settings.CategoryChanged', function(_, cat)
-			if cat == category then
-				_G[savedvariable][info.key .. '_seen'] = true
-			end
-		end)
-
-		-- possibly tainty, and not that clean (it adds new tag to the category list too)
+	if info.firstInstall then
+		-- we don't want to add "new" tags to a freshly installed addon
+		_G[savedvariable][info.key .. '_seen'] = true
+	elseif not _G[savedvariable][info.key .. '_seen'] then
+		-- add new tag to the settings panel until it's been observed by the player
+		-- possibly tainty, definitely  ugly
 		local version = GetBuildInfo()
 		if not NewSettings[version] then
 			NewSettings[version] = {}
 		end
 
 		table.insert(NewSettings[version], uniqueKey)
+
+		-- remove once seen
+		EventRegistry:RegisterCallback('Settings.CategoryChanged', function(_, cat)
+			if cat == category and not _G[savedvariable][info.key .. '_seen'] then
+				_G[savedvariable][info.key .. '_seen'] = true
+
+				local settingIndex
+				for index, key in next, NewSettings[version] do
+					if key == uniqueKey then
+						settingIndex = index
+						break
+					end
+				end
+
+				if settingIndex then
+					table.remove(NewSettings[version], settingIndex)
+				end
+			end
+		end)
 	end
 
 	-- callback when settings change something
@@ -216,12 +233,18 @@ local function registerSettings(savedvariable, settings)
 	local category = Settings.RegisterVerticalLayoutCategory(categoryName)
 	Settings.RegisterAddOnCategory(category)
 
+	local firstInstall
 	if not _G[savedvariable] then
 		-- for some dumb reason RegisterAddOnSetting doesn't initialize the savedvariables table
 		_G[savedvariable] = {}
+		firstInstall = true
 	end
 
 	for _, setting in next, settings do
+		if firstInstall then
+			info.firstInstall = true
+		end
+
 		registerSetting(category, savedvariable, setting)
 	end
 
@@ -265,7 +288,6 @@ namespace:RegisterSettings('MyAddOnDB', {
         title = 'My Toggle',
         tooltip = 'Longer description of the toggle in a tooltip',
         default = false,
-        new = false,
     },
     {
         key = 'mySlider',
@@ -277,7 +299,6 @@ namespace:RegisterSettings('MyAddOnDB', {
         maxValue = 1.0,
         valueStep = 0.01,
         valueFormat = formatter, -- callback function or a string for string.format
-        new = true,
     },
     {
         key = 'myMenu',
@@ -290,7 +311,6 @@ namespace:RegisterSettings('MyAddOnDB', {
             {value = key2, label = 'Second option'},
             {value = key3, label = 'Third option'},
         },
-        new = false,
     },
     {
         key = 'myColor',
@@ -298,7 +318,6 @@ namespace:RegisterSettings('MyAddOnDB', {
         title = 'My Color',
         tooltip = 'Longer description of the color in a tooltip',
         default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format
-        new = false,
     }
 })
 ```
