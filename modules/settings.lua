@@ -36,7 +36,7 @@ do
 		local defaults = CreateFrame('Button', nil, header, 'UIPanelButtonTemplate')
 		defaults:SetPoint('TOPRIGHT', -36, -16)
 		defaults:SetSize(96, 22)
-		defaults:SetText(_G.SETTINGS_DEFAULTS)
+		defaults:SetText(SETTINGS_DEFAULTS)
 		defaults:Hide()
 		header.DefaultsButton = defaults
 
@@ -242,7 +242,7 @@ local function registerSettings(savedvariable, settings)
 
 	for _, setting in next, settings do
 		if firstInstall then
-			info.firstInstall = true
+			setting.firstInstall = true
 		end
 
 		registerSetting(category, savedvariable, setting)
@@ -596,7 +596,7 @@ do
 				elseif setting.type == 'menu' then
 					local menu = root:CreateButton(setting.title)
 					for _, option in next, setting.options do
-						local radio = menu:CreateRadio(
+						menu:CreateRadio(
 							option.label,
 							GenerateClosure(menuGetter, setting),
 							GenerateClosure(menuSetter, setting),

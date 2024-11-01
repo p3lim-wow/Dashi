@@ -30,6 +30,7 @@ read_globals = {
 	-- FrameXML objects
 	'ColorPickerFrame',
 	'EventRegistry',
+	'Menu',
 	'MinimalSliderWithSteppersMixin',
 	'ScrollUtil',
 	'Settings',
@@ -51,6 +52,10 @@ read_globals = {
 
 	-- FrameXML constants
 	'DEFAULT_CHAT_FRAME',
+
+	-- GlobalStrings
+	'HEADER_COLON',
+	'SETTINGS_DEFAULTS',
 
 	-- namespaces
 	'C_AddOns',
