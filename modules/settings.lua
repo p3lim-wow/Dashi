@@ -177,7 +177,7 @@ local function registerSetting(category, savedvariable, info)
 			return container:GetData()
 		end
 		Settings.CreateDropdown(category, setting, options, info.tooltip)
-	elseif info.type == 'colorpicker' then
+	elseif info.type == 'color' or info.type == 'colorpicker' then -- TODO: remove in 12.x, compat
 		createColorPicker(category, setting, nil, info.tooltip)
 	else
 		error('type is invalid') -- TODO: make this prettier
@@ -294,7 +294,7 @@ namespace:RegisterSettings('MyAddOnDB', {
     },
     {
         key = 'myColor',
-        type = 'colorpicker',
+        type = 'color',
         title = 'My Color',
         tooltip = 'Longer description of the color in a tooltip',
         default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format
