@@ -171,8 +171,8 @@ local function registerSetting(category, savedvariable, info)
 		addon:ArgCheck(info.options, 3, 'table')
 		local options = function()
 			local container = Settings.CreateControlTextContainer()
-			for key, name in next, info.options do
-				container:Add(key, name)
+			for _, option in next, info.options do
+				container:Add(option.value, option.label)
 			end
 			return container:GetData()
 		end
@@ -286,9 +286,9 @@ namespace:RegisterSettings('MyAddOnDB', {
         tooltip = 'Longer description of the menu in a tooltip',
         default = 'key1',
         options = {
-            key1 = 'First option',
-            key2 = 'Second option',
-            key3 = 'Third option',
+            {value = key1, label = 'First option'},
+            {value = key2, label = 'Second option'},
+            {value = key3, label = 'Third option'},
         },
         new = false,
     },
