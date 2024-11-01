@@ -179,7 +179,9 @@ Alpha (`a`) will always be in the 0-1 range.
 Wrapper for CreateColor that can handle hex colors (both `RRGGBB` and `AARRGGBB`).
 --]]
 function addon:CreateColor(r, g, b, a)
-	if type(r) == 'string' then
+	if type(r) == 'table' then
+		return addon:CreateColor(r.r, r.g, r.b, r.a)
+	elseif type(r) == 'string' then
 		-- load from hex
 		local hex = r:gsub('#', '')
 		if #hex == 8 then
