@@ -6,7 +6,7 @@ A multi-purpose [event](https://warcraft.wiki.gg/wiki/Events)-[mixin](https://en
 These methods are also available as methods directly on `namespace`, e.g:
 
 ```lua
-addon:RegisterEvent('BAG_UPDATE', function(self, ...)
+namespace:RegisterEvent('BAG_UPDATE', function(self, ...)
     -- do something
 end)
 ```

@@ -609,7 +609,7 @@ do
 	end
 
 	--[[ namespace:RegisterMapSettings(_savedvariable_, _settings_)
-	Registers a set of `settings` with the interface options panel.  
+	Registers a set of `settings` to inject into the world map tracking menu.
 	The values will be stored by the `settings`' objects' `key` in `savedvariables`.
 
 	The `settings` object is identical to the one for [RegisterSetting](namespaceregistersettingssavedvariables-settings).  
