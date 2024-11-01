@@ -266,7 +266,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         tooltip = 'Longer description of the toggle in a tooltip',
         default = false,
         new = false,
-    }
+    },
     {
         key = 'mySlider',
         type = 'slider',
