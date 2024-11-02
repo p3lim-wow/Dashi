@@ -201,7 +201,12 @@ function addon:CreateColor(r, g, b, a)
 		b = b / 255
 	end
 
-	return CreateColor(r, g, b, a)
+	local color = CreateColor(r, g, b, a)
+	-- oUF compat; TODO: do something with this in oUF?
+	color[1] = r
+	color[2] = g
+	color[3] = b
+	return color
 end
 
 --[[ namespace:IsAddOnEnabled(addonName)
