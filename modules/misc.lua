@@ -142,3 +142,15 @@ function addon:CreateColor(r, g, b, a)
 	color[3] = b
 	return color
 end
+
+do
+	local timeFormatter = CreateFromMixins(SecondsFormatterMixin)
+	timeFormatter:Init(1, SecondsFormatter.Abbreviation.OneLetter)
+	timeFormatter:SetStripIntervalWhitespace(true)
+	--[[ namespace:FormatTime(_timeInSeconds_)
+	Formats the given `timeInSeconds` to a readable, but abbreviated format.
+	--]]
+	function addon:FormatTime(timeInSeconds)
+		return timeFormatter:Format(tonumber(timeInSeconds))
+	end
+end
