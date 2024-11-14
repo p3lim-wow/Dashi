@@ -10,4 +10,5 @@
 	<Script file='modules/widgets.lua'/>
 	<Script file='modules/settings.lua'/>
 	<Script file='modules/library.lua'/>
+	<Script file='modules/object.lua'/>
 </Ui>
