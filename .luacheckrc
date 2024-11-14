@@ -40,15 +40,19 @@ read_globals = {
 	-- FrameXML functions
 	'CreateColor',
 	'CreateDataProvider',
-	'CreateScrollBoxListLinearView',
+	'CreateFromMixins',
 	'CreateScrollBoxListGridView',
+	'CreateScrollBoxListLinearView',
+	'DevTools_Dump',
 	'DisplayTableInspectorWindow',
 	'GameTooltip_Hide',
-	'UIParentLoadAddOn',
-	'DevTools_Dump',
 	'GenerateClosure',
 	'Mixin',
+	'SecondsFormatter',
+	'SecondsFormatterMixin',
+	'UIParentLoadAddOn',
 	'nop',
+
 
 	-- FrameXML constants
 	'DEFAULT_CHAT_FRAME',
