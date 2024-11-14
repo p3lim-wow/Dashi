@@ -1,4 +1,5 @@
 <Ui>
+	<Script file='modules/build.lua'/>
 	<Script file='modules/misc.lua'/>
 	<Script file='modules/event.lua'/>
 	<Script file='modules/input.lua'/>
