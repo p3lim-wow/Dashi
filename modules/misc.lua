@@ -26,22 +26,28 @@ function addon:ArgCheck(arg, argIndex, ...)
 end
 
 do
-	local GUID_PATTERN = '%w+%-.-%-.-%-.-%-.-%-(.-)%-'
-	--[[ namespace:ExtractIDFromGUID(_guid_)
-	Returns the integer `id` from the given [`guid`](https://warcraft.wiki.gg/wiki/GUID).
+	-- UnitType-0-ServerID-InstanceID-ZoneUID-ID-SpawnUID
+	local GUID_PATTERN = '(%w+)%-0%-(%d+)%-(%d+)%-(%d+)%-(%d+)%-(.+)'
+	--[[ namespace:ExtractFieldsFromUnitGUID(_guid_)
+	Returns the individual fields from the given [`guid`](https://warcraft.wiki.gg/wiki/GUID), typecast to their correct types.
 	--]]
-	function addon:ExtractIDFromGUID(guid)
-		return guid and tonumber(guid:match(GUID_PATTERN))
+	function addon:ExtractFieldsFromUnitGUID(guid)
+		if guid then
+			local unitType, serverID, instanceID, zoneUID, id, spawnUID = guid:match(GUID_PATTERN)
+			if unitType then
+				return unitType, tonumber(serverID), tonumber(instanceID), tonumber(zoneUID), tonumber(id), spawnUID
+			end
+		end
 	end
 end
 
---[[ namespace:GetNPCID(_unit_)
+--[[ namespace:GetUnitID(_unit_)
 Returns the integer `id` of the given [`unit`](https://warcraft.wiki.gg/wiki/UnitId).
 --]]
-function addon:GetNPCID(unit)
+function addon:GetUnitID(unit)
 	if unit and UnitExists(unit) then
-		local npcGUID = UnitGUID(unit)
-		return npcGUID and addon:ExtractIDFromGUID(npcGUID), npcGUID
+		local _, _, _, _, unitID = addon:ExtractFieldsFromUnitGUID(UnitGUID(unit))
+		return unitID
 	end
 end
 
