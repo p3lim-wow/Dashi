@@ -142,11 +142,3 @@ function addon:CreateColor(r, g, b, a)
 	color[3] = b
 	return color
 end
-
---[[ namespace:IsAddOnEnabled(addonName)
-Checks whether the addon exists and is enabled.
---]]
-function addon:IsAddOnEnabled(name)
-	local _, _, _, loadable = C_AddOns.GetAddOnInfo(name)
-	return not not loadable -- will be false if the addon is missing or disabled
-end

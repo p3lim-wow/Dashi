@@ -1,5 +1,14 @@
 local _, addon = ...
 
+--[[ namespace:IsAddOnEnabled(addonName)
+Checks whether the addon exists and is enabled.
+--]]
+function addon:IsAddOnEnabled(name)
+	local _, _, _, loadable = C_AddOns.GetAddOnInfo(name)
+	return not not loadable -- will be false if the addon is missing or disabled
+end
+
+
 local addonCallbacks = {}
 --[[ namespace:HookAddOn(_addonName_, _callback_)
 Registers a hook for when an addon with the name `addonName` loads with a `callback` function.
