@@ -372,7 +372,7 @@ Registers a canvas sub-category. This does not handle savedvariables.
 Canvas frame has a custom method `SetDefaultsHandler` which takes a callback as arg1.
 This callback is triggered when the "Defaults" button is clicked.
 --]]
-function addon:RegisterSubCanvas(name, callback)
+function addon:RegisterSubSettingsCanvas(name, callback)
 	addon:ArgCheck(name, 1, 'string')
 	addon:ArgCheck(callback, 2, 'function')
 	assert(not not self.settingsChildren, "can't register sub-settings without root settings")
