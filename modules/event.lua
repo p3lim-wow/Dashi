@@ -92,6 +92,21 @@ function eventMixin:UnregisterEvent(event, callback)
 	end
 end
 
+--[[ namespace.eventMixin:UnregisterAllEvents(_callback_)
+Unregisters all [frame events](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
+--]]
+function eventMixin:UnregisterAllEvents(callback)
+	assert(type(callback) == 'function', 'arg1 must be a function')
+
+	for event, cbs in next, callbacks do
+		for index, data in next, cbs do
+			if data.owner == self and data.callback == callback then
+				self:UnregisterEvent(event, callback)
+			end
+		end
+	end
+end
+
 --[[ namespace.eventMixin:IsEventRegistered(_event_, _callback_)
 Checks if the [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
 --]]
