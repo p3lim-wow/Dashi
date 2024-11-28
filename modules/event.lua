@@ -99,7 +99,7 @@ function eventMixin:UnregisterAllEvents(callback)
 	assert(type(callback) == 'function', 'arg1 must be a function')
 
 	for event, cbs in next, callbacks do
-		for index, data in next, cbs do
+		for _, data in next, cbs do
 			if data.owner == self and data.callback == callback then
 				self:UnregisterEvent(event, callback)
 			end

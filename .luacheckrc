@@ -53,7 +53,6 @@ read_globals = {
 	'UIParentLoadAddOn',
 	'nop',
 
-
 	-- FrameXML constants
 	'DEFAULT_CHAT_FRAME',
 
@@ -76,5 +75,6 @@ read_globals = {
 	'InCombatLockdown',
 	'UnitExists',
 	'UnitGUID',
+	'UnitName',
 	'debugstack',
 }
