@@ -55,6 +55,9 @@ read_globals = {
 
 	-- FrameXML constants
 	'DEFAULT_CHAT_FRAME',
+    'WOW_PROJECT_ID',
+    'WOW_PROJECT_MAINLINE',
+    'WOW_PROJECT_CLASSIC',
 
 	-- GlobalStrings
 	'HEADER_COLON',
