@@ -68,6 +68,7 @@ read_globals = {
 	'C_CVar',
 	'C_EventUtils',
 	'C_Map',
+	'C_TooltipInfo',
 	'C_UnitAuras',
 
 	-- API
