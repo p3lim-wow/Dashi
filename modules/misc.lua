@@ -51,6 +51,28 @@ function addon:GetUnitID(unit)
 	end
 end
 
+--[[ namespace:GetNPCName(_npcID_)
+Returns the name for the NPC by the given `npcID`.
+
+Warning: this depends on the cache, and might not yield results the first time.
+--]]
+do
+	local creatureNames = setmetatable({}, {
+		__index = function(self, npcID)
+			local data = C_TooltipInfo.GetHyperlink('unit:Creature-0-0-0-0-' .. npcID .. '-0')
+			local name = data and data.lines and data.lines[1] and data.lines[1].leftText
+			if name then
+				rawset(self, npcID, name)
+				return name
+			end
+		end
+	})
+
+	function addon:GetNPCName(npcID)
+		return creatureNames[npcID]
+	end
+end
+
 do
 	local ITEM_LINK_FORMAT = '|Hitem:%d|h'
 	--[[ namespace:GetItemLinkFromID(_itemID_)
