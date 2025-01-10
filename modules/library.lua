@@ -1,7 +1,7 @@
 local _, addon = ...
 
---[[ namespace:tsize(_table_)
-Returns the number of entries in the `table`.  
+--[[ namespace:tsize(_tbl_)
+Returns the number of entries in the table `tbl`.  
 Works for associative tables as opposed to `#table`.
 --]]
 function addon:tsize(tbl)
