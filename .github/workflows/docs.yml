@@ -9,29 +9,25 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
+      - name: Clone project
+        uses: actions/checkout@v4
+
       - name: Clone wiki
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}.wiki
-
-      - name: Clone project
-        uses: actions/checkout@v4
-        with:
-          path: addon
+          path: .wiki
 
       - name: Parse and generate docs
         uses: p3lim/lua-doc-parser@v2
-        working-directory: addon
         with:
-          output: ${{ github.workspace }}
-
-      - name: Setup Git
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email "<41898282+github-actions[bot]@users.noreply.github.com>"
+          output: .wiki
 
       - name: Commit and push docs
         run: |
-          git add *.md
+          cd .wiki
+          git config user.name 'github-actions[bot]'
+          git config user.email "<41898282+github-actions[bot]@users.noreply.github.com>"
+          git add .
           git diff --quiet HEAD || git commit -m '${{ github.sha }}'
           git push
