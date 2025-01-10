@@ -66,7 +66,7 @@ do
 	end
 
 	function tableMixin:contains(value)
-		for k, v in next, self do
+		for _, v in next, self do
 			if value == v then
 				return true
 			end
