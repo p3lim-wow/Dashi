@@ -30,7 +30,7 @@ Included are all meta methods from the `table` library, as well as a few extra h
 - `tbl:size()` returns the length of the table irregardless if it's indexed or associative
 - `tbl:contains(value)` returns `true` if the table contains the given `value`, otherwise `false`
 - `tbl:merge(t)` merges (and returns) the table with the supplied table `t`
-	- can also be used by using an addition arithmetic metamethod
+    - can also be used by using an addition arithmetic metamethod
 
 It's also possible to add extra meta methods by supplying mixins through the variable argument.
 
