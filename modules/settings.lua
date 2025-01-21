@@ -609,10 +609,10 @@ do
 	end
 
 	--[[ namespace:RegisterMapSettings(_savedvariable_, _settings_) ![](https://img.shields.io/badge/function-blue)
-	Registers a set of `settings` to inject into the world map tracking menu.
+	Registers a set of `settings` to inject into the world map tracking menu.  
 	The values will be stored by the `settings`' objects' `key` in `savedvariables`.
 
-	The `settings` object is identical to the one for [RegisterSetting](namespaceregistersettingssavedvariables-settings).  
+	The `settings` object is identical to the one for [namespace:RegisterSetting()](#namespaceregistersettingssavedvariables-settings-).
 	--]]
 	function addon:RegisterMapSettings(savedvariable, settings)
 		addon:ArgCheck(savedvariable, 1, 'string')

@@ -340,7 +340,7 @@ addon = setmetatable(addon, {
 	__newindex = function(t, key, value)
 		if key == 'OnLoad' then
 			--[[ namespace:OnLoad() ![](https://img.shields.io/badge/function-blue)
-			Shorthand for the [`ADDON_LOADED`](https://warcraft.wiki.gg/wiki/ADDON_LOADED) for the addon.
+			Shorthand for the [`ADDON_LOADED`](https://warcraft.wiki.gg/wiki/ADDON_LOADED) event for the addon.
 
 			Usage:
 			```lua
@@ -360,7 +360,7 @@ addon = setmetatable(addon, {
 			end)
 		elseif key == 'OnLogin' then
 			--[[ namespace:OnLogin() ![](https://img.shields.io/badge/function-blue)
-			Shorthand for the [`PLAYER_LOGIN`](https://warcraft.wiki.gg/wiki/PLAYER_LOGIN).
+			Shorthand for the [`PLAYER_LOGIN`](https://warcraft.wiki.gg/wiki/PLAYER_LOGIN) event.
 
 			Usage:
 			```lua

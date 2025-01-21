@@ -4,6 +4,9 @@ local _, addon = ...
 local localizations = {}
 local locale = GetLocale()
 
+--[[ namespace.L ![](https://img.shields.io/badge/object-teal)
+Metatable used specifically for managing localizations, see below for interactions.
+--]]
 --[[ namespace.L(_locale_) ![](https://img.shields.io/badge/function-blue)
 Returns a localization object specific to the given `locale`.
 

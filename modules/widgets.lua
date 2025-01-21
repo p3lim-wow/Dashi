@@ -180,7 +180,7 @@ do -- scrollbox
 	end
 
 	--[[ namespace:CreateScrollList(_parent_) ![](https://img.shields.io/badge/function-blue)
-	Creates and returns a scroll box with scroll bar and a data provider in a list representation.
+	Creates and returns a scroll box with scroll bar and a data provider in a list representation.  
 	It gets automatically sized to fill the space of the parent.
 
 	It provides the following methods, and is initialized whenever data is provided, so do that last.
