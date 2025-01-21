@@ -116,12 +116,9 @@ do
 		return token
 	end
 
-	--[[ namespace:GetUnitAura(_unit_, _spellID_, _filter_) ![](https://img.shields.io/badge/function-blue)
-	Returns the aura by `spellID` on the [`unit`](https://warcraft.wiki.gg/wiki/UnitId), if it exists.
-
-	* [`unitID`](https://warcraft.wiki.gg/wiki/UnitId)
-	* `spellID` - spell ID to check for
-	* `filter` - aura filter, see [UnitAura](https://warcraft.wiki.gg/wiki/API_C_UnitAuras.GetAuraDataByIndex#Filters)
+	--[[ namespace:GetUnitAura(_unitID_, _spellID_[, _filter_]) ![](https://img.shields.io/badge/function-blue)
+	Returns the aura by `spellID` on the [`unitID`](https://warcraft.wiki.gg/wiki/UnitId), if it exists.  
+	See [UnitAura](https://warcraft.wiki.gg/wiki/API_C_UnitAuras.GetAuraDataByIndex#Filters) for the `filter` arg.
 	--]]
 	function addon:GetUnitAura(unit, spellID, filter)
 		local token, data
