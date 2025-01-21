@@ -4,7 +4,16 @@ local _, addon = ...
 local localizations = {}
 local locale = GetLocale()
 
---[[ namespace.L(_locale_)[`string`] ![](https://img.shields.io/badge/function-blue)
+--[[ namespace.L(_locale_) ![](https://img.shields.io/badge/function-blue)
+Returns a localization object specific to the given `locale`.
+
+Usage:
+```lua
+local L = namespace.L('frFR')
+-- see methods below
+```
+--]]
+--[[ namespace.L(_locale_)[`string`] ![](https://img.shields.io/badge/object-teal)
 Sets a localization `string` for the given `locale`.
 
 Usage:
