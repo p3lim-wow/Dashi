@@ -22,7 +22,7 @@ function addon:startswith(str, contents)
 	return str:sub(1, contents:len()) == contents
 end
 
---[[ namespace:T(_tbl_[, _..._]) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:T(_tbl_[, _mixin_, ...]) ![](https://img.shields.io/badge/function-blue)
 Returns the table _`tbl`_ with meta methods.
 
 Included are all meta methods from the `table` library, as well as a few extra handy methods:
