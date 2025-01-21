@@ -1,6 +1,6 @@
 local _, addon = ...
 
---[[ namespace:tsize(_tbl_)
+--[[ namespace:tsize(_tbl_) ![](https://img.shields.io/badge/function-blue)
 Returns the number of entries in the table `tbl`.  
 Works for associative tables as opposed to `#table`.
 --]]
@@ -15,14 +15,14 @@ function addon:tsize(tbl)
 	return size
 end
 
---[[ namespace:startswith(_str_, _contents_)
+--[[ namespace:startswith(_str_, _contents_) ![](https://img.shields.io/badge/function-blue)
 Checks if the first string starts with the 2nd string.
 --]]
 function addon:startswith(str, contents)
 	return str:sub(1, contents:len()) == contents
 end
 
---[[ namespace:T(_tbl_[, _..._])
+--[[ namespace:T(_tbl_[, _..._]) ![](https://img.shields.io/badge/function-blue)
 Returns the table _`tbl`_ with meta methods.
 
 Included are all meta methods from the `table` library, as well as a few extra handy methods:

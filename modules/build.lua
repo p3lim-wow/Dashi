@@ -1,20 +1,20 @@
 local _, addon = ...
 
---[[ namespace:IsRetail()
+--[[ namespace:IsRetail() ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running the "retail" version.
 --]]
 function addon:IsRetail()
 	return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
 
---[[ namespace:IsClassicEra()
+--[[ namespace:IsClassicEra() ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running the "classic era" version (e.g. vanilla).
 --]]
 function addon:IsClassicEra()
 	return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 end
 
---[[ namespace:IsClassic()
+--[[ namespace:IsClassic() ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running the "classic" version.
 --]]
 function addon:IsClassic()
@@ -24,7 +24,7 @@ function addon:IsClassic()
 end
 
 local _, buildVersion, _, interfaceVersion = GetBuildInfo()
---[[ namespace:HasBuild(_buildNumber_[, _interfaceVersion_])
+--[[ namespace:HasBuild(_buildNumber_[, _interfaceVersion_]) ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running a build equal to or newer than the specified.  
 Optionally also check against the interface version.
 --]]

@@ -273,7 +273,7 @@ local function registerSettings(savedvariable, settings)
 	end
 end
 
---[[ namespace:RegisterSettings(_savedvariables_, _settings_)
+--[[ namespace:RegisterSettings(_savedvariables_, _settings_) ![](https://img.shields.io/badge/function-blue)
 Registers a set of `settings` with the interface options panel.  
 The values will be stored by the `settings`' objects' `key` in `savedvariables`.
 
@@ -347,7 +347,7 @@ function addon:RegisterSettings(savedvariable, settings)
 	end
 end
 
---[[ namespace:RegisterSubSettings(_name_, _settings_)
+--[[ namespace:RegisterSubSettings(_name_, _settings_) ![](https://img.shields.io/badge/function-blue)
 Registers a set of `settings` as a sub-category. `name` must be unique.  
 The savedvariables will be stored under the main savedvariables in a table entry named after `name`.
 
@@ -364,7 +364,7 @@ function addon:RegisterSubSettings(name, settings)
 	}
 end
 
---[[ namespace:RegisterSubSettingsCanvas(_name_, _callback_)
+--[[ namespace:RegisterSubSettingsCanvas(_name_, _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers a canvas sub-category. This does not handle savedvariables.
 
 `name` must be unique, and `callback` is called with a canvas `frame` as payload.
@@ -383,7 +383,7 @@ function addon:RegisterSubSettingsCanvas(name, callback)
 	}
 end
 
---[[ namespace:RegisterSettingsSlash(_..._)
+--[[ namespace:RegisterSettingsSlash(_..._) ![](https://img.shields.io/badge/function-blue)
 Wrapper for `namespace:RegisterSlash(...)`, except the callback is provided and will open the settings panel for this addon.
 --]]
 function addon:RegisterSettingsSlash(...)
@@ -406,7 +406,7 @@ function addon:RegisterSettingsSlash(...)
 	addon:RegisterSlash(unpack(data))
 end
 
---[[ namespace:GetOption(_key_)
+--[[ namespace:GetOption(_key_) ![](https://img.shields.io/badge/function-blue)
 Returns the value for the given option `key`.
 --]]
 function addon:GetOption(key)
@@ -416,7 +416,7 @@ function addon:GetOption(key)
 	return _G[self.registeredVariables][key]
 end
 
---[[ namespace:SetOption(_key_, _value_)
+--[[ namespace:SetOption(_key_, _value_) ![](https://img.shields.io/badge/function-blue)
 Sets a new `value` to the given options `key`.
 --]]
 function addon:SetOption(key, value)
@@ -428,14 +428,14 @@ function addon:SetOption(key, value)
 	addon:TriggerOptionCallback(key, value)
 end
 
---[[ namespace:AreOptionsLoaded()
+--[[ namespace:AreOptionsLoaded() ![](https://img.shields.io/badge/function-blue)
 Checks to see if the savedvariables has been loaded in the game.
 --]]
 function addon:AreOptionsLoaded()
 	return (not not self.registeredVariables) and (not not _G[self.registeredVariables])
 end
 
---[[ namespace:RegisterOptionCallback(_key_, _callback_)
+--[[ namespace:RegisterOptionCallback(_key_, _callback_) ![](https://img.shields.io/badge/function-blue)
 Register a `callback` function with the option `key`.
 --]]
 function addon:RegisterOptionCallback(key, callback)
@@ -453,7 +453,7 @@ function addon:RegisterOptionCallback(key, callback)
 	table.insert(self.settingsCallbacks[key], callback)
 end
 
---[[ namespace:TriggerOptionCallbacks(_key_, _value_)
+--[[ namespace:TriggerOptionCallbacks(_key_, _value_) ![](https://img.shields.io/badge/function-blue)
 Trigger all registered option callbacks for the given `key`, supplying the `value`.
 --]]
 function addon:TriggerOptionCallback(key, value)
@@ -608,7 +608,7 @@ do
 		end)
 	end
 
-	--[[ namespace:RegisterMapSettings(_savedvariable_, _settings_)
+	--[[ namespace:RegisterMapSettings(_savedvariable_, _settings_) ![](https://img.shields.io/badge/function-blue)
 	Registers a set of `settings` to inject into the world map tracking menu.
 	The values will be stored by the `settings`' objects' `key` in `savedvariables`.
 

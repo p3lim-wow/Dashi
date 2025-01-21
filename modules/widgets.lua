@@ -1,6 +1,6 @@
 local _, addon = ...
 
---[[ namespace:CreateFrame(_..._)
+--[[ namespace:CreateFrame(_..._) ![](https://img.shields.io/badge/function-blue)
 A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API_CreateFrame), mixed in with `namespace.eventMixin`.
 --]]
 function addon:CreateFrame(...)
@@ -23,7 +23,7 @@ local function onCVarUpdate(self, cvar)
 	end
 end
 
---[[ namespace:CreateButton(...)
+--[[ namespace:CreateButton(...) ![](https://img.shields.io/badge/function-blue)
 A wrapper for `namespace:CreateFrame(...)`, but will handle key direction preferences of the client.  
 Use this specifically to create clickable buttons.
 --]]
@@ -179,7 +179,7 @@ do -- scrollbox
 		return Mixin(box, scrollMixin)
 	end
 
-	--[[ namespace:CreateScrollList(_parent_)
+	--[[ namespace:CreateScrollList(_parent_) ![](https://img.shields.io/badge/function-blue)
 	Creates and returns a scroll box with scroll bar and a data provider in a list representation.
 	It gets automatically sized to fill the space of the parent.
 
@@ -204,7 +204,7 @@ do -- scrollbox
 		return createScrollWidget(parent, 'list')
 	end
 
-	--[[ namespace:CreateScrollGrid(_parent_)
+	--[[ namespace:CreateScrollGrid(_parent_) ![](https://img.shields.io/badge/function-blue)
 	Creates and returns a scroll box with scroll bar and a data provider in a grid representation.  
 	It gets automatically sized to fill the space of the parent.
 

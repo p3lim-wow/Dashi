@@ -1,6 +1,6 @@
 local _, addon = ...
 
---[[ namespace:IsAddOnEnabled(addonName)
+--[[ namespace:IsAddOnEnabled(addonName) ![](https://img.shields.io/badge/function-blue)
 Checks whether the addon exists and is enabled.
 --]]
 function addon:IsAddOnEnabled(name)
@@ -9,7 +9,7 @@ end
 
 
 local addonCallbacks = {}
---[[ namespace:HookAddOn(_addonName_, _callback_)
+--[[ namespace:HookAddOn(_addonName_, _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers a hook for when an addon with the name `addonName` loads with a `callback` function.
 --]]
 function addon:HookAddOn(addonName, callback)
