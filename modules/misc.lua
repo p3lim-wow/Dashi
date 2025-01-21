@@ -9,7 +9,7 @@ local _, namespace = ...
 --]]
 
 --[[ namespace:ArgCheck(arg, argIndex, type[, type...]) ![](https://img.shields.io/badge/function-blue)
-Checks if the argument `arg` at position `argIndex` is of type(s).
+Checks if the argument `arg` at position `argIndex` is of `type`(s).
 --]]
 function addon:ArgCheck(arg, argIndex, ...)
 	assert(type(argIndex) == 'number', 'Bad argument #2 to \'ArgCheck\' (number expected, got ' .. type(argIndex) .. ')')
