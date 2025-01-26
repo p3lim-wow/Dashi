@@ -146,13 +146,15 @@ local function registerSetting(category, savedvariable, info)
 	addon:ArgCheck(info.key, 3, 'string')
 	addon:ArgCheck(info.title, 3, 'string')
 	addon:ArgCheck(info.type, 3, 'string')
+	addon:ArgCheck(info.requires, 3, 'string', 'nil')
 	assert(info.default ~= nil, "default must be set")
 
 	local uniqueKey = savedvariable .. '_' .. info.key
 	local setting = Settings.RegisterAddOnSetting(category, uniqueKey, info.key, _G[savedvariable], type(info.default), info.title, info.default)
 
+	local initializer
 	if info.type == 'toggle' then
-		Settings.CreateCheckbox(category, setting, info.tooltip)
+		initializer = Settings.CreateCheckbox(category, setting, info.tooltip)
 	elseif info.type == 'slider' then
 		addon:ArgCheck(info.minValue, 3, 'number')
 		addon:ArgCheck(info.maxValue, 3, 'number')
@@ -165,7 +167,7 @@ local function registerSetting(category, savedvariable, info)
 			options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, info.valueFormat)
 		end
 
-		Settings.CreateSlider(category, setting, options, info.tooltip)
+		initializer = Settings.CreateSlider(category, setting, options, info.tooltip)
 	elseif info.type == 'menu' then
 		addon:ArgCheck(info.options, 3, 'table')
 		local options = function()
@@ -175,9 +177,10 @@ local function registerSetting(category, savedvariable, info)
 			end
 			return container:GetData()
 		end
-		Settings.CreateDropdown(category, setting, options, info.tooltip)
+
+		initializer = Settings.CreateDropdown(category, setting, options, info.tooltip)
 	elseif info.type == 'color' or info.type == 'colorpicker' then -- TODO: remove in 12.x, compat
-		createColorPicker(category, setting, nil, info.tooltip)
+		initializer = createColorPicker(category, setting, nil, info.tooltip)
 	else
 		error('type is invalid') -- TODO: make this prettier
 		return
@@ -225,6 +228,12 @@ local function registerSetting(category, savedvariable, info)
 
 	-- trigger load callback
 	addon:TriggerOptionCallback(info.key, setting:GetValue())
+
+	return initializer
+end
+
+local function isSettingEnabled(parentInitializer)
+	return not not parentInitializer:GetSetting():GetValue()
 end
 
 local function registerSettings(savedvariable, settings)
@@ -239,12 +248,32 @@ local function registerSettings(savedvariable, settings)
 		firstInstall = true
 	end
 
-	for _, setting in next, settings do
+	local keys = {}
+	local initializers = {}
+	local dependents = addon.T{}
+	for index, setting in next, settings do
 		if firstInstall then
 			setting.firstInstall = true
 		end
 
-		registerSetting(category, savedvariable, setting)
+		local initializer = registerSetting(category, savedvariable, setting)
+		keys[setting.key] = index
+		initializers[setting.key] = initializer
+
+		if setting.requires then
+			dependents[setting.key] = setting.requires
+		end
+	end
+
+	if dependents:size() > 0 then
+		for key, requires in next, dependents do
+			-- check if there are bad dependencies
+			assert(not not keys[requires], string.format("setting '%s' can't depend on invalid setting '%s'", key, requires))
+			assert(settings[keys[requires]].type == 'toggle', string.format("setting '%s' can't depend on a non-toggle setting", key))
+
+			-- depend on "parent" setting
+			initializers[key]:SetParentInitializer(initializers[requires], GenerateClosure(isSettingEnabled, initializers[requires]))
+		end
 	end
 
 	-- sub-categories
@@ -298,6 +327,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         maxValue = 1.0,
         valueStep = 0.01,
         valueFormat = formatter, -- callback function or a string for string.format
+        requires = 'myToggle', -- optional dependency on another setting (must be a "toggle")
     },
     {
         key = 'myMenu',
@@ -310,6 +340,7 @@ namespace:RegisterSettings('MyAddOnDB', {
             {value = key2, label = 'Second option'},
             {value = key3, label = 'Third option'},
         },
+        requires = 'myToggle', -- optional dependency on another setting (must be a "toggle")
     },
     {
         key = 'myColor',
@@ -317,6 +348,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         title = 'My Color',
         tooltip = 'Longer description of the color in a tooltip',
         default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format
+        requires = 'myToggle', -- optional dependency on another setting (must be of type "toggle")
     }
 })
 ```
