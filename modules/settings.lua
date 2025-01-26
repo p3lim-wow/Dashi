@@ -325,9 +325,9 @@ namespace:RegisterSettings('MyAddOnDB', {
         default = 0.5,
         minValue = 0.1,
         maxValue = 1.0,
-        valueStep = 0.01,
+        valueStep = 0.01, -- (optional) step value, defaults to 1
         valueFormat = formatter, -- callback function or a string for string.format
-        requires = 'myToggle', -- optional dependency on another setting (must be a "toggle")
+        requires = 'myToggle', -- (optional) dependency on another setting (must be a "toggle")
     },
     {
         key = 'myMenu',
@@ -340,15 +340,15 @@ namespace:RegisterSettings('MyAddOnDB', {
             {value = key2, label = 'Second option'},
             {value = key3, label = 'Third option'},
         },
-        requires = 'myToggle', -- optional dependency on another setting (must be a "toggle")
+        requires = 'myToggle', -- (optional) dependency on another setting (must be a "toggle")
     },
     {
         key = 'myColor',
         type = 'color',
         title = 'My Color',
         tooltip = 'Longer description of the color in a tooltip',
-        default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format
-        requires = 'myToggle', -- optional dependency on another setting (must be of type "toggle")
+        default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format, the latter enables opacity
+        requires = 'myToggle', -- (optional) dependency on another setting (must be of type "toggle")
     }
 })
 ```
