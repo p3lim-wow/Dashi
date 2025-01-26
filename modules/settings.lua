@@ -134,6 +134,7 @@ local createColorPicker; do -- I wish Settings.CreateColorPicker was a thing
 		init.InitFrame = initFrame
 		init:AddSearchTags(setting:GetName())
 		SettingsPanel:GetLayout(category):AddInitializer(init)
+		return init
 	end
 end
 
