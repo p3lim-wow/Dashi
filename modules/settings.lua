@@ -8,8 +8,7 @@ end
 -- 	setting:SetValue(value, true)
 -- end
 
-local createCanvas
-do
+local createCanvas; do
 	local canvasMixin = {}
 	function canvasMixin:SetDefaultsHandler(callback)
 		local button = self:GetParent().Header.DefaultsButton
@@ -54,8 +53,7 @@ do
 	end
 end
 
-local createColorPicker -- I wish Settings.CreateColorPicker was a thing
-do
+local createColorPicker; do -- I wish Settings.CreateColorPicker was a thing
 	local colorPickerMixin = {}
 	function colorPickerMixin:OnSettingValueChanged(setting, value)
 		local r, g, b, a = addon:CreateColor(value):GetRGBA()
