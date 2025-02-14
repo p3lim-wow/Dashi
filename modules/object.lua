@@ -1,6 +1,6 @@
 local _, addon = ...
 
--- easy frame "removal"
+-- hidden dummy frame we anchor stuff we want to hide to
 local hidden = CreateFrame('Frame')
 hidden:Hide()
 
