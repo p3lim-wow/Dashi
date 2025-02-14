@@ -22,12 +22,12 @@ function addon:startswith(str, contents)
 	return str:sub(1, contents:len()) == contents
 end
 
---[[ namespace:T(_tbl_[, _mixin_, ...]) ![](https://img.shields.io/badge/function-blue)
-Returns the table _`tbl`_ with meta methods.
+--[[ namespace:T([_tbl_[, _mixin_, ...] ]) ![](https://img.shields.io/badge/function-blue)
+Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new empty table is used.
 
 Included are all meta methods from the `table` library, as well as a few extra handy methods:
 
-- `tbl:size()` returns the length of the table irregardless if it's indexed or associative
+- `tbl:size()` returns the number of entries in the table
 - `tbl:contains(value)` returns `true` if the table contains the given `value`, otherwise `false`
 - `tbl:merge(t)` merges (and returns) the table with the supplied table `t`
     - can also be used by using an addition arithmetic metamethod
@@ -47,21 +47,20 @@ t + {'five', 'six'} --> {'one', 'two', 'three', 'five', 'six'}
 do
 	local tableMixin = {}
 	function tableMixin:size()
-		local n = 0
-		for _ in next, self do
-			n = n + 1
-		end
-		return n
+		return addon:tsize(self)
 	end
 
-	function tableMixin:merge(t)
-		for k, v in next, t do
+	function tableMixin:merge(tbl)
+		addon:ArgCheck(tbl, 1, 'table')
+
+		for k, v in next, tbl do
 			if type(self[k] or false) == 'table' then
-				tableMixin.merge(self[k], t[k])
+				tableMixin.merge(self[k], tbl[k])
 			else
 				self[k] = v
 			end
 		end
+
 		return self
 	end
 
@@ -71,10 +70,13 @@ do
 				return true
 			end
 		end
+
 		return false
 	end
 
 	function addon:T(tbl, ...)
+		addon:ArgCheck(tbl, 1, 'table', 'nil')
+
 		return setmetatable(tbl or {}, {
 			__index = Mixin(table, tableMixin, ...),
 			__add = tableMixin.merge,
