@@ -24,8 +24,10 @@ globals = {
 }
 
 read_globals = {
+	-- library
 	table = {fields = {'wipe'}},
 	string = {fields = {'join'}},
+	'strlenutf8',
 
 	-- FrameXML objects
 	'ColorPickerFrame',
