@@ -236,6 +236,10 @@ local function isSettingEnabled(parentInitializer)
 	return not not parentInitializer:GetSetting():GetValue()
 end
 
+local function alwaysEnabled()
+	return true
+end
+
 local function registerSettings(savedvariable, settings)
 	local categoryName = C_AddOns.GetAddOnMetadata(addonName, 'Title')
 	local category = Settings.RegisterVerticalLayoutCategory(categoryName)
@@ -251,6 +255,7 @@ local function registerSettings(savedvariable, settings)
 	local keys = {}
 	local initializers = {}
 	local dependents = addon.T{}
+	local children = addon.T{}
 	for index, setting in next, settings do
 		if firstInstall then
 			setting.firstInstall = true
@@ -262,6 +267,8 @@ local function registerSettings(savedvariable, settings)
 
 		if setting.requires then
 			dependents[setting.key] = setting.requires
+		elseif setting.parent then
+			children[setting.key] = setting.parent
 		end
 	end
 
@@ -273,6 +280,16 @@ local function registerSettings(savedvariable, settings)
 
 			-- depend on "parent" setting
 			initializers[key]:SetParentInitializer(initializers[requires], GenerateClosure(isSettingEnabled, initializers[requires]))
+		end
+	end
+
+	if children:size() > 0 then
+		for key, parent in next, children do
+			-- check if there are bad dependencies
+			assert(not not keys[parent], string.format("setting '%s' can't depend on invalid setting '%s'", key, parent))
+
+			-- set "parent" setting
+			initializers[key]:SetParentInitializer(initializers[parent], alwaysEnabled)
 		end
 	end
 
@@ -340,7 +357,7 @@ namespace:RegisterSettings('MyAddOnDB', {
             {value = key2, label = 'Second option'},
             {value = key3, label = 'Third option'},
         },
-        requires = 'myToggle', -- (optional) dependency on another setting (must be a "toggle")
+        parent = 'mySlider', -- (optional) set another setting as its parent (indents this setting)
     },
     {
         key = 'myColor',
@@ -348,7 +365,6 @@ namespace:RegisterSettings('MyAddOnDB', {
         title = 'My Color',
         tooltip = 'Longer description of the color in a tooltip',
         default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format, the latter enables opacity
-        requires = 'myToggle', -- (optional) dependency on another setting (must be of type "toggle")
     }
 })
 ```
