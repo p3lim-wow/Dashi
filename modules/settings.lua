@@ -525,9 +525,7 @@ do
 
 	local function createSlider(root, name, getter, setter, minValue, maxValue, steps, formatter)
 		local element = root:CreateButton(name):CreateFrame()
-		if addon:HasBuild(57361, 110007) then
-			element:AddResetter(resetSlider)
-		end
+		element:AddResetter(resetSlider)
 		element:AddInitializer(function(frame)
 			local slider = frame:AttachTemplate('MinimalSliderWithSteppersTemplate')
 			slider:SetPoint('TOPLEFT', 0, -1)
@@ -537,16 +535,6 @@ do
 				[MinimalSliderWithSteppersMixin.Label.Right] = formatter
 			})
 			frame.slider = slider -- ref for resetter
-
-			if not addon:HasBuild(57361, 110007) then
-				-- there's no way to properly reset an element from the menu, so we'll need to use
-				-- a dummy element we can hook OnHide onto
-				-- https://github.com/Stanzilla/WoWUIBugs/issues/652
-				local dummy = frame:AttachFrame('Frame')
-				dummy:SetScript('OnHide', function()
-					resetSlider(frame)
-				end)
-			end
 
 			local pad = 30 -- for the label
 			return slider:GetWidth() + pad, slider:GetHeight()
