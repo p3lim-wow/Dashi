@@ -28,7 +28,7 @@ end
 do
 	-- UnitType-0-ServerID-InstanceID-ZoneUID-ID-SpawnUID
 	local GUID_PATTERN = '(%w+)%-0%-(%d+)%-(%d+)%-(%d+)%-(%d+)%-(.+)'
-	--[[ namespace:ExtractFieldsFromUnitGUID(_guid_)
+	--[[ namespace:ExtractFieldsFromUnitGUID(_guid_) ![](https://img.shields.io/badge/function-blue)
 	Returns the individual fields from the given [`guid`](https://warcraft.wiki.gg/wiki/GUID), typecast to their correct types.
 	--]]
 	function addon:ExtractFieldsFromUnitGUID(guid)
@@ -54,7 +54,7 @@ end
 --[[ namespace:GetNPCName(_npcID_) ![](https://img.shields.io/badge/function-blue)
 Returns the name for the NPC by the given `npcID`.
 
-Warning: this depends on the cache, and might not yield results the first time.
+* Warning: this depends on the cache, and might not yield results the first time.
 --]]
 do
 	local creatureNames = setmetatable({}, {
@@ -85,7 +85,7 @@ do
 end
 
 --[[ namespace:GetPlayerMapID() ![](https://img.shields.io/badge/function-blue)
-Returns the ID of the current map the zone the player is located in.
+Returns the ID of the current map/zone the player is located in.
 --]]
 function addon:GetPlayerMapID()
 	-- TODO: maybe use HBD data if it's available

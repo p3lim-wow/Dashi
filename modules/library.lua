@@ -85,7 +85,7 @@ do
 end
 
 --[[ namespace:sub(_string_, start[, stop])
-A UTF-8 aware [`string.sub`](https://warcraft.wiki.gg/wiki/API_strsub).
+UTF-8 aware [`string.sub`](https://warcraft.wiki.gg/wiki/API_strsub).
 --]]
 do
 	-- cherry-picked from Phanx's implementation back in 2007, I'm sure
