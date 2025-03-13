@@ -24,6 +24,13 @@ function addon:IsClassic()
 end
 
 local _, buildVersion, _, interfaceVersion = GetBuildInfo()
+--[[ namespace:HasVersion(_interfaceVersion_) ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is running an interface version equal to or newer than the specified.
+--]]
+function addon:HasVersion(interface)
+	return interfaceVersion >= interface
+end
+
 --[[ namespace:HasBuild(_buildNumber_[, _interfaceVersion_]) ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running a build equal to or newer than the specified.  
 Optionally also check against the interface version.
