@@ -46,8 +46,9 @@ Returns the integer `id` of the given [`unit`](https://warcraft.wiki.gg/wiki/Uni
 --]]
 function addon:GetUnitID(unit)
 	if unit and UnitExists(unit) then
-		local _, _, _, _, unitID = addon:ExtractFieldsFromUnitGUID(UnitGUID(unit))
-		return unitID
+		local unitGUID = UnitGUID(unit)
+		local _, _, _, _, unitID = addon:ExtractFieldsFromUnitGUID(unitGUID)
+		return unitID, unitGUID
 	end
 end
 
