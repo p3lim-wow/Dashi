@@ -158,6 +158,9 @@ do -- scrollbox
 	function scrollMixin:SetElementOnUpdate(callback)
 		self._onUpdate = callback
 	end
+	function scrollMixin:SetElementOnReset(callback)
+		self._onReset = callback
+	end
 	function scrollMixin:AddData(...)
 		initialize(self)
 		self._provider:Insert(...)
