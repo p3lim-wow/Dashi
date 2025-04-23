@@ -12,4 +12,5 @@
 	<Script file='modules/settings.lua'/>
 	<Script file='modules/library.lua'/>
 	<Script file='modules/object.lua'/>
+	<Script file='modules/pin.lua'/>
 </Ui>
