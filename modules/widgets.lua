@@ -104,6 +104,17 @@ do -- scrollbox
 			end
 		end)
 
+		if scroll._onReset then
+			scroll:HookScript('OnHide', function()
+				for _, element in next, view:GetFrames() do
+					local successful, err = pcall(scroll._onReset, element)
+					if not successful then
+						error(err)
+					end
+				end
+			end)
+		end
+
 		ScrollUtil.InitScrollBoxListWithScrollBar(scroll, scroll.bar, view)
 		ScrollUtil.AddManagedScrollBarVisibilityBehavior(scroll, scroll.bar) -- auto-hide the scroll bar
 
