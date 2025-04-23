@@ -186,38 +186,38 @@ local function registerSetting(category, savedvariable, info)
 		return
 	end
 
-	if info.firstInstall then
-		-- we don't want to add "new" tags to a freshly installed addon
-		_G[savedvariable][info.key .. '_seen'] = true
-	elseif not _G[savedvariable][info.key .. '_seen'] then
-		-- add new tag to the settings panel until it's been observed by the player
-		-- possibly tainty, definitely  ugly
-		local version = GetBuildInfo()
-		if not NewSettings[version] then
-			NewSettings[version] = {}
-		end
+	-- if info.firstInstall then
+	-- 	-- we don't want to add "new" tags to a freshly installed addon
+	-- 	_G[savedvariable][info.key .. '_seen'] = true
+	-- elseif not _G[savedvariable][info.key .. '_seen'] then
+	-- 	-- add new tag to the settings panel until it's been observed by the player
+	-- 	-- possibly tainty, definitely  ugly
+	-- 	local version = GetBuildInfo()
+	-- 	if not NewSettings[version] then
+	-- 		NewSettings[version] = {}
+	-- 	end
 
-		table.insert(NewSettings[version], uniqueKey)
+	-- 	table.insert(NewSettings[version], uniqueKey)
 
-		-- remove once seen
-		EventRegistry:RegisterCallback('Settings.CategoryChanged', function(_, cat)
-			if cat == category and not _G[savedvariable][info.key .. '_seen'] then
-				_G[savedvariable][info.key .. '_seen'] = true
+	-- 	-- remove once seen
+	-- 	EventRegistry:RegisterCallback('Settings.CategoryChanged', function(_, cat)
+	-- 		if cat == category and not _G[savedvariable][info.key .. '_seen'] then
+	-- 			_G[savedvariable][info.key .. '_seen'] = true
 
-				local settingIndex
-				for index, key in next, NewSettings[version] do
-					if key == uniqueKey then
-						settingIndex = index
-						break
-					end
-				end
+	-- 			local settingIndex
+	-- 			for index, key in next, NewSettings[version] do
+	-- 				if key == uniqueKey then
+	-- 					settingIndex = index
+	-- 					break
+	-- 				end
+	-- 			end
 
-				if settingIndex then
-					table.remove(NewSettings[version], settingIndex)
-				end
-			end
-		end)
-	end
+	-- 			if settingIndex then
+	-- 				table.remove(NewSettings[version], settingIndex)
+	-- 			end
+	-- 		end
+	-- 	end)
+	-- end
 
 	-- callback when settings change something
 	setting:SetValueChangedCallback(onSettingChanged)
@@ -245,11 +245,11 @@ local function registerSettings(savedvariable, settings)
 	local category = Settings.RegisterVerticalLayoutCategory(categoryName)
 	Settings.RegisterAddOnCategory(category)
 
-	local firstInstall
+	-- local firstInstall
 	if not _G[savedvariable] then
 		-- for some dumb reason RegisterAddOnSetting doesn't initialize the savedvariables table
 		_G[savedvariable] = {}
-		firstInstall = true
+		-- firstInstall = true
 	end
 
 	local keys = {}
@@ -257,9 +257,9 @@ local function registerSettings(savedvariable, settings)
 	local dependents = addon.T{}
 	local children = addon.T{}
 	for index, setting in next, settings do
-		if firstInstall then
-			setting.firstInstall = true
-		end
+		-- if firstInstall then
+		-- 	setting.firstInstall = true
+		-- end
 
 		local initializer = registerSetting(category, savedvariable, setting)
 		keys[setting.key] = index
