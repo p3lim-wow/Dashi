@@ -13,7 +13,7 @@ do
 		-- https://github.com/Stanzilla/WoWUIBugs/issues/453
 	end
 
-	function mixin:CheckMouseButtonPassthrough(button)
+	function mixin:CheckMouseButtonPassthrough()
 		-- don't let MapCanvas mess with protected methods willy-nilly
 	end
 
@@ -138,7 +138,7 @@ do
 		provider:SetPinTemplate(pinTemplate)
 
 		if WorldMapFrame.pinPools[pinTemplate] then
-			-- TODO: error: pinTemplate must be unique
+			error('pinTemplate must be unique')
 		end
 		WorldMapFrame.pinPools[pinTemplate] = pinPool
 		WorldMapFrame:AddDataProvider(provider)

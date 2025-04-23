@@ -19,8 +19,9 @@ ignore = {
 
 globals = {
 	-- FrameXML objects we mutate
+	-- 'NewSettings',
 	'SlashCmdList',
-	'NewSettings',
+	'WorldMapFrame',
 }
 
 read_globals = {
@@ -32,6 +33,8 @@ read_globals = {
 	-- FrameXML objects
 	'ColorPickerFrame',
 	'EventRegistry',
+	'MapCanvasDataProviderMixin',
+	'MapCanvasPinMixin',
 	'Menu',
 	'MinimalSliderWithSteppersMixin',
 	'ScrollUtil',
@@ -45,6 +48,7 @@ read_globals = {
 	'CreateFromMixins',
 	'CreateScrollBoxListGridView',
 	'CreateScrollBoxListLinearView',
+	'CreateUnsecuredRegionPoolInstance',
 	'DevTools_Dump',
 	'DisplayTableInspectorWindow',
 	'GameTooltip_Hide',
