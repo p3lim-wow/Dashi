@@ -17,6 +17,10 @@ do
 		-- don't let MapCanvas mess with protected methods willy-nilly
 	end
 
+	function mixin:SetPropagateMouseClicks()
+		-- don't let MapCanvas mess with protected methods willy-nilly
+	end
+
 	--[[ namespace:CreateMapPinTemplate(_name_[, _pinMixin_]) ![](https://img.shields.io/badge/function-blue)
 	Creates and returns a world map pin template and pool with safe passthrough button support.  
 	The `pinMixin` inherits `MapCanvasPinMixin`.
