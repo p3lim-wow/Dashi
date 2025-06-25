@@ -92,16 +92,24 @@ function eventMixin:UnregisterEvent(event, callback)
 	end
 end
 
---[[ namespace.eventMixin:UnregisterAllEvents(_callback_) ![](https://img.shields.io/badge/function-blue)
-Unregisters all [frame events](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
+--[[ namespace.eventMixin:UnregisterAllEvents([_callback_]) ![](https://img.shields.io/badge/function-blue)
+Unregisters all [frame events](https://warcraft.wiki.gg/wiki/Events), or specifically from the `callback` function.
 --]]
 function eventMixin:UnregisterAllEvents(callback)
-	assert(type(callback) == 'function', 'arg1 must be a function')
+	if callback then
+		assert(type(callback) == 'function', 'arg1 must be a function')
+	end
 
 	for event, cbs in next, callbacks do
 		for _, data in next, cbs do
-			if data.owner == self and data.callback == callback then
-				self:UnregisterEvent(event, callback)
+			if data.owner == self then
+				if callback then
+					if data.callback == callback then
+						self:UnregisterEvent(event, data.callback)
+					end
+				else
+					self:UnregisterEvent(event, data.callback)
+				end
 			end
 		end
 	end
