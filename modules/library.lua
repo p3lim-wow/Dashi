@@ -74,11 +74,21 @@ do
 		return false
 	end
 
+	local function newIndex(self, key, value)
+		-- turn child tables into this metatable too
+		if type(value) == 'table' and not getmetatable(value) then
+			rawset(self, key, addon:T(value))
+		else
+			rawset(self, key, value)
+		end
+	end
+
 	function addon:T(tbl, ...)
 		addon:ArgCheck(tbl, 1, 'table', 'nil')
 
 		return setmetatable(tbl or {}, {
 			__index = Mixin(table, tableMixin, ...),
+			__newindex = newIndex,
 			__add = tableMixin.merge,
 		})
 	end
