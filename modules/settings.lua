@@ -530,9 +530,10 @@ do
 	end
 
 	local function createSlider(root, name, getter, setter, minValue, maxValue, steps, formatter)
-		local element = root:CreateButton(name):CreateFrame()
-		element:AddResetter(resetSlider)
-		element:AddInitializer(function(frame)
+		local element = root:CreateButton(name)
+		local subMenu = element:CreateFrame()
+		subMenu:AddResetter(resetSlider)
+		subMenu:AddInitializer(function(frame)
 			local slider = frame:AttachTemplate('MinimalSliderWithSteppersTemplate')
 			slider:SetPoint('TOPLEFT', 0, -1)
 			slider:SetSize(150, 25)
