@@ -142,6 +142,10 @@ local function formatCustom(fmt, value)
 	return fmt:format(value)
 end
 
+local function defaultSliderFormatter(value)
+	return value
+end
+
 local function registerSetting(category, savedvariable, info)
 	addon:ArgCheck(info.key, 3, 'string')
 	addon:ArgCheck(info.title, 3, 'string')
@@ -158,13 +162,15 @@ local function registerSetting(category, savedvariable, info)
 	elseif info.type == 'slider' then
 		addon:ArgCheck(info.minValue, 3, 'number')
 		addon:ArgCheck(info.maxValue, 3, 'number')
-		addon:ArgCheck(info.valueFormat, 3, 'string', 'function')
+		addon:ArgCheck(info.valueFormat, 3, 'string', 'function', 'nil')
 
 		local options = Settings.CreateSliderOptions(info.minValue, info.maxValue, info.valueStep or 1)
 		if type(info.valueFormat) == 'string' then
 			options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GenerateClosure(formatCustom, info.valueFormat))
 		elseif type(info.valueFormat) == 'function' then
 			options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, info.valueFormat)
+		else
+			options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, defaultSliderFormatter)
 		end
 
 		initializer = Settings.CreateSlider(category, setting, options, info.tooltip)
@@ -343,7 +349,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         minValue = 0.1,
         maxValue = 1.0,
         valueStep = 0.01, -- (optional) step value, defaults to 1
-        valueFormat = formatter, -- callback function or a string for string.format
+        valueFormat = formatter, -- (optional) callback function or a string for string.format
         requires = 'myToggle', -- (optional) dependency on another setting (must be a "toggle")
     },
     {
@@ -532,7 +538,7 @@ do
 			slider:SetSize(150, 25)
 			slider:RegisterCallback('OnValueChanged', setter, frame)
 			slider:Init(getter(), minValue, maxValue, (maxValue - minValue) / steps, {
-				[MinimalSliderWithSteppersMixin.Label.Right] = formatter
+				[MinimalSliderWithSteppersMixin.Label.Right] = formatter or defaultSliderFormatter
 			})
 			frame.slider = slider -- ref for resetter
 
@@ -608,6 +614,8 @@ do
 						formatter = GenerateClosure(formatCustom, setting.valueFormat)
 					elseif type(setting.valueFormat) == 'function' then
 						formatter = setting.valueFormat
+					else
+						formatter = defaultSliderFormatter
 					end
 
 					createSlider(root, setting.title, function()
