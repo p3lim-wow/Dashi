@@ -33,6 +33,7 @@ read_globals = {
 	-- FrameXML objects
 	'ColorPickerFrame',
 	'EventRegistry',
+	'GameTooltip',
 	'MapCanvasDataProviderMixin',
 	'MapCanvasPinMixin',
 	'Menu',

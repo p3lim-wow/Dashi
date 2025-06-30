@@ -578,6 +578,17 @@ do
 		addon:SetOption(setting.key, value)
 	end
 
+	local function menuTooltip(button, element)
+		-- copied logic from MENU_WORLD_MAP_TRACKING filters
+		GameTooltip:ClearAllPoints()
+		GameTooltip:SetPoint('RIGHT', button, 'LEFT', -3, 0)
+		GameTooltip:SetOwner(button, 'ANCHOR_PRESERVE')
+		GameTooltip:ClearLines()
+		GameTooltip:AddLine(element.text, 1, 1, 1)
+		GameTooltip:AddLine(element.tooltip, nil, nil, nil, true)
+		GameTooltip:Show()
+	end
+
 	local function registerMapSettings(savedvariable, settings)
 		if not addon.registeredVariables then
 			-- these savedvariables are not handled by other means, let's deal with defaults and
@@ -603,8 +614,9 @@ do
 			root:CreateTitle((addonName:gsub('(%l)(%u)', '%1 %2')) .. HEADER_COLON)
 
 			for _, setting in next, settings do
+				local element
 				if setting.type == 'toggle' then
-					root:CreateCheckbox(setting.title, function()
+					element = root:CreateCheckbox(setting.title, function()
 						return addon:GetOption(setting.key)
 					end, function()
 						addon:SetOption(setting.key, not addon:GetOption(setting.key))
@@ -619,7 +631,7 @@ do
 						formatter = defaultSliderFormatter
 					end
 
-					createSlider(root, setting.title, function()
+					element = createSlider(root, setting.title, function()
 						return addon:GetOption(setting.key)
 					end, function(_, value)
 						addon:SetOption(setting.key, value)
@@ -627,7 +639,7 @@ do
 				elseif setting.type == 'color' then
 					local value = addon:GetOption(setting.key)
 					local r, g, b, a = addon:CreateColor(value):GetRGBA()
-					root:CreateColorSwatch(setting.title, colorPickerClick, {
+					element = root:CreateColorSwatch(setting.title, colorPickerClick, {
 						swatchFunc = GenerateClosure(colorPickerChange, setting),
 						opacityFunc = GenerateClosure(colorPickerChange, setting),
 						cancelFunc = GenerateClosure(colorPickerReset, setting),
@@ -638,15 +650,21 @@ do
 						hasOpacity = #value == 8,
 					})
 				elseif setting.type == 'menu' then
-					local menu = root:CreateButton(setting.title)
+					element = root:CreateButton(setting.title)
 					for _, option in next, setting.options do
-						menu:CreateRadio(
+						element:CreateRadio(
 							option.label,
 							GenerateClosure(menuGetter, setting),
 							GenerateClosure(menuSetter, setting),
 							option.value
 						)
 					end
+				end
+
+				if element and setting.tooltip then
+					element.tooltip = setting.tooltip
+					element:SetOnEnter(menuTooltip)
+					element:SetOnLeave(GameTooltip_Hide)
 				end
 			end
 		end)
