@@ -150,7 +150,9 @@ local function registerSetting(category, savedvariable, info)
 	addon:ArgCheck(info.key, 3, 'string')
 	addon:ArgCheck(info.title, 3, 'string')
 	addon:ArgCheck(info.type, 3, 'string')
-	addon:ArgCheck(info.requires, 3, 'string', 'nil')
+	if info.requires then
+		addon:ArgCheck(info.requires, 3, 'string')
+	end
 	assert(info.default ~= nil, "default must be set")
 
 	local uniqueKey = savedvariable .. '_' .. info.key
@@ -162,7 +164,9 @@ local function registerSetting(category, savedvariable, info)
 	elseif info.type == 'slider' then
 		addon:ArgCheck(info.minValue, 3, 'number')
 		addon:ArgCheck(info.maxValue, 3, 'number')
-		addon:ArgCheck(info.valueFormat, 3, 'string', 'function', 'nil')
+		if info.valueFormat then
+			addon:ArgCheck(info.valueFormat, 3, 'string', 'function')
+		end
 
 		local options = Settings.CreateSliderOptions(info.minValue, info.maxValue, info.valueStep or 1)
 		if type(info.valueFormat) == 'string' then

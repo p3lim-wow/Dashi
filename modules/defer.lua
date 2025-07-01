@@ -39,6 +39,10 @@ function addon:Defer(callback, ...)
 		callback = _G[callback]
 	end
 
+	if not callback then
+		error('callback is nil') -- TODO: pretty this up
+	end
+
 	addon:ArgCheck(callback, 1, 'function')
 
 	if InCombatLockdown() then
