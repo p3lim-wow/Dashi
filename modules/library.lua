@@ -74,6 +74,13 @@ do
 		return false
 	end
 
+	function tableMixin:random()
+		local size = self:size()
+		if size > 0 then
+			return self[math.random(size)]
+		end
+	end
+
 	local function newIndex(self, key, value)
 		-- turn child tables into this metatable too
 		if type(value) == 'table' and not getmetatable(value) then
