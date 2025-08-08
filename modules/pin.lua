@@ -5,6 +5,10 @@ do
 		pin:Hide()
 		pin:ClearAllPoints()
 		pin:OnReleased()
+
+		if pin.highlightTexture then
+			pin.highlightTexture:Hide()
+		end
 	end
 
 	local mixin = CreateFromMixins(MapCanvasPinMixin)
@@ -13,12 +17,87 @@ do
 		-- https://github.com/Stanzilla/WoWUIBugs/issues/453
 	end
 
-	function mixin:CheckMouseButtonPassthrough()
-		-- don't let MapCanvas mess with protected methods willy-nilly
+	-- replicate Button methods
+	function mixin:SetNormalTexture(...)
+		local texture = self.normalTexture
+		if not texture then
+			texture = self:CreateTexture(nil, 'ARTWORK')
+			texture:SetAllPoints()
+			self.normalTexture = texture
+		end
+
+		texture:SetTexture(...)
 	end
 
-	function mixin:SetPropagateMouseClicks()
-		-- don't let MapCanvas mess with protected methods willy-nilly
+	function mixin:GetNormalTexture()
+		return self.normalTexture
+	end
+
+	function mixin:SetNormalAtlas(...)
+		local texture = self.normalTexture
+		if not texture then
+			texture = self:CreateTexture(nil, 'ARTWORK')
+			texture:SetAllPoints()
+			self.normalTexture = texture
+		end
+
+		texture:SetAtlas(...)
+	end
+
+	function mixin:SetHighlightTexture(textureFile, blendMode)
+		local texture = self.highlightTexture
+		if not texture then
+			texture = self:CreateTexture(nil, 'OVERLAY')
+			texture:SetAllPoints()
+			texture:Hide()
+			self.highlightTexture = texture
+		end
+
+		texture:SetTexture(textureFile)
+		texture:SetBlendMode(blendMode or 'ADD')
+	end
+
+	function mixin:SetHighlightAtlas(atlas, blendMode)
+		local texture = self.highlightTexture
+		if not texture then
+			texture = self:CreateTexture(nil, 'OVERLAY')
+			texture:SetAllPoints()
+			texture:Hide()
+			self.highlightTexture = texture
+		end
+
+		texture:SetAtlas(atlas)
+		texture:SetBlendMode(blendMode or 'ADD')
+	end
+
+	function mixin:GetHighlightTexture()
+		return self.highlightTexture
+	end
+
+	-- mouse event handling
+	local mouseMixin = {}
+	function mouseMixin:OnClick(...)
+		if self.parent.OnPinClick then
+			pcall(self.parent.OnPinClick, self.parent, ...)
+		end
+	end
+
+	function mouseMixin:OnEnter()
+		if self.parent.OnPinEnter then
+			pcall(self.parent.OnPinEnter, self.parent)
+		end
+		if self.parent.highlightTexture then
+			self.parent.highlightTexture:Show()
+		end
+	end
+
+	function mouseMixin:OnLeave()
+		if self.parent.OnPinLeave then
+			pcall(self.parent.OnPinLeave, self.parent)
+		end
+		if self.parent.highlightTexture then
+			self.parent.highlightTexture:Hide()
+		end
 	end
 
 	--[[ namespace:CreateMapPinTemplate(_name_[, _pinMixin_]) ![](https://img.shields.io/badge/function-blue)
@@ -33,8 +112,20 @@ do
 		local pool = CreateUnsecuredRegionPoolInstance(templateName)
 		pool.resetFunc = resetPin
 		pool.createFunc = function()
-			local pin = Mixin(CreateFrame('Button', nil, WorldMapFrame:GetCanvas()), mixin, pinMixin)
+			local pin = Mixin(CreateFrame('Frame', nil, WorldMapFrame:GetCanvas()), mixin, pinMixin)
 			pin:SetSize(1, 1) -- needs a size to even show up
+
+			-- instead of using a Button frame type for the pin (to avoid a shitload of taint) we
+			-- add our own mouse region on top of a normal frame, then do some tricks to make the
+			-- pin act like a Button
+			local mouseRegion = CreateFrame('Button', nil, pin)
+			mouseRegion:SetAllPoints()
+			mouseRegion:SetScript('OnClick', mouseMixin.OnClick)
+			mouseRegion:SetScript('OnEnter', mouseMixin.OnEnter)
+			mouseRegion:SetScript('OnLeave', mouseMixin.OnLeave)
+			mouseRegion:RegisterForClicks('AnyUp') -- maybe too generous
+			mouseRegion.parent = pin
+
 			return pin
 		end
 
