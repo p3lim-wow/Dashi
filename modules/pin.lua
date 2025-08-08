@@ -157,7 +157,8 @@ do
 	end
 
 	function mixin:GetNumPins()
-		return self:GetMap():GetNumActivePinsByTemplate(self:GetPinTemplate())
+		local template = self:GetPinTemplate()
+		return template and self:GetMap():GetNumActivePinsByTemplate(template) or 0
 	end
 
 	function mixin:HasPins()
