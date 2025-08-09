@@ -54,7 +54,7 @@ do
 		end
 
 		texture:SetTexture(textureFile)
-		texture:SetBlendMode(blendMode or 'ADD')
+		texture:SetBlendMode(blendMode or 'BLEND')
 	end
 
 	function mixin:SetHighlightAtlas(atlas, blendMode)
@@ -67,7 +67,7 @@ do
 		end
 
 		texture:SetAtlas(atlas)
-		texture:SetBlendMode(blendMode or 'ADD')
+		texture:SetBlendMode(blendMode or 'BLEND')
 	end
 
 	function mixin:GetHighlightTexture()
