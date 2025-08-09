@@ -17,61 +17,43 @@ do
 		-- https://github.com/Stanzilla/WoWUIBugs/issues/453
 	end
 
+	local function getOrCreateTexture(parent, layer, key)
+		if not parent[key] then
+			parent[key] = parent:CreateTexture(nil, layer)
+			parent[key]:SetAllPoints()
+		end
+		return parent[key]
+	end
+
 	-- replicate Button methods
 	function mixin:SetNormalTexture(...)
-		local texture = self.normalTexture
-		if not texture then
-			texture = self:CreateTexture(nil, 'ARTWORK')
-			texture:SetAllPoints()
-			self.normalTexture = texture
-		end
-
-		texture:SetTexture(...)
+		getOrCreateTexture(self, 'ARTWORK', 'normalTexture'):SetTexture(...)
 	end
 
 	function mixin:GetNormalTexture()
-		return self.normalTexture
+		return getOrCreateTexture(self, 'ARTWORK', 'normalTexture')
 	end
 
 	function mixin:SetNormalAtlas(...)
-		local texture = self.normalTexture
-		if not texture then
-			texture = self:CreateTexture(nil, 'ARTWORK')
-			texture:SetAllPoints()
-			self.normalTexture = texture
-		end
-
-		texture:SetAtlas(...)
+		getOrCreateTexture(self, 'ARTWORK', 'normalTexture'):SetAtlas(...)
 	end
 
 	function mixin:SetHighlightTexture(textureFile, blendMode)
-		local texture = self.highlightTexture
-		if not texture then
-			texture = self:CreateTexture(nil, 'OVERLAY')
-			texture:SetAllPoints()
-			texture:Hide()
-			self.highlightTexture = texture
-		end
-
+		local texture = getOrCreateTexture(self, 'OVERLAY', 'highlightTexture')
+		texture:Hide()
 		texture:SetTexture(textureFile)
 		texture:SetBlendMode(blendMode or 'BLEND')
 	end
 
 	function mixin:SetHighlightAtlas(atlas, blendMode)
-		local texture = self.highlightTexture
-		if not texture then
-			texture = self:CreateTexture(nil, 'OVERLAY')
-			texture:SetAllPoints()
-			texture:Hide()
-			self.highlightTexture = texture
-		end
-
+		local texture = getOrCreateTexture(self, 'OVERLAY', 'highlightTexture')
+		texture:Hide()
 		texture:SetAtlas(atlas)
 		texture:SetBlendMode(blendMode or 'BLEND')
 	end
 
 	function mixin:GetHighlightTexture()
-		return self.highlightTexture
+		return getOrCreateTexture(self, 'OVERLAY', 'highlightTexture')
 	end
 
 	-- mouse event handling
