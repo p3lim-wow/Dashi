@@ -440,6 +440,23 @@ function addon:RegisterSubSettingsCanvas(name, callback)
 	}
 end
 
+--[[ namespace:OpenSettings() ![](https://img.shields.io/badge/function-blue)
+Opens the settings panel for this addon.
+--]]
+function addon:OpenSettings()
+	-- iterate over all categories until we find ours, since OpenToCategory only takes ID
+	local categoryID
+	local categoryName = C_AddOns.GetAddOnMetadata(addonName, 'Title')
+	for _, category in next, SettingsPanel:GetAllCategories() do
+		if category.name == categoryName then
+			assert(not categoryID, 'found multiple instances of the same category')
+			categoryID = category:GetID()
+		end
+	end
+
+	Settings.OpenToCategory(categoryID)
+end
+
 --[[ namespace:RegisterSettingsSlash(_..._) ![](https://img.shields.io/badge/function-blue)
 Wrapper for `namespace:RegisterSlash(...)`, except the callback is provided and will open the settings panel for this addon.
 --]]
@@ -447,17 +464,7 @@ function addon:RegisterSettingsSlash(...)
 	-- gotta do this dumb shit because `..., callback` is not valid Lua
 	local data = {...}
 	table.insert(data, function()
-		-- iterate over all categories until we find ours, since OpenToCategory only takes ID
-		local categoryID
-		local categoryName = C_AddOns.GetAddOnMetadata(addonName, 'Title')
-		for _, category in next, SettingsPanel:GetAllCategories() do
-			if category.name == categoryName then
-				assert(not categoryID, 'found multiple instances of the same category')
-				categoryID = category:GetID()
-			end
-		end
-
-		Settings.OpenToCategory(categoryID)
+		addon:OpenSettings()
 	end)
 
 	addon:RegisterSlash(unpack(data))
