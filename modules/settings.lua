@@ -310,11 +310,9 @@ local function registerSettings(savedvariable, settings)
 			for _, setting in next, info.settings do
 				registerSetting(child, savedvariable, setting)
 			end
-			Settings.RegisterAddOnCategory(child)
 		elseif info.callback then
 			local frame, canvas = createCanvas(info.name)
 			local child = Settings.RegisterCanvasLayoutSubcategory(category, frame, info.name)
-			Settings.RegisterAddOnCategory(child)
 
 			-- delay callback until settings are shown
 			local shown
