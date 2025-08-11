@@ -250,10 +250,12 @@ local function alwaysEnabled()
 	return true
 end
 
+local settingsCategoryID
 local function registerSettings(savedvariable, settings)
 	local categoryName = C_AddOns.GetAddOnMetadata(addonName, 'Title')
 	local category = Settings.RegisterVerticalLayoutCategory(categoryName)
 	Settings.RegisterAddOnCategory(category)
+	settingsCategoryID = category:GetID()
 
 	-- local firstInstall
 	if not _G[savedvariable] then
@@ -442,17 +444,8 @@ end
 Opens the settings panel for this addon.
 --]]
 function addon:OpenSettings()
-	-- iterate over all categories until we find ours, since OpenToCategory only takes ID
-	local categoryID
-	local categoryName = C_AddOns.GetAddOnMetadata(addonName, 'Title')
-	for _, category in next, SettingsPanel:GetAllCategories() do
-		if category.name == categoryName then
-			assert(not categoryID, 'found multiple instances of the same category')
-			categoryID = category:GetID()
-		end
-	end
-
-	Settings.OpenToCategory(categoryID)
+	assert(not not settingsCategoryID, 'must register settings first')
+	Settings.OpenToCategory(settingsCategoryID)
 end
 
 --[[ namespace:RegisterSettingsSlash(_..._) ![](https://img.shields.io/badge/function-blue)
