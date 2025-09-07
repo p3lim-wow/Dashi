@@ -81,6 +81,18 @@ do
 		end
 	end
 
+	function tableMixin:copy(dest, shallow)
+		local tbl = dest or addon:T()
+		for k, v in next, self do
+			if type(v) == 'table' and not shallow then
+				tbl[k] = tableMixin.copy(v)
+			else
+				tbl[k] = v
+			end
+		end
+		return tbl
+	end
+
 	local function newIndex(self, key, value)
 		-- turn child tables into this metatable too
 		if type(value) == 'table' and not getmetatable(value) then
