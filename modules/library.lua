@@ -81,8 +81,8 @@ do
 		end
 	end
 
-	function tableMixin:copy(dest, shallow)
-		local tbl = dest or addon:T()
+	function tableMixin:copy(shallow)
+		local tbl = addon:T()
 		for k, v in next, self do
 			if type(v) == 'table' and not shallow then
 				tbl[k] = tableMixin.copy(v)
