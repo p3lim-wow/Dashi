@@ -103,31 +103,39 @@ function addon:GetPlayerPosition(mapID)
 	end
 end
 
-do
-	local function auraSlotsWrapper(unit, spellID, token, ...)
-		local slot, data
-		for index = 1, select('#', ...) do
-			slot = select(index, ...)
-			data = C_UnitAuras.GetAuraDataBySlot(unit, slot)
-			if spellID == data.spellId and data.sourceUnit then
-				return nil, data
+--[[ namespace:GetUnitAura(_unitID_, _spellID_[, _filter_]) ![](https://img.shields.io/badge/function-blue)
+Returns the aura by `spellID` on the [`unitID`](https://warcraft.wiki.gg/wiki/UnitId), if it exists.  
+See [UnitAura](https://warcraft.wiki.gg/wiki/API_C_UnitAuras.GetAuraDataByIndex#Filters) for the `filter` arg.
+
+`filter` no longer works as of patch 11.2.5, as this method just wraps a C_UnitAuras method directly.
+--]]
+if addon:HasBuild(110205) then
+	function addon:GetUnitAura(unit, spellID)
+		return C_UnitAuras.GetUnitAuraBySpellID(unit, spellID)
+	end
+else
+	do
+		local function auraSlotsWrapper(unit, spellID, token, ...)
+			local slot, data
+			for index = 1, select('#', ...) do
+				slot = select(index, ...)
+				data = C_UnitAuras.GetAuraDataBySlot(unit, slot)
+				if spellID == data.spellId and data.sourceUnit then
+					return nil, data
+				end
 			end
+
+			return token
 		end
 
-		return token
-	end
+		function addon:GetUnitAura(unit, spellID, filter)
+			local token, data
+			repeat
+				token, data = auraSlotsWrapper(unit, spellID, C_UnitAuras.GetAuraSlots(unit, filter, nil, token))
+			until token == nil
 
-	--[[ namespace:GetUnitAura(_unitID_, _spellID_[, _filter_]) ![](https://img.shields.io/badge/function-blue)
-	Returns the aura by `spellID` on the [`unitID`](https://warcraft.wiki.gg/wiki/UnitId), if it exists.  
-	See [UnitAura](https://warcraft.wiki.gg/wiki/API_C_UnitAuras.GetAuraDataByIndex#Filters) for the `filter` arg.
-	--]]
-	function addon:GetUnitAura(unit, spellID, filter)
-		local token, data
-		repeat
-			token, data = auraSlotsWrapper(unit, spellID, C_UnitAuras.GetAuraSlots(unit, filter, nil, token))
-		until token == nil
-
-		return data
+			return data
+		end
 	end
 end
 
