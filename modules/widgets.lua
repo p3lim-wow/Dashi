@@ -50,20 +50,16 @@ do -- scrollbox
 
 		-- TODO: assertions
 
-		local provider = CreateDataProvider()
-		provider:SetSortComparator(scroll._sort or defaultSort, true)
-
 		local view
 		if scroll.kind == 'list' then
-			view = CreateScrollBoxListLinearView(scroll._insetTop, scroll._insetBottom, scroll._insetLeft, scroll._insetRight, scroll._spacingHorizontal)
+			view = CreateScrollBoxListLinearView(scroll._insetTop or 0, scroll._insetBottom or 0, scroll._insetLeft or 0, scroll._insetRight or 0, scroll._spacingHorizontal or 0)
 		elseif scroll.kind == 'grid' then
 			local width = scroll:GetWidth() - scroll.bar:GetWidth() - (scroll._insetLeft or 0) - (scroll._insetRight or 0)
 			local stride = math.floor((width - (scroll._spacingHorizontal or 0)) / (scroll._elementWidth + (scroll._spacingHorizontal or 0)))
-			view = CreateScrollBoxListGridView(stride, scroll._insetTop, scroll._insetBottom, scroll._insetLeft, scroll._insetRight, scroll._spacingHorizontal, scroll._spacingVertical)
+			view = CreateScrollBoxListGridView(stride or 1, scroll._insetTop or 0, scroll._insetBottom or 0, scroll._insetLeft or 0, scroll._insetRight or 0, scroll._spacingHorizontal or 0, scroll._spacingVertical or 0)
 			view:SetStrideExtent(scroll._elementWidth)
 		end
 
-		view:SetDataProvider(provider)
 		view:SetElementExtent(scroll._elementHeight)
 		view:SetElementInitializer(scroll._elementType, function(element, data)
 			if scroll._elementWidth and scroll.kind == 'grid' then
@@ -115,10 +111,13 @@ do -- scrollbox
 			end)
 		end
 
+		local provider = CreateDataProvider()
+		provider:SetSortComparator(scroll._sort or defaultSort, true)
+		view:SetDataProvider(provider)
+		scroll._provider = provider
+
 		ScrollUtil.InitScrollBoxListWithScrollBar(scroll, scroll.bar, view)
 		ScrollUtil.AddManagedScrollBarVisibilityBehavior(scroll, scroll.bar) -- auto-hide the scroll bar
-
-		scroll._provider = provider
 	end
 
 	local scrollMixin = {}
