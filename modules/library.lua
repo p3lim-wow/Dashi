@@ -93,6 +93,13 @@ do
 		return tbl
 	end
 
+	-- remove obsolete and deprecated methods present in the table library
+	-- https://warcraft.wiki.gg/wiki/Lua_functions#Deprecated_functions
+	tableMethods.foreach = nil
+	tableMethods.foreachi = nil
+	tableMethods.getn = nil
+	tableMethods.setn = nil
+
 	local function newIndex(self, key, value)
 		-- turn child tables into this metatable too
 		if type(value) == 'table' and not getmetatable(value) then
