@@ -106,7 +106,7 @@ do
 		addon:ArgCheck(tbl, 1, 'table', 'nil')
 
 		return setmetatable(tbl or {}, {
-			__index = Mixin(table, tableMixin, ...),
+			__index = CreateFromMixins(table, tableMixin, ...),
 			__newindex = newIndex,
 			__add = tableMixin.merge,
 		})
