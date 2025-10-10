@@ -22,7 +22,7 @@ function addon:startswith(str, contents)
 	return str:sub(1, contents:len()) == contents
 end
 
---[[ namespace:T([_tbl_[, _mixin_, ...] ]) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:T([_tbl_]) ![](https://img.shields.io/badge/function-blue)
 Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new empty table is used.
 
 Included are all meta methods from the `table` library, as well as a few extra handy methods:
@@ -102,11 +102,11 @@ do
 		end
 	end
 
-	function addon:T(tbl, ...)
+	function addon:T(tbl)
 		addon:ArgCheck(tbl, 1, 'table', 'nil')
 
 		return setmetatable(tbl or {}, {
-			__index = CreateFromMixins(table, tableMixin, ...),
+			__index = CreateFromMixins(table, tableMixin),
 			__newindex = newIndex,
 			__add = tableMixin.merge,
 		})
