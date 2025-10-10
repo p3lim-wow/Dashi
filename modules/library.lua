@@ -45,17 +45,17 @@ t + {'five', 'six'} --> {'one', 'two', 'three', 'five', 'six'}
 ```
 --]]
 do
-	local tableMixin = {}
-	function tableMixin:size()
+	local tableMethods = CreateFromMixins(table)
+	function tableMethods:size()
 		return addon:tsize(self)
 	end
 
-	function tableMixin:merge(tbl)
+	function tableMethods:merge(tbl)
 		addon:ArgCheck(tbl, 1, 'table')
 
 		for k, v in next, tbl do
 			if type(self[k] or false) == 'table' then
-				tableMixin.merge(self[k], tbl[k])
+				tableMethods.merge(self[k], tbl[k])
 			else
 				self[k] = v
 			end
@@ -64,7 +64,7 @@ do
 		return self
 	end
 
-	function tableMixin:contains(value)
+	function tableMethods:contains(value)
 		for _, v in next, self do
 			if value == v then
 				return true
@@ -74,18 +74,18 @@ do
 		return false
 	end
 
-	function tableMixin:random()
+	function tableMethods:random()
 		local size = self:size()
 		if size > 0 then
 			return self[math.random(size)]
 		end
 	end
 
-	function tableMixin:copy(shallow)
+	function tableMethods:copy(shallow)
 		local tbl = addon:T()
 		for k, v in next, self do
 			if type(v) == 'table' and not shallow then
-				tbl[k] = tableMixin.copy(v)
+				tbl[k] = tableMethods.copy(v)
 			else
 				tbl[k] = v
 			end
@@ -106,9 +106,9 @@ do
 		addon:ArgCheck(tbl, 1, 'table', 'nil')
 
 		return setmetatable(tbl or {}, {
-			__index = CreateFromMixins(table, tableMixin),
+			__index = tableMethods,
 			__newindex = newIndex,
-			__add = tableMixin.merge,
+			__add = tableMethods.merge,
 		})
 	end
 end
