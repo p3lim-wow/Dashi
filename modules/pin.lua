@@ -120,7 +120,7 @@ local function initTaintHack()
 	WorldMapFrame.taintedByDashi = true
 
 	local noop = function() end
-	hooksecurefunc(WorldMapFrame, 'AcquirePin', function(self, pinTemplate, ...)
+	hooksecurefunc(WorldMapFrame, 'AcquirePin', function(self, pinTemplate)
 		if not InCombatLockdown() then
 			for pin in self:EnumeratePinsByTemplate(pinTemplate) do
 				pin.CheckMouseButtonPassthrough = noop

@@ -88,4 +88,5 @@ read_globals = {
 	'UnitGUID',
 	'UnitName',
 	'debugstack',
+	'hooksecurefunc',
 }
