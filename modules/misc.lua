@@ -52,11 +52,6 @@ if not addon:HasVersion(120000) then
 	end
 end
 
---[[ namespace:GetNPCName(_npcID_) ![](https://img.shields.io/badge/function-blue)
-Returns the name for the NPC by the given `npcID`.
-
-* Warning: this depends on the cache, and might not yield results the first time.
---]]
 do
 	local creatureNames = setmetatable({}, {
 		__index = function(self, npcID)
@@ -69,8 +64,16 @@ do
 		end
 	})
 
-	function addon:GetNPCName(npcID)
-		return creatureNames[npcID]
+	--[[ namespace:GetCreatureName(_creatureID_) ![](https://img.shields.io/badge/function-blue)
+	Returns the name for the NPC by the given `npcID`.
+
+	* Warning: this depends on the cache, and might not yield results the first time.
+	--]]
+	function addon:GetCreatureName(creatureID)
+		return creatureNames[creatureID]
+	end
+	function addon:GetNPCName(npcID) -- DEPRECATED
+		return addon:GetCreatureName(npcID)
 	end
 end
 
