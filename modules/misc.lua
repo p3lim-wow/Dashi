@@ -25,13 +25,10 @@ function addon:ArgCheck(arg, argIndex, ...)
 	error(string.format('Bad argument #%d to \'%s\' (%s expected, got %s)', argIndex, name, types, type(arg)), 3)
 end
 
-do
+if not addon:HasVersion(120000) then
 	-- UnitType-0-ServerID-InstanceID-ZoneUID-ID-SpawnUID
 	local GUID_PATTERN = '(%w+)%-0%-(%d+)%-(%d+)%-(%d+)%-(%d+)%-(.+)'
-	--[[ namespace:ExtractFieldsFromUnitGUID(_guid_) ![](https://img.shields.io/badge/function-blue)
-	Returns the individual fields from the given [`guid`](https://warcraft.wiki.gg/wiki/GUID), typecast to their correct types.
-	--]]
-	function addon:ExtractFieldsFromUnitGUID(guid)
+	function addon:ExtractFieldsFromUnitGUID(guid) -- DEPRECATED
 		if guid then
 			local unitType, serverID, instanceID, zoneUID, id, spawnUID = guid:match(GUID_PATTERN)
 			if unitType then
