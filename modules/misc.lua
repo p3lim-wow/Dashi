@@ -170,10 +170,12 @@ function addon:CreateColor(r, g, b, a)
 	end
 
 	local color = CreateColor(r, g, b, a)
-	-- oUF compat; TODO: do something with this in oUF?
-	color[1] = r
-	color[2] = g
-	color[3] = b
+	if not addon:HasVersion(120000) then -- TODO: remove in Midnight
+		-- oUF compat
+		color[1] = r
+		color[2] = g
+		color[3] = b
+	end
 	return color
 end
 
