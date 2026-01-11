@@ -39,13 +39,16 @@ if not addon:HasVersion(120000) then
 end
 
 --[[ namespace:GetUnitID(_unit_) ![](https://img.shields.io/badge/function-blue)
-Returns the integer `id` of the given [`unit`](https://warcraft.wiki.gg/wiki/UnitId).
+Returns the creature ID for the given [`unit`](https://warcraft.wiki.gg/wiki/UnitId).
 --]]
-function addon:GetUnitID(unit)
-	if unit and UnitExists(unit) then
-		local unitGUID = UnitGUID(unit)
-		local _, _, _, _, unitID = addon:ExtractFieldsFromUnitGUID(unitGUID)
-		return unitID, unitGUID
+if not addon:HasVersion(120000) then
+	-- remove in 12.x, replaced with UnitCreatureID
+	function addon:GetUnitID(unit) -- DEPRECATED
+		if unit and UnitExists(unit) then
+			local unitGUID = UnitGUID(unit)
+			local _, _, _, _, unitID = addon:ExtractFieldsFromUnitGUID(unitGUID)
+			return unitID, unitGUID
+		end
 	end
 end
 
