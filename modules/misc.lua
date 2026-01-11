@@ -100,7 +100,7 @@ end
 Returns the `x` and `y` coordinates for the player in the given `mapID` (if they are valid).
 --]]
 function addon:GetPlayerPosition(mapID)
-	local pos = C_Map.GetPlayerMapPosition(mapID, 'player')
+	local pos = C_Map.GetPlayerMapPosition(mapID or addon:GetPlayerMapID(), 'player')
 	if pos then
 		return pos:GetXY()
 	end
