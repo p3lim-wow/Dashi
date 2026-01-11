@@ -106,9 +106,37 @@ function addon:GetPlayerPosition(mapID)
 	end
 end
 
-function addon:GetUnitAura(unit, spellID) -- DEPRECATED
+--[[ namespace:GetUnitAura(_unitID_, _spellID_) ![](https://img.shields.io/badge/function-blue)
+Returns the aura by `spellID` on the [`unitID`](https://warcraft.wiki.gg/wiki/UnitId), if it exists.
+--]]
+if addon:HasVersion(120000) then
+	-- because there's a bug with spell whitelisting we have to use the old method, hopefully it'll be fixed soon enough
+	local function auraSlotsWrapper(unit, spellID, token, ...)
+		local slot, data
+		for index = 1, select('#', ...) do
+			slot = select(index, ...)
+			data = C_UnitAuras.GetAuraDataBySlot(unit, slot)
+			if not issecretvalue(data.spellId) and spellID == data.spellId and data.sourceUnit ~= nil then
+				return nil, data
+			end
+		end
+
+		return token
+	end
+
+	function addon:GetUnitAura(unit, spellID, filter)
+		local token, data
+		repeat
+			token, data = auraSlotsWrapper(unit, spellID, C_UnitAuras.GetAuraSlots(unit, filter or 'HELPFUL', nil, token))
+		until token == nil
+
+		return data
+	end
+else
 	-- just remove it, the new API is a drop-in replacement
-	return C_UnitAuras.GetUnitAuraBySpellID(unit, spellID)
+	function addon:GetUnitAura(unit, spellID) -- DEPRECATED
+		return C_UnitAuras.GetUnitAuraBySpellID(unit, spellID)
+	end
 end
 
 --[[ namespace:CreateColor(r, g, b[, a]) ![](https://img.shields.io/badge/function-blue)
