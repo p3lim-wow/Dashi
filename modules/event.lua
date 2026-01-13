@@ -375,6 +375,22 @@ addon = setmetatable(addon, {
 					return true -- pass along unregistration state
 				end
 			end)
+		elseif key == 'OnLogout' then
+			--[[ namespace:OnLogout() ![](https://img.shields.io/badge/function-blue)
+			Shorthand for the [`PLAYER_LOGOUT`](https://warcraft.wiki.gg/wiki/PLAYER_LOGOUT) event.
+
+			Usage:
+			```lua
+			function namespace:OnLogout()
+			    -- player has logged in!
+			end
+			```
+			--]]
+			addon:RegisterEvent('PLAYER_LOGOUT', function(self)
+				if value(self) then
+					return true -- pass along unregistration state
+				end
+			end)
 		elseif IsEventValid(key) then
 			--[[ namespace:_event_ ![](https://img.shields.io/badge/function-blue)
 			Registers a  to an anonymous function.
