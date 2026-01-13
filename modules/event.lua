@@ -138,11 +138,7 @@ If the callback returns positive it will be unregistered.
 function eventMixin:TriggerEvent(event, ...)
 	if callbacks[event] then
 		for _, data in next, callbacks[event] do
-			local successful, ret = pcall(data.callback, data.owner, ...)
-			if not successful then
-				-- ret contains the error
-				error(ret)
-			elseif ret then
+			if data.callback(data.owner, ...) then
 				-- callbacks can unregister themselves by returning positively,
 				-- ret contains the boolean
 				eventMixin.UnregisterEvent(data.owner, event, data.callback)
@@ -263,10 +259,7 @@ If the callback returns positive it will be unregistered.
 function eventMixin:TriggerUnitEvent(event, unit, ...)
 	if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
 		for _, data in next, unitEventCallbacks[unit][event] do
-			local successful, ret = pcall(data.callback, data.owner, ...)
-			if not successful then
-				error(ret)
-			elseif ret then
+			if data.callback(data.owner, ...) then
 				-- callbacks can unregister themselves by returning positively
 				eventMixin.UnregisterUnitEvent(data.owner, event, unit, data.callback)
 			end
@@ -361,11 +354,9 @@ addon = setmetatable(addon, {
 			--]]
 			addon:RegisterEvent('ADDON_LOADED', function(self, name)
 				if name == addonName then
-					local successful, ret = pcall(value, self)
-					if not successful then
-						error(ret)
+					if value(self) then
+						return true -- pass along unregistration state
 					end
-					return true -- unregister event
 				end
 			end)
 		elseif key == 'OnLogin' then
@@ -380,11 +371,9 @@ addon = setmetatable(addon, {
 			```
 			--]]
 			addon:RegisterEvent('PLAYER_LOGIN', function(self)
-				local successful, ret = pcall(value, self)
-				if not successful then
-					error(ret)
+				if value(self) then
+					return true -- pass along unregistration state
 				end
-				return true -- unregister event
 			end)
 		elseif IsEventValid(key) then
 			--[[ namespace:_event_ ![](https://img.shields.io/badge/function-blue)
