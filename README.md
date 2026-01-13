@@ -18,6 +18,14 @@ It contains, among many things, simplifications for:
 
 Please see [the wiki](https://github.com/p3lim-wow/Dashi/wiki) for usage.
 
+> [!WARNING]
+> Dashi will never be in a stable/consistent state.  
+> If you want to use it as-is, please hard-embed it (e.g. using Git subtree/submodule) or cherry-pick what you want.
+>
+> **There are no guarantees that anything will stay or even work.**
+>
+> It was designed for my own purposes, and will stay that way, but I'm open to feedback and adding features if they align with my vision/use.
+
 ## Legal
 
 This repository is dedicated to the [public domain](https://en.wikipedia.org/wiki/Public-domain_software).
