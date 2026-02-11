@@ -42,6 +42,7 @@ read_globals = {
 	'Settings',
 	'SettingsListElementMixin',
 	'SettingsPanel',
+	'UIParent',
 
 	-- FrameXML functions
 	'CreateColor',

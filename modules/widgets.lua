@@ -1,4 +1,4 @@
-local _, addon = ...
+local addonName, addon = ...
 
 --[[ namespace:CreateFrame(_..._) ![](https://img.shields.io/badge/function-blue)
 A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API_CreateFrame), mixed in with `namespace.eventMixin`.
@@ -35,6 +35,33 @@ do
 		onCVarUpdate(button, KEY_DIRECTION_CVAR)
 
 		return button
+	end
+end
+
+local tooltip
+--[[ namespace:GetTooltip(_..._) ![](https://img.shields.io/badge/function-blue)
+Creates and returns a tooltip specific for the addon.  
+The variable arguments are passed to [SetOwner](https://warcraft.wiki.gg/wiki/API_GameTooltip_SetOwner) if provided.
+--]]
+function addon:GetTooltip(...)
+	if not tooltip then
+		tooltip = CreateFrame('GameTooltip', addonName .. 'Tooltip', UIParent, 'GameTooltipTemplate')
+		tooltip:SetFrameStrata('DIALOG')
+	end
+
+	if ... then
+		tooltip:SetOwner(...)
+	end
+
+	return tooltip
+end
+
+--[[ namespace:HideTooltip() ![](https://img.shields.io/badge/function-blue)
+Hide the tooltip created above.
+--]]
+function addon:HideTooltip()
+	if tooltip then
+		tooltip:Hide()
 	end
 end
 
