@@ -360,7 +360,7 @@ Opens the settings panel for this addon.
 --]]
 function addon:OpenSettings()
 	assert(not not settingsCategoryID, 'must register settings first')
-	Settings.OpenToCategory(settingsCategoryID)
+	C_SettingsUtil.OpenSettingsPanel(settingsCategoryID)
 end
 
 --[[ namespace:RegisterSettingsSlash(_..._) ![](https://img.shields.io/badge/function-blue)
