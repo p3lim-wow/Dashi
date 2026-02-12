@@ -360,7 +360,11 @@ Opens the settings panel for this addon.
 --]]
 function addon:OpenSettings()
 	assert(not not settingsCategoryID, 'must register settings first')
-	C_SettingsUtil.OpenSettingsPanel(settingsCategoryID)
+	if InCombatLockdown() then
+		addon:Print("Can't open settings this way in combat")
+	else
+		C_SettingsUtil.OpenSettingsPanel(settingsCategoryID)
+	end
 end
 
 --[[ namespace:RegisterSettingsSlash(_..._) ![](https://img.shields.io/badge/function-blue)
