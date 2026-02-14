@@ -47,6 +47,7 @@ function addon:GetTooltip(...)
 	if not tooltip then
 		tooltip = CreateFrame('GameTooltip', addonName .. 'Tooltip', UIParent, 'GameTooltipTemplate')
 		tooltip:SetFrameStrata('DIALOG')
+		tooltip:HookScript('OnShow', GameTooltip_Hide)
 	end
 
 	if ... then
