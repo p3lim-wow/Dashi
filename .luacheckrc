@@ -54,6 +54,7 @@ read_globals = {
 	'DevTools_Dump',
 	'DisplayTableInspectorWindow',
 	'GameTooltip_Hide',
+	'GameTooltip_OnUpdate',
 	'GenerateClosure',
 	'Mixin',
 	'SecondsFormatter',
@@ -81,6 +82,7 @@ read_globals = {
 	'C_EventUtils',
 	'C_Map',
 	'C_SettingsUtil',
+	'C_Timer',
 	'C_TooltipInfo',
 	'C_UnitAuras',
 

@@ -48,6 +48,12 @@ function addon:GetTooltip(...)
 		tooltip = CreateFrame('GameTooltip', addonName .. 'Tooltip', UIParent, 'GameTooltipTemplate')
 		tooltip:SetFrameStrata('DIALOG')
 		tooltip:HookScript('OnShow', GameTooltip_Hide)
+
+		-- make it work with cache updates
+		hooksecurefunc(tooltip, 'RefreshDataNextUpdate', function()
+			-- GameTooltip uses OnUpdate for this, I'd prefer not to
+			C_Timer.After(0, GenerateClosure(GameTooltip_OnUpdate, tooltip, 0))
+		end)
 	end
 
 	if ... then
