@@ -51,8 +51,14 @@ function addon:GetTooltip(...)
 
 		-- make it work with cache updates
 		hooksecurefunc(tooltip, 'RefreshDataNextUpdate', function()
-			-- GameTooltip uses OnUpdate for this, I'd prefer not to
-			C_Timer.After(0, GenerateClosure(GameTooltip_OnUpdate, tooltip, 0))
+			-- can't use GameTooltip_OnUpdate because it taints secrets
+			local info = tooltip:GetPrimaryTooltipInfo()
+			if info and info.getterName then
+				-- this is so stupidly janky lol
+				if tooltip[info.getterName:gsub('Get','Set')](tooltip, unpack(info.getterArgs or {})) then
+					tooltip:Show() -- re-render
+				end
+			end
 		end)
 
 		local embeddedItemTooltip = CreateFrame('Frame', nil, tooltip, 'InternalEmbeddedItemTooltipTemplate')
