@@ -54,6 +54,13 @@ function addon:GetTooltip(...)
 			-- GameTooltip uses OnUpdate for this, I'd prefer not to
 			C_Timer.After(0, GenerateClosure(GameTooltip_OnUpdate, tooltip, 0))
 		end)
+
+		local embeddedItemTooltip = CreateFrame('Frame', nil, tooltip, 'InternalEmbeddedItemTooltipTemplate')
+		embeddedItemTooltip:SetPoint('BOTTOMLEFT', 10, 13)
+		embeddedItemTooltip:SetSize(100, 100)
+		embeddedItemTooltip:Hide()
+		embeddedItemTooltip.yspacing = 13
+		tooltip.ItemTooltip = embeddedItemTooltip
 	end
 
 	if ... then
