@@ -169,14 +169,7 @@ function addon:CreateColor(r, g, b, a)
 		b = b / 255
 	end
 
-	local color = CreateColor(r, g, b, a)
-	if not addon:HasVersion(120000) then -- TODO: remove in Midnight
-		-- oUF compat
-		color[1] = r
-		color[2] = g
-		color[3] = b
-	end
-	return color
+	return CreateColor(r, g, b, a)
 end
 
 do
