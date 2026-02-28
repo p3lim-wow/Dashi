@@ -62,6 +62,9 @@ local tooltip; do
 			-- tooltip:HookScript('OnShow', GenerateFlatClosure(GameTooltip.Hide, GameTooltip))
 			tooltip.RefreshDataNextUpdate = refreshTooltip
 
+			-- hide this tooltip whenever GameTooltip shows up
+			GameTooltip:HookScript('OnShow', GenerateFlatClosure(addon.HideTooltip))
+
 			local embeddedItemTooltip = CreateFrame('Frame', nil, tooltip, 'InternalEmbeddedItemTooltipTemplate')
 			embeddedItemTooltip:SetPoint('BOTTOMLEFT', 10, 13)
 			embeddedItemTooltip:SetSize(100, 100)
