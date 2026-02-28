@@ -23,7 +23,7 @@ do
 		end
 	end
 
-	--[[ namespace:CreateButton(...) ![](https://img.shields.io/badge/function-blue)
+	--[[ namespace:CreateButton(_..._) ![](https://img.shields.io/badge/function-blue)
 	A wrapper for `namespace:CreateFrame(...)`, but will handle key direction preferences of the client.  
 	Use this specifically to create clickable buttons.
 	--]]
