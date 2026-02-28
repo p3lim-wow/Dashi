@@ -501,13 +501,14 @@ do
 
 	local function menuTooltip(button, element)
 		-- copied logic from MENU_WORLD_MAP_TRACKING filters
-		GameTooltip:ClearAllPoints()
-		GameTooltip:SetPoint('RIGHT', button, 'LEFT', -3, 0)
-		GameTooltip:SetOwner(button, 'ANCHOR_PRESERVE')
-		GameTooltip:ClearLines()
-		GameTooltip:AddLine(element.text, 1, 1, 1)
-		GameTooltip:AddLine(element.tooltip, nil, nil, nil, true)
-		GameTooltip:Show()
+		local tooltip = addon:GetTooltip()
+		tooltip:ClearAllPoints()
+		tooltip:SetPoint('RIGHT', button, 'LEFT', -3, 0)
+		tooltip:SetOwner(button, 'ANCHOR_PRESERVE')
+		tooltip:ClearLines()
+		tooltip:AddLine(element.text, 1, 1, 1)
+		tooltip:AddLine(element.tooltip, nil, nil, nil, true)
+		tooltip:Show()
 	end
 
 	local function registerMapSettings(savedvariable, settings)
@@ -585,7 +586,7 @@ do
 				if element and setting.tooltip then
 					element.tooltip = setting.tooltip
 					element:SetOnEnter(menuTooltip)
-					element:SetOnLeave(GameTooltip_Hide)
+					element:SetOnLeave(addon.HideTooltip)
 				end
 			end
 		end)
