@@ -79,6 +79,17 @@ local tooltip; do
 
 		return tooltip
 	end
+
+	--[[ namespace:GetTooltipWithDefaultAnchor(_[owner]_) ![](https://img.shields.io/badge/function-blue)
+	Calls GetTooltip and anchors it to the default anchor.  
+	This is a safe alternate to GameTooltip_SetDefaultAnchor.
+	--]]
+	function addon:GetTooltipWithDefaultAnchor(owner)
+		local tooltip = addon:GetTooltip()
+		tooltip:SetOwner(owner or UIParent, 'ANCHOR_NONE')
+		tooltip:SetPoint('BOTTOMRIGHT', GameTooltipDefaultContainer)
+		return tooltip
+	end
 end
 
 --[[ namespace:HideTooltip() ![](https://img.shields.io/badge/function-blue)
