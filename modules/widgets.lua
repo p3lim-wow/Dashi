@@ -59,7 +59,7 @@ local tooltip; do
 		if not tooltip then
 			tooltip = CreateFrame('GameTooltip', addonName .. 'Tooltip', UIParent, 'GameTooltipTemplate')
 			tooltip:SetFrameStrata('DIALOG')
-			tooltip:HookScript('OnShow', GameTooltip_Hide)
+			-- tooltip:HookScript('OnShow', GenerateFlatClosure(GameTooltip.Hide, GameTooltip))
 			tooltip.RefreshDataNextUpdate = refreshTooltip
 
 			local embeddedItemTooltip = CreateFrame('Frame', nil, tooltip, 'InternalEmbeddedItemTooltipTemplate')
