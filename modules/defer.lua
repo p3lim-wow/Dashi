@@ -5,7 +5,7 @@ local function iterate()
 	for _, info in next, queue do
 		if info.callback then
 			info.callback(unpack(info.args))
-		elseif info.object then
+		elseif info.object and info.args then
 			info.object[info.method](info.object, unpack(info.args))
 		end
 	end
