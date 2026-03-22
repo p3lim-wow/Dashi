@@ -183,3 +183,21 @@ do
 		return timeFormatter:Format(tonumber(timeInSeconds))
 	end
 end
+
+--[[ namespace:SafeSetTrue(_object, key_)
+Safely set `object`'s `key` to `true` without tainting it.
+
+Note: This is incredibly hacky and might be fixed.
+--]]
+function addon:SafeSetTrue(object, key)
+	TextureLoadingGroupMixin.AddTexture({textures = object}, key)
+end
+
+--[[ namespace:SafeSetNil(_object, key_)
+Safely set `object`'s `key` to `nil` without tainting it.
+
+Note: This is incredibly hacky and might be fixed.
+--]]
+function addon:SafeSetNil(object, key)
+	TextureLoadingGroupMixin.RemoveTexture({textures = object}, key)
+end

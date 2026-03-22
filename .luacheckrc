@@ -42,6 +42,7 @@ read_globals = {
 	'Settings',
 	'SettingsListElementMixin',
 	'SettingsPanel',
+	'TextureLoadingGroupMixin',
 	'UIParent',
 
 	-- FrameXML functions
