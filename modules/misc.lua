@@ -184,7 +184,7 @@ do
 	end
 end
 
---[[ namespace:SafeSetTrue(_object, key_)
+--[[ namespace:SafeSetTrue(_object, key_) ![](https://img.shields.io/badge/function-blue)
 Safely set `object`'s `key` to `true` without tainting it.
 
 Note: This is incredibly hacky and might be fixed.
@@ -193,7 +193,7 @@ function addon:SafeSetTrue(object, key)
 	TextureLoadingGroupMixin.AddTexture({textures = object}, key)
 end
 
---[[ namespace:SafeSetNil(_object, key_)
+--[[ namespace:SafeSetNil(_object, key_) ![](https://img.shields.io/badge/function-blue)
 Safely set `object`'s `key` to `nil` without tainting it.
 
 Note: This is incredibly hacky and might be fixed.
