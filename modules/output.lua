@@ -45,6 +45,10 @@ end
 Similar to `namespace:Dump(object)`; a wrapper for the graphical version.
 --]]
 function addon:DumpUI(value)
-	UIParentLoadAddOn('Blizzard_DebugTools')
+	if GameEvent then -- 12.1
+		C_AddOns.LoadAddOn('Blizzard_DebugTools')
+	else
+		UIParentLoadAddOn('Blizzard_DebugTools')
+	end
 	DisplayTableInspectorWindow(value)
 end
