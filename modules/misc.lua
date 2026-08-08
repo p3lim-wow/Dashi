@@ -67,13 +67,10 @@ function addon:GetPlayerMapID()
 end
 
 --[[ namespace:GetPlayerPosition(_mapID_) ![](https://img.shields.io/badge/function-blue)
-Returns the `x` and `y` coordinates for the player in the given `mapID` (if they are valid).
+Returns a position vector object of coordinates for the player in the given `mapID` (if they are valid).
 --]]
 function addon:GetPlayerPosition(mapID)
-	local pos = C_Map.GetPlayerMapPosition(mapID or addon:GetPlayerMapID(), 'player')
-	if pos then
-		return pos:GetXY()
-	end
+	return C_Map.GetPlayerMapPosition(mapID or addon:GetPlayerMapID(), 'player')
 end
 
 --[[ namespace:CreateColor(r, g, b[, a]) ![](https://img.shields.io/badge/function-blue)
