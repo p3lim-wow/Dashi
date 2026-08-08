@@ -19,9 +19,7 @@ ignore = {
 
 globals = {
 	-- FrameXML objects we mutate
-	-- 'NewSettings',
 	'SlashCmdList',
-	'WorldMapFrame',
 }
 
 read_globals = {
@@ -35,13 +33,10 @@ read_globals = {
 	'EventRegistry',
 	'GameEvent',
 	'GameTooltip',
-	'MapCanvasDataProviderMixin',
-	'MapCanvasPinMixin',
 	'Menu',
 	'MinimalSliderWithSteppersMixin',
 	'ScrollUtil',
 	'Settings',
-	'SettingsListElementMixin',
 	'SettingsPanel',
 	'TextureLoadingGroupMixin',
 	'UIParent',
@@ -49,32 +44,26 @@ read_globals = {
 	-- FrameXML functions
 	'CreateColor',
 	'CreateDataProvider',
-	'CreateFromMixins',
 	'CreateScrollBoxListGridView',
 	'CreateScrollBoxListLinearView',
-	'CreateUnsecuredRegionPoolInstance',
 	'DevTools_Dump',
 	'DisplayTableInspectorWindow',
 	'GameTooltipDefaultContainer',
 	'GameTooltip_Hide',
-	'GameTooltip_OnUpdate',
 	'GenerateClosure',
 	'GenerateFlatClosure',
-	'Mixin',
 	'SecondsFormatter',
 	'SecondsFormatterMixin',
-	'UIParentLoadAddOn',
-	'nop',
 
 	-- FrameXML constants
 	'DEFAULT_CHAT_FRAME',
+	'WOW_PROJECT_BURNING_CRUSADE_CLASSIC',
+	'WOW_PROJECT_CATACLYSM_CLASSIC',
+	'WOW_PROJECT_CLASSIC',
 	'WOW_PROJECT_ID',
 	'WOW_PROJECT_MAINLINE',
-	'WOW_PROJECT_BURNING_CRUSADE_CLASSIC',
-	'WOW_PROJECT_WRATH_CLASSIC',
-	'WOW_PROJECT_CATACLYSM_CLASSIC',
 	'WOW_PROJECT_MISTS_CLASSIC',
-	'WOW_PROJECT_CLASSIC',
+	'WOW_PROJECT_WRATH_CLASSIC',
 
 	-- GlobalStrings
 	'HEADER_COLON',
@@ -83,23 +72,21 @@ read_globals = {
 	-- namespaces
 	'C_AddOns',
 	'C_CVar',
+	'C_Container',
 	'C_EventUtils',
 	'C_Map',
 	'C_SettingsUtil',
-	'C_Timer',
 	'C_TooltipInfo',
-	'C_UnitAuras',
+	'Constants',
+	'Enum',
 
 	-- API
-	'CombatLogGetCurrentEventInfo',
 	'CreateFrame',
+	'CreateFromMixins',
 	'GetBuildInfo',
 	'GetLocale',
 	'InCombatLockdown',
-	'UnitExists',
-	'UnitGUID',
+	'Mixin',
 	'UnitName',
 	'debugstack',
-	'hooksecurefunc',
-	'issecretvalue',
 }

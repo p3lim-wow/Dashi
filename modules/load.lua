@@ -7,7 +7,6 @@ function addon:IsAddOnEnabled(name)
 	return C_AddOns.GetAddOnEnableState(name, UnitName('player')) > 0 and (C_AddOns.IsAddOnLoadable(name))
 end
 
-
 local addonCallbacks = {}
 --[[ namespace:HookAddOn(_addonName_, _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers a hook for when an addon with the name `addonName` loads with a `callback` function.
