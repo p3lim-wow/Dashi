@@ -138,3 +138,21 @@ Note: This is incredibly hacky and might be fixed.
 function addon:SafeSetNil(object, key)
 	TextureLoadingGroupMixin.RemoveTexture({textures = object}, key)
 end
+
+--[[ namespace:GetEmptyBagSlot([includeReagentBag]) ![](https://img.shields.io/badge/function-blue)
+Returns the bagID and slotIndex of the first empty bag slot, if any.
+--]]
+function addon:GetEmptyBagSlot(includeReagentBag)
+	local numBags = Constants.InventoryConstants.NumBagSlots
+	if includeReagentBag then
+		numBags = numBags + Constants.InventoryConstants.NumReagentBagSlots
+	end
+
+	for bagID = Enum.BagIndex.Backpack, numBags do
+		for slotIndex = 1, C_Container.GetContainerNumSlots(bagID) do
+			if not C_Container.GetContainerItemInfo(bagID, slotIndex) then
+				return bagID, slotIndex
+			end
+		end
+	end
+end
