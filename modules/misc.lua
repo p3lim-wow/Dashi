@@ -25,33 +25,6 @@ function addon:ArgCheck(arg, argIndex, ...)
 	error(string.format('Bad argument #%d to \'%s\' (%s expected, got %s)', argIndex, name, types, type(arg)), 3)
 end
 
-if not addon:HasVersion(120000) then
-	-- UnitType-0-ServerID-InstanceID-ZoneUID-ID-SpawnUID
-	local GUID_PATTERN = '(%w+)%-0%-(%d+)%-(%d+)%-(%d+)%-(%d+)%-(.+)'
-	function addon:ExtractFieldsFromUnitGUID(guid) -- DEPRECATED
-		if guid then
-			local unitType, serverID, instanceID, zoneUID, id, spawnUID = guid:match(GUID_PATTERN)
-			if unitType then
-				return unitType, tonumber(serverID), tonumber(instanceID), tonumber(zoneUID), tonumber(id), spawnUID
-			end
-		end
-	end
-end
-
---[[ namespace:GetUnitID(_unit_) ![](https://img.shields.io/badge/function-blue)
-Returns the creature ID for the given [`unit`](https://warcraft.wiki.gg/wiki/UnitId).
---]]
-if not addon:HasVersion(120000) then
-	-- remove in 12.x, replaced with UnitCreatureID
-	function addon:GetUnitID(unit) -- DEPRECATED
-		if unit and UnitExists(unit) then
-			local unitGUID = UnitGUID(unit)
-			local _, _, _, _, unitID = addon:ExtractFieldsFromUnitGUID(unitGUID)
-			return unitID, unitGUID
-		end
-	end
-end
-
 do
 	local creatureNames = setmetatable({}, {
 		__index = function(self, npcID)
@@ -71,9 +44,6 @@ do
 	--]]
 	function addon:GetCreatureName(creatureID)
 		return creatureNames[creatureID]
-	end
-	function addon:GetNPCName(npcID) -- DEPRECATED
-		return addon:GetCreatureName(npcID)
 	end
 end
 
@@ -103,39 +73,6 @@ function addon:GetPlayerPosition(mapID)
 	local pos = C_Map.GetPlayerMapPosition(mapID or addon:GetPlayerMapID(), 'player')
 	if pos then
 		return pos:GetXY()
-	end
-end
-
---[[ namespace:GetUnitAura(_unitID_, _spellID_) ![](https://img.shields.io/badge/function-blue)
-Returns the aura by `spellID` on the [`unitID`](https://warcraft.wiki.gg/wiki/UnitId), if it exists.
---]]
-if addon:HasVersion(120000) then
-	-- because there's a bug with spell whitelisting we have to use the old method, hopefully it'll be fixed soon enough
-	local function auraSlotsWrapper(unit, spellID, token, ...)
-		local slot, data
-		for index = 1, select('#', ...) do
-			slot = select(index, ...)
-			data = C_UnitAuras.GetAuraDataBySlot(unit, slot)
-			if not issecretvalue(data.spellId) and spellID == data.spellId and data.sourceUnit ~= nil then
-				return nil, data
-			end
-		end
-
-		return token
-	end
-
-	function addon:GetUnitAura(unit, spellID, filter)
-		local token, data
-		repeat
-			token, data = auraSlotsWrapper(unit, spellID, C_UnitAuras.GetAuraSlots(unit, filter or 'HELPFUL', nil, token))
-		until token == nil
-
-		return data
-	end
-else
-	-- just remove it, the new API is a drop-in replacement
-	function addon:GetUnitAura(unit, spellID) -- DEPRECATED
-		return C_UnitAuras.GetUnitAuraBySpellID(unit, spellID)
 	end
 end
 
