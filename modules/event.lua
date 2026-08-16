@@ -58,8 +58,9 @@ Registers a [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `call
 If the callback returns truthy it will be unregistered.
 --]]
 function eventMixin:RegisterEvent(event, callback)
-	assert(IsEventValid(event), 'arg1 must be an event')
-	assert(type(callback) == 'function', 'arg2 must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgCheck(callback, 2, 'function')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 	if not callbacks[event] then
 		callbacks[event] = {}
@@ -79,8 +80,9 @@ end
 Unregisters a [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
 --]]
 function eventMixin:UnregisterEvent(event, callback)
-	assert(IsEventValid(event), 'arg1 must be an event')
-	assert(type(callback) == 'function', 'arg2 must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgCheck(callback, 2, 'function')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 	if callbacks[event] then
 		for index, data in next, callbacks[event] do
@@ -100,9 +102,7 @@ end
 Unregisters all [frame events](https://warcraft.wiki.gg/wiki/Events), or specifically from the `callback` function.
 --]]
 function eventMixin:UnregisterAllEvents(callback)
-	if callback then
-		assert(type(callback) == 'function', 'arg1 must be a function')
-	end
+	addon:ArgCheck(callback, 2, 'function|nil')
 
 	for event, cbs in next, callbacks do
 		for _, data in next, cbs do
@@ -123,8 +123,9 @@ end
 Checks if the [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
 --]]
 function eventMixin:IsEventRegistered(event, callback)
-	assert(IsEventValid(event), 'arg1 must be an event')
-	assert(type(callback) == 'function', 'arg2 must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgCheck(callback, 2, 'function')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 	if callbacks[event] then
 		for _, data in next, callbacks[event] do
@@ -140,8 +141,12 @@ Manually trigger the `event` (with optional arguments) on all registered callbac
 If the callback returns truthy it will be unregistered.
 --]]
 function eventMixin:TriggerEvent(event, ...)
-	if callbacks[event] then
-		for _, data in next, callbacks[event] do
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+
+	local callbacksForEvent = callbacks[event]
+	if callbacksForEvent then
+		for _, data in next, callbacksForEvent do
 			if data.callback(data.owner, ...) then
 				-- callbacks can unregister themselves by returning truthy,
 				eventMixin.UnregisterEvent(data.owner, event, data.callback)
@@ -173,23 +178,43 @@ Registers a [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `even
 If the callback returns truthy it will be unregistered for that unit.
 --]]
 function eventMixin:RegisterUnitEvent(event, ...)
-	assert(IsEventValid(event), 'arg1 must be an event')
-	local callback = select(select('#', ...), ...)
-	assert(type(callback) == 'function', 'last argument must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
-	for i = 1, select('#', ...) - 1 do
+	local numArgs = select('#', ...)
+	local callback = select(numArgs, ...)
+	addon:ArgCheck(callback, numArgs + 1, 'function')
+
+	local numUnits = numArgs - 1
+	addon:ArgAssert(numUnits > 0, 2, 'invalid event')
+
+	for i = 1, numUnits do
 		local unit = select(i, ...)
-		assert(IsUnitValid(unit), 'arg' .. (i + 1) .. ' must be a valid unit')
-		assert(IsUnitEventValid(event, unit), 'event "' .. event .. '" is not valid for the given unit')
+		addon:ArgCheck(unit, i + 1, 'string')
+		addon:ArgAssert(IsUnitValid(unit), i + 1, 'invalid unit')
+		addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+	end
 
+	for i = 1, numUnits do
+		local unit = select(i, ...)
 		if not unitEventCallbacks[unit] then
 			unitEventCallbacks[unit] = {}
 		end
+
 		if not unitEventCallbacks[unit][event] then
 			unitEventCallbacks[unit][event] = {}
 		end
 
-		table.insert(unitEventCallbacks[unit][event], {
+		local callbackIsRegisteredForUnitEvent
+		local callbacksForUnitEvent = unitEventCallbacks[unit][event]
+		for _, data in next, callbacksForUnitEvent do
+			if data.owner == self and data.callback == callback then
+				callbackIsRegisteredForUnitEvent = true
+				break
+			end
+		end
+
+		table.insert(callbacksForUnitEvent, {
 			callback = callback,
 			owner = self,
 		})
@@ -208,19 +233,31 @@ end
 Unregisters a [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
 --]]
 function eventMixin:UnregisterUnitEvent(event, ...)
-	assert(IsEventValid(event), 'arg1 must be an event')
-	local callback = select(select('#', ...), ...)
-	assert(type(callback) == 'function', 'last argument must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
-	for i = 1, select('#', ...) - 1 do
+	local numArgs = select('#', ...)
+	local callback = select(numArgs, ...)
+	addon:ArgCheck(callback, numArgs + 1, 'function')
+
+	local numUnits = numArgs - 1
+	addon:ArgAssert(numUnits > 0, 2, 'invalid event')
+
+	for i = 1, numUnits do
 		local unit = select(i, ...)
-		assert(IsUnitValid(unit), 'arg' .. (i + 1) .. ' must be a valid unit')
-		assert(IsUnitEventValid(event, unit), 'event is not valid for the given unit')
+		addon:ArgCheck(unit, i + 1, 'string')
+		addon:ArgAssert(IsUnitValid(unit), i + 1, 'invalid unit')
+		addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+	end
 
-		if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
-			for index, data in next, unitEventCallbacks[unit][event] do
+	for i = 1, numUnits do
+		local unit = select(i, ...)
+		local callbackEventsForUnit = unitEventCallbacks[unit]
+		local callbacksForUnitEvent = callbackEventsForUnit and callbackEventsForUnit[event]
+		if callbacksForUnitEvent then
+			for index, data in next, callbacksForUnitEvent do
 				if data.owner == self and data.callback == callback then
-					unitEventCallbacks[unit][event][index] = nil
+					callbacksForUnitEvent[index] = nil
 					break
 				end
 			end
@@ -236,17 +273,29 @@ end
 Checks if the [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
 --]]
 function eventMixin:IsUnitEventRegistered(event, ...)
-	assert(IsEventValid(event), 'arg1 must be an event')
-	local callback = select(select('#', ...), ...)
-	assert(type(callback) == 'function', 'last argument must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
-	for i = 1, select('#', ...) - 1 do
+	local numArgs = select('#', ...)
+	local callback = select(numArgs, ...)
+	addon:ArgCheck(callback, numArgs + 1, 'function')
+
+	local numUnits = numArgs - 1
+	addon:ArgAssert(numUnits > 0, 2, 'invalid event')
+
+	for i = 1, numUnits do
 		local unit = select(i, ...)
-		assert(IsUnitValid(unit), 'arg' .. (i + 1) .. ' must be a valid unit')
-		assert(IsUnitEventValid(event, unit), 'event is not valid for the given unit')
+		addon:ArgCheck(unit, i + 1, 'string')
+		addon:ArgAssert(IsUnitValid(unit), i + 1, 'invalid unit')
+		addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+	end
 
-		if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
-			for _, data in next, unitEventCallbacks[unit][event] do
+	for i = 1, numUnits do
+		local unit = select(i, ...)
+		local callbackEventsForUnit = unitEventCallbacks[unit]
+		local callbacksForUnitEvent = callbackEventsForUnit and callbackEventsForUnit[event]
+		if callbacksForUnitEvent then
+			for _, data in next, callbacksForUnitEvent do
 				if data.callback == callback then
 					return true
 				end
@@ -255,13 +304,20 @@ function eventMixin:IsUnitEventRegistered(event, ...)
 	end
 end
 
---[[ namespace.eventMixin:TriggerEvent(_event_, _unit_[, _unitN,..._][, _..._]) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace.eventMixin:TriggerEvent(_event_, _unit_[, _..._]) ![](https://img.shields.io/badge/function-blue)
 Manually trigger the [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific `event` (with optional arguments) on all registered callbacks.  
 If the callback returns truthy it will be unregistered.
 --]]
 function eventMixin:TriggerUnitEvent(event, unit, ...)
-	if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
-		for _, data in next, unitEventCallbacks[unit][event] do
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+	addon:ArgAssert(IsUnitValid(unit), 2, 'invalid unit')
+	addon:ArgAssert(IsUnitEventValid(event, unit), 2, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+
+	local callbackEventsForUnit = unitEventCallbacks[unit]
+	local callbacksForUnitEvent = callbackEventsForUnit and callbackEventsForUnit[event]
+	if callbacksForUnitEvent then
+		for _, data in next, callbacksForUnitEvent do
 			if data.callback(data.owner, ...) then
 				-- callbacks can unregister themselves by returning truthy
 				eventMixin.UnregisterUnitEvent(data.owner, event, unit, data.callback)
