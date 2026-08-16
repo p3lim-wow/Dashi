@@ -5,8 +5,8 @@ local callbacks = {}
 Registers a `callback` with an `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
 --]]
 function addon:RegisterCallback(event, callback)
-	assert(type(event) == 'string', 'arg1 must be a string')
-	assert(type(callback) == 'function', 'arg2 must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgCheck(callback, 2, 'function')
 
 	if not callbacks[event] then
 		callbacks[event] = {}
@@ -22,8 +22,8 @@ end
 Unregisters an existing `callback` with an `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
 --]]
 function addon:UnregisterCallback(event, callback)
-	assert(type(event) == 'string', 'arg1 must be a string')
-	assert(type(callback) == 'function', 'arg2 must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgCheck(callback, 2, 'function')
 
 	if callbacks[event] then
 		for index, data in next, callbacks[event] do
@@ -40,7 +40,7 @@ end
 Unregisters all callbacks registered with the `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
 --]]
 function addon:UnregisterAllCallbacks(event)
-	assert(type(event) == 'string', 'arg1 must be a string')
+	addon:ArgCheck(event, 1, 'string')
 
 	if callbacks[event] then
 		for _, data in next, callbacks[event] do
@@ -55,8 +55,8 @@ end
 Checks if the `event` is registered with the `callback` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
 --]]
 function addon:IsCallbackRegistered(event, callback)
-	assert(type(event) == 'string', 'arg1 must be a string')
-	assert(type(callback) == 'function', 'arg2 must be a function')
+	addon:ArgCheck(event, 1, 'string')
+	addon:ArgCheck(callback, 2, 'function')
 
 	if callbacks[event] then
 		for _, cbs in next, EventRegistry:GetCallbacksByEvent('Function') do
@@ -81,7 +81,6 @@ end
 Trigger the callback `event` (with optional arguments) in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
 --]]
 function addon:TriggerCallback(event, ...)
-	assert(type(event) == 'string', 'arg1 must be a string')
-
+	addon:ArgCheck(event, 1, 'string')
 	EventRegistry:TriggerEvent(event, ...)
 end
