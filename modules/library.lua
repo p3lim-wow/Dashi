@@ -54,7 +54,7 @@ do
 		addon:ArgCheck(tbl, 1, 'table')
 
 		for k, v in next, tbl do
-			if type(self[k] or false) == 'table' then
+			if type(self[k]) == 'table' and type(v) == 'table' then
 				tableMethods.merge(self[k], tbl[k])
 			else
 				self[k] = v
