@@ -12,7 +12,7 @@ function addon:Print(...)
 		if arg == nil then
 			msg = msg .. '|cffbd0605nil|r '
 		elseif type(arg) == 'boolean' then
-			if not not arg then
+			if arg then
 				msg = msg .. '|cff08bc06' .. tostring(arg) .. '|r' .. ' '
 			else
 				msg = msg .. '|cffff0000' .. tostring(arg) .. '|r' .. ' ' -- TODO: find a new color
