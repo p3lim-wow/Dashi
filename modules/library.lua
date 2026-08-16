@@ -97,7 +97,7 @@ do
 		for index = #self, 1, -1 do
 			if self[index] == value then
 				table.remove(self, index)
-				break
+				return index
 			end
 		end
 	end
