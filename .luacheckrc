@@ -89,4 +89,5 @@ read_globals = {
 	'Mixin',
 	'UnitName',
 	'debugstack',
+	'geterrorhandler',
 }
