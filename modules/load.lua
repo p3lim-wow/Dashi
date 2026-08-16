@@ -25,10 +25,7 @@ end
 addon:RegisterEvent('ADDON_LOADED', function(self, addonName)
 	for _, info in next, addonCallbacks do
 		if info.addonName == addonName then
-			local successful, err = pcall(info.callback)
-			if not successful then
-				error(err)
-			end
+			xpcall(info.callback, geterrorhandler())
 		end
 	end
 end)
