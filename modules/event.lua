@@ -347,24 +347,6 @@ addon = setmetatable(addon, {
 			rawset(t, key, value)
 		end
 	end,
-	__index = function(t, key)
-		if IsEventValid(key) then
-			--[[ namespace:_event_([_..._]) ![](https://img.shields.io/badge/function-blue)
-			Manually trigger all registered anonymous `event` callbacks, with optional arguments.
-
-			Usage:
-			```lua
-			namespace:BAG_UPDATE(1) -- triggers the above example
-			```
-			--]]
-			return function(_, ...)
-				eventMixin.TriggerEvent(t, key, ...)
-			end
-		else
-			-- default table behaviour
-			return rawget(t, key)
-		end
-	end,
 })
 
 -- mixin to namespace
