@@ -92,7 +92,7 @@ function eventMixin:UnregisterEvent(event, callback)
 			end
 		end
 
-		if #callbacks[event] == 0 then
+		if not next(callbacks[event]) then
 			eventHandler:UnregisterEvent(event)
 		end
 	end
@@ -262,8 +262,13 @@ function eventMixin:UnregisterUnitEvent(event, ...)
 				end
 			end
 
-			if #unitEventCallbacks[unit][event] == 0 then
+			if not next(callbacksForUnitEvent) then
+				callbackEventsForUnit[event] = nil
 				getUnitEventHandler(unit):UnregisterEvent(event)
+			end
+
+			if not next(callbackEventsForUnit) then
+				unitEventCallbacks[unit] = nil
 			end
 		end
 	end
