@@ -4,9 +4,9 @@ local queue = {}
 local function iterate()
 	for _, info in next, queue do
 		if info.callback then
-			info.callback(unpack(info.args))
-		elseif info.object and info.args then
-			info.object[info.method](info.object, unpack(info.args))
+			xpcall(info.callback, geterrorhandler(), unpack(info.args))
+		else
+			xpcall(info.method, geterrorhandler(), info.object, unpack(info.args))
 		end
 	end
 
@@ -42,7 +42,7 @@ function addon:Defer(callback, ...)
 			args = {...},
 		})
 	else
-		callback(...)
+		xpcall(callback, geterrorhandler(), ...)
 	end
 end
 
@@ -58,11 +58,11 @@ function addon:DeferMethod(object, method, ...)
 	if InCombatLockdown() then
 		defer({
 			object = object,
-			method = method,
+			method = object[method],
 			args = {...},
 		})
 	else
-		object[method](object, ...)
+		xpcall(object[method], geterrorhandler(), object, ...)
 	end
 end
 
