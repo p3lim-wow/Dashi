@@ -99,25 +99,24 @@ Defers a function `callback` (with optional arguments) until after combat ends a
 Triggers when `event` triggers if not in combat.
 --]]
 function addon:DeferUnitEvent(event, ...)
-	local args = {} -- we need to pack the args, sadly Lua 5.1 doesn't have table.pack
-	local callback, unitindexlast, argindexfirst, lastindex
-	for i = 1, select('#', ...) do
-		local arg = select(i, ...)
-		if not callback and type(arg) == 'function' then
-			-- assume it's the callback
-			callback = arg
+	addon:ArgCheck(event, 1, 'string')
 
-			unitindexlast = i - 1
-			argindexfirst = i + 1
+	local args = packArgs(...)
+	local callback, callbackIndex
+
+	for index = 1, args.n do
+		if type(args[index]) == 'function' then
+			callback = args[index]
+			callbackIndex = index
+			break
+		else
+			-- any vararg before the callback must be a unit
+			addon:ArgCheck(args[index], index + 1, 'string')
 		end
-
-		args[i] = arg -- pack
-		lastindex = i -- need to supply `last` to unpack since it'd stop unpacking when hitting nil
 	end
 
-	assert(callback, 'no callback provided')
-	assert(unitindexlast > 0, 'no units provided')
+	addon:ArgCheck(callback, 3, 'function', 'no callback provided')
 
-	local closure = GenerateClosure(deferEventCallback, callback, unpack(args, argindexfirst, lastindex))
-	addon:RegisterUnitEvent(event, unpack(args, 1, unitindexlast), closure)
+	local closure = GenerateClosure(deferEventCallback, callback, unpack(args, callbackIndex + 1, args.n))
+	addon:RegisterUnitEvent(event, unpack(args, 1, callbackIndex - 1), closure)
 end
