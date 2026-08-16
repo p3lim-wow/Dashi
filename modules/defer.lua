@@ -2,15 +2,16 @@ local _, addon = ...
 
 local queue = {}
 local function iterate()
-	for _, info in next, queue do
+	local pending = queue
+	queue = {}
+
+	for _, info in next, pending do
 		if info.callback then
 			xpcall(info.callback, geterrorhandler(), unpack(info.args))
 		else
 			xpcall(info.method, geterrorhandler(), info.object, unpack(info.args))
 		end
 	end
-
-	table.wipe(queue)
 
 	return true -- unregister event
 end
