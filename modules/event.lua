@@ -129,7 +129,7 @@ function eventMixin:IsEventRegistered(event, callback)
 
 	if callbacks[event] then
 		for _, data in next, callbacks[event] do
-			if data.callback == callback then
+			if data.owner == self and data.callback == callback then
 				return true
 			end
 		end
@@ -296,7 +296,7 @@ function eventMixin:IsUnitEventRegistered(event, ...)
 		local callbacksForUnitEvent = callbackEventsForUnit and callbackEventsForUnit[event]
 		if callbacksForUnitEvent then
 			for _, data in next, callbacksForUnitEvent do
-				if data.callback == callback then
+				if data.owner == self and data.callback == callback then
 					return true
 				end
 			end
