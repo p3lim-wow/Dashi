@@ -435,10 +435,7 @@ function addon:TriggerOptionCallback(key, value)
 
 	if self.settingsCallbacks and self.settingsCallbacks[key] then
 		for _, callback in next, self.settingsCallbacks[key] do
-			local successful, ret = pcall(callback, value)
-			if not successful then
-				error(ret)
-			end
+			xpcall(callback, geterrorhandler(), value)
 		end
 	end
 end
