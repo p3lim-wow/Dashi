@@ -125,7 +125,7 @@ do
 	}
 
 	function addon:T(tbl)
-		addon:ArgCheck(tbl, 1, 'table', 'nil')
+		addon:ArgCheck(tbl, 1, 'table|nil')
 		return setmetatable(tbl or {}, meta)
 	end
 end
@@ -199,7 +199,7 @@ do
 	function addon:sub(str, start, stop)
 		addon:ArgCheck(str, 1, 'string')
 		addon:ArgCheck(start, 2, 'number')
-		addon:ArgCheck(stop, 3, 'number', 'nil')
+		addon:ArgCheck(stop, 3, 'number|nil')
 
 		if not stop then
 			-- default to stop at the end of the string
