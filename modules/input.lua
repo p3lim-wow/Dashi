@@ -17,27 +17,20 @@ function addon:RegisterSlash(...)
 	local name = addonName .. 'Slash' .. counter
 
 	local numArgs = select('#', ...)
+	addon:ArgAssert(numArgs >= 2, 2, 'at least one slash command and a callback must be supplied')
+
 	local callback = select(numArgs, ...)
-	if type(callback) ~= 'function' or numArgs < 2 then
-		failed = true
-	else
-		for index = 1, numArgs - 1 do
-			local slash = select(index, ...)
-			if type(slash) ~= 'string' then
-				failed = true
-				break
-			elseif not slash:match('^/%a+$') then
-				failed = true
-				break
-			else
-				_G['SLASH_' .. name .. index] = slash
-			end
-		end
+	addon:ArgCheck(callback, numArgs, 'function')
+
+	for index = 1, numArgs - 1 do
+		local slash = select(index, ...)
+		addon:ArgCheck(slash, index, 'string')
+		addon:ArgAssert(not not slash:match('^/%a+$'), index, 'invalid slash command')
 	end
 
-	if failed then
-		error('Syntax: RegisterSlash("/slash1"[, "/slash2"[, ...]], callback)')
-	else
-		SlashCmdList[name] = callback
+	for index = 1, numArgs - 1 do
+		_G['SLASH_' .. name .. index] = select(index, ...)
 	end
+
+	SlashCmdList[name] = callback
 end
