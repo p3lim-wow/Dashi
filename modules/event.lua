@@ -66,6 +66,13 @@ function eventMixin:RegisterEvent(event, callback)
 		callbacks[event] = {}
 	end
 
+	for _, data in next, callbacks[event] do
+		if data.owner == self and data.callback == callback then
+			-- no duplicate event callbacks
+			return
+		end
+	end
+
 	table.insert(callbacks[event], {
 		callback = callback,
 		owner = self,
@@ -214,17 +221,19 @@ function eventMixin:RegisterUnitEvent(event, ...)
 			end
 		end
 
-		table.insert(callbacksForUnitEvent, {
-			callback = callback,
-			owner = self,
-		})
+		if not callbackIsRegisteredForUnitEvent then
+			table.insert(callbacksForUnitEvent, {
+				callback = callback,
+				owner = self,
+			})
 
-		local unitEventHandler = getUnitEventHandler(unit)
-		local isRegistered, registeredUnit = unitEventHandler:IsEventRegistered(event)
-		if not isRegistered then
-			unitEventHandler:RegisterUnitEvent(event, unit)
-		elseif registeredUnit ~= unit then
-			error('unit event somehow registered with the wrong unit')
+			local unitEventHandler = getUnitEventHandler(unit)
+			local isRegistered, registeredUnit = unitEventHandler:IsEventRegistered(event)
+			if not isRegistered then
+				unitEventHandler:RegisterUnitEvent(event, unit)
+			elseif registeredUnit ~= unit then
+				error('unit event somehow registered with the wrong unit', 2)
+			end
 		end
 	end
 end
