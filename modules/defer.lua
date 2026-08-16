@@ -1,15 +1,27 @@
 local _, addon = ...
 
+local function packArgs(...)
+	-- I wish we had table.pack from Lua 5.2...
+	return {
+		n = select('#', ...),
+		...
+	}
+end
+
+local function unpackArgs(args, first, last)
+	return unpack(args, first or 1, last or args.n)
+end
+
 local queue = {}
 local function iterate()
 	local pending = queue
 	queue = {}
 
-	for _, info in next, pending do
+	for _, info in ipairs(pending) do
 		if info.callback then
-			xpcall(info.callback, geterrorhandler(), unpack(info.args))
+			xpcall(info.callback, geterrorhandler(), unpackArgs(info.args))
 		else
-			xpcall(info.method, geterrorhandler(), info.object, unpack(info.args))
+			xpcall(info.method, geterrorhandler(), info.object, unpackArgs(info.args))
 		end
 	end
 
@@ -40,7 +52,7 @@ function addon:Defer(callback, ...)
 	if InCombatLockdown() then
 		defer({
 			callback = callback,
-			args = {...},
+			args = packArgs(...),
 		})
 	else
 		xpcall(callback, geterrorhandler(), ...)
@@ -60,7 +72,7 @@ function addon:DeferMethod(object, method, ...)
 		defer({
 			object = object,
 			method = object[method],
-			args = {...},
+			args = packArgs(...),
 		})
 	else
 		xpcall(object[method], geterrorhandler(), object, ...)
