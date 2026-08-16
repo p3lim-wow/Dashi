@@ -1,5 +1,7 @@
 local addonName, addon = ...
 
+local counter = 0
+
 --[[ namespace:RegisterSlash(_command_[, _commandN,..._], _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers chat slash `command`(s) with a `callback` function.
 
@@ -11,8 +13,8 @@ end)
 ```
 --]]
 function addon:RegisterSlash(...)
-	local name = addonName .. 'Slash' .. math.random()
-	local failed
+	counter = counter + 1
+	local name = addonName .. 'Slash' .. counter
 
 	local numArgs = select('#', ...)
 	local callback = select(numArgs, ...)
