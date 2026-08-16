@@ -326,7 +326,7 @@ addon = setmetatable(addon, {
 					return true -- pass along unregistration state
 				end
 			end)
-		elseif IsEventValid(key) then
+		elseif type(key) == 'string' and IsEventValid(key) then
 			--[[ namespace:_event_ ![](https://img.shields.io/badge/function-blue)
 			Registers a  to an anonymous function.
 
