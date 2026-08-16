@@ -13,7 +13,7 @@ Registers a hook for when an addon with the name `addonName` loads with a `callb
 --]]
 function addon:HookAddOn(addonName, callback)
 	if C_AddOns.IsAddOnLoaded(addonName) then
-		callback(self)
+		callback()
 	else
 		table.insert(addonCallbacks, {
 			addonName = addonName,
