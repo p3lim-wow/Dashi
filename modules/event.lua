@@ -51,7 +51,7 @@ end
 local eventMixin = {}
 --[[ namespace.eventMixin:RegisterEvent(_event_, _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers a [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `callback` function.  
-If the callback returns positive it will be unregistered.
+If the callback returns truthy it will be unregistered.
 --]]
 function eventMixin:RegisterEvent(event, callback)
 	assert(IsEventValid(event), 'arg1 must be an event')
@@ -133,14 +133,13 @@ end
 
 --[[ namespace.eventMixin:TriggerEvent(_event_[, _..._]) ![](https://img.shields.io/badge/function-blue)
 Manually trigger the `event` (with optional arguments) on all registered callbacks.  
-If the callback returns positive it will be unregistered.
+If the callback returns truthy it will be unregistered.
 --]]
 function eventMixin:TriggerEvent(event, ...)
 	if callbacks[event] then
 		for _, data in next, callbacks[event] do
 			if data.callback(data.owner, ...) then
-				-- callbacks can unregister themselves by returning positively,
-				-- ret contains the boolean
+				-- callbacks can unregister themselves by returning truthy,
 				eventMixin.UnregisterEvent(data.owner, event, data.callback)
 			end
 		end
@@ -167,7 +166,7 @@ end
 local unitEventCallbacks = {}
 --[[ namespace.eventMixin:RegisterUnitEvent(_event_, _unit_[, _unitN,..._], _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers a [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `callback` function.  
-If the callback returns positive it will be unregistered for that unit.
+If the callback returns truthy it will be unregistered for that unit.
 --]]
 function eventMixin:RegisterUnitEvent(event, ...)
 	assert(IsEventValid(event), 'arg1 must be an event')
@@ -254,13 +253,13 @@ end
 
 --[[ namespace.eventMixin:TriggerEvent(_event_, _unit_[, _unitN,..._][, _..._]) ![](https://img.shields.io/badge/function-blue)
 Manually trigger the [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific `event` (with optional arguments) on all registered callbacks.  
-If the callback returns positive it will be unregistered.
+If the callback returns truthy it will be unregistered.
 --]]
 function eventMixin:TriggerUnitEvent(event, unit, ...)
 	if unitEventCallbacks[unit] and unitEventCallbacks[unit][event] then
 		for _, data in next, unitEventCallbacks[unit][event] do
 			if data.callback(data.owner, ...) then
-				-- callbacks can unregister themselves by returning positively
+				-- callbacks can unregister themselves by returning truthy
 				eventMixin.UnregisterUnitEvent(data.owner, event, unit, data.callback)
 			end
 		end
