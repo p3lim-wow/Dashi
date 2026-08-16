@@ -18,8 +18,8 @@ end
 --[[ namespace:startswith(_str_, _contents_) ![](https://img.shields.io/badge/function-blue)
 Checks if the first string starts with the 2nd string.
 --]]
-function addon:startswith(str, contents)
-	return str:sub(1, contents:len()) == contents
+function addon:startswith(str, prefix)
+	return str:sub(1, #prefix) == prefix
 end
 
 --[[ namespace:T([_tbl_]) ![](https://img.shields.io/badge/function-blue)
