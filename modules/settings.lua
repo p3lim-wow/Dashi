@@ -65,10 +65,8 @@ local function registerSetting(category, savedvariable, info)
 	addon:ArgCheck(info.key, 3, 'string')
 	addon:ArgCheck(info.title, 3, 'string')
 	addon:ArgCheck(info.type, 3, 'string')
-	if info.requires then
-		addon:ArgCheck(info.requires, 3, 'string')
-	end
-	assert(info.default ~= nil, "default must be set")
+	addon:ArgCheck(info.requires, 3, 'string|nil')
+	addon:ArgAssert(info.default ~= nil, 3, 'default must be set')
 
 	local uniqueKey = savedvariable .. '_' .. info.key
 	local setting = Settings.RegisterAddOnSetting(category, uniqueKey, info.key, _G[savedvariable], type(info.default), info.title, info.default)
@@ -200,8 +198,8 @@ local function registerSettings(savedvariable, settings)
 	if dependents:size() > 0 then
 		for key, requires in next, dependents do
 			-- check if there are bad dependencies
-			assert(not not keys[requires], string.format("setting '%s' can't depend on invalid setting '%s'", key, requires))
-			assert(settings[keys[requires]].type == 'toggle', string.format("setting '%s' can't depend on a non-toggle setting", key))
+			addon:ArgAssert(not not keys[requires], 2, "setting '%s' can't depend on invalid setting '%s'", key, requires)
+			addon:ArgAssert(settings[keys[requires]].type == 'toggle', 2, "setting '%s' can't depend on a non-toggle setting", key)
 
 			-- depend on "parent" setting
 			initializers[key]:SetParentInitializer(initializers[requires], GenerateClosure(isSettingEnabled, initializers[requires]))
@@ -211,7 +209,7 @@ local function registerSettings(savedvariable, settings)
 	if children:size() > 0 then
 		for key, parent in next, children do
 			-- check if there are bad dependencies
-			assert(not not keys[parent], string.format("setting '%s' can't depend on invalid setting '%s'", key, parent))
+			addon:ArgAssert(not not keys[parent], 2, "setting '%s' can't depend on invalid setting '%s'", key, parent)
 
 			-- set "parent" setting
 			initializers[key]:SetParentInitializer(initializers[parent], alwaysEnabled)
@@ -294,8 +292,8 @@ namespace:RegisterSettings('MyAddOnDB', {
 --]]
 function addon:RegisterSettings(savedvariable, settings)
 	addon:ArgCheck(savedvariable, 1, 'string')
+	addon:ArgAssert(not self.registeredVariables, 1, "can't register settings more than once")
 	addon:ArgCheck(settings, 2, 'table')
-	assert(not self.registeredVariables, "can't register settings more than once")
 	self.registeredVariables = savedvariable
 
 	if not self.settingsChildren then
@@ -325,9 +323,10 @@ The `settings` are identical to that of `namespace:RegisterSettings`.
 --]]
 function addon:RegisterSubSettings(name, settings)
 	addon:ArgCheck(name, 1, 'string')
+	addon:ArgAssert(not not self.settingsChildren, 1, "can't register sub-settings without root settings")
+	addon:ArgAssert(not self.settingsChildren[name], 1, "can't register two sub-settings with the same name")
 	addon:ArgCheck(settings, 2, 'table')
-	assert(not not self.settingsChildren, "can't register sub-settings without root settings")
-	assert(not self.settingsChildren[name], "can't register two sub-settings with the same name")
+
 	self.settingsChildren[name] = {
 		name = name,
 		settings = settings,
@@ -344,9 +343,10 @@ This callback is triggered when the "Defaults" button is clicked.
 --]]
 function addon:RegisterSubSettingsCanvas(name, callback)
 	addon:ArgCheck(name, 1, 'string')
+	addon:ArgAssert(not not self.settingsChildren, 1, "can't register sub-settings without root settings")
+	addon:ArgAssert(not self.settingsChildren[name], 1, "can't register two sub-settings with the same name")
 	addon:ArgCheck(callback, 2, 'function')
-	assert(not not self.settingsChildren, "can't register sub-settings without root settings")
-	assert(not self.settingsChildren[name], "can't register two sub-settings with the same name")
+
 	self.settingsChildren[name] = {
 		name = name,
 		callback = callback,
@@ -357,7 +357,8 @@ end
 Opens the settings panel for this addon.
 --]]
 function addon:OpenSettings()
-	assert(not not settingsCategoryID, 'must register settings first')
+	addon:Assert(not not settingsCategoryID, 'must register settings first')
+
 	if InCombatLockdown() then
 		addon:Print("Can't open settings this way in combat")
 	else
@@ -383,8 +384,9 @@ Returns the value for the given option `key`.
 --]]
 function addon:GetOption(key)
 	addon:ArgCheck(key, 1, 'string')
-	assert(addon:AreOptionsLoaded(), "options aren't loaded")
-	assert(_G[self.registeredVariables][key] ~= nil, "key doesn't exist")
+	addon:Assert(addon:AreOptionsLoaded(), "options aren't loaded")
+	addon:ArgAssert(_G[self.registeredVariables][key] ~= nil, 1, "key doesn't exist")
+
 	return _G[self.registeredVariables][key]
 end
 
@@ -393,8 +395,8 @@ Sets a new `value` to the given options `key`.
 --]]
 function addon:SetOption(key, value)
 	addon:ArgCheck(key, 1, 'string')
-	assert(addon:AreOptionsLoaded(), "options aren't loaded")
-	assert(_G[self.registeredVariables][key] ~= nil, "key doesn't exist")
+	addon:Assert(addon:AreOptionsLoaded(), "options aren't loaded")
+	addon:ArgAssert(_G[self.registeredVariables][key] ~= nil, 1, "key doesn't exist")
 
 	_G[self.registeredVariables][key] = value -- this circumvents the setting system, bad?
 	addon:TriggerOptionCallback(key, value)
