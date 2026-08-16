@@ -36,3 +36,16 @@ function addon:ArgAssert(state, argIndex, message, ...)
 		error(string.format("Bad argument #%d to '%s' (%s)", argIndex, name, message:format(...)), 3)
 	end
 end
+
+--[[ namespace:Assert(state, message[, ...]) ![](https://img.shields.io/badge/function-blue)
+If state is false; throw an error with a `message`.
+--]]
+function addon:Assert(state, message, ...)
+	assert(type(state) == 'boolean', "Bad argument #1 to 'Assert' (boolean expected, got " .. type(state) .. ')')
+	assert(type(message) == 'string', "Bad argument #2 to 'Assert' (string expected, got " .. type(message) .. ')')
+
+	if not state then
+		local name = debugstack(2, 2, 0):match(": in function [`<](.-)['>]")
+		error(string.format("Error in '%s' (%s)", name, message:format(...)), 3)
+	end
+end
