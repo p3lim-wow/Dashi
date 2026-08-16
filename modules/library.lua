@@ -118,14 +118,15 @@ do
 		end
 	end
 
+	local meta = {
+		__index = tableMethods,
+		__newindex = newIndex,
+		__add = tableMethods.merge,
+	}
+
 	function addon:T(tbl)
 		addon:ArgCheck(tbl, 1, 'table', 'nil')
-
-		return setmetatable(tbl or {}, {
-			__index = tableMethods,
-			__newindex = newIndex,
-			__add = tableMethods.merge,
-		})
+		return setmetatable(tbl or {}, meta)
 	end
 end
 
