@@ -41,11 +41,15 @@ end
 
 local unitValidator = CreateFrame('Frame')
 local function IsUnitValid(unit)
-	if unitValidator:RegisterUnitEvent('UNIT_HEALTH', unit) then
-		local _, registeredUnit = unitValidator:IsEventRegistered('UNIT_HEALTH')
-		unitValidator:UnregisterEvent('UNIT_HEALTH')
-		return not not registeredUnit -- it will be nil if the registered unit is invalid
+	local success = pcall(unitValidator.RegisterUnitEvent, unitValidator, 'UNIT_HEALTH', unit)
+	if not success then
+		return false
 	end
+
+	local isRegistered, registeredUnit = unitValidator:IsEventRegistered('UNIT_HEALTH')
+	unitValidator:UnregisterEvent('UNIT_HEALTH')
+
+	return isRegistered and registeredUnit == unit
 end
 
 local eventMixin = {}
