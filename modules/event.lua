@@ -350,8 +350,8 @@ end
 -- expose mixin
 addon.eventMixin = eventMixin
 
--- anonymous event registration
-addon = setmetatable(addon, {
+-- event registration through the namespace
+setmetatable(addon, {
 	__newindex = function(t, key, value)
 		if key == 'OnLoad' then
 			--[[ namespace:OnLoad() ![](https://img.shields.io/badge/function-blue)
@@ -366,9 +366,7 @@ addon = setmetatable(addon, {
 			--]]
 			addon:RegisterEvent('ADDON_LOADED', function(self, name)
 				if name == addonName then
-					if value(self) then
-						return true -- pass along unregistration state
-					end
+					return value(self)
 				end
 			end)
 		elseif key == 'OnLogin' then
@@ -383,9 +381,7 @@ addon = setmetatable(addon, {
 			```
 			--]]
 			addon:RegisterEvent('PLAYER_LOGIN', function(self)
-				if value(self) then
-					return true -- pass along unregistration state
-				end
+				return value(self)
 			end)
 		elseif key == 'OnLogout' then
 			--[[ namespace:OnLogout() ![](https://img.shields.io/badge/function-blue)
@@ -399,9 +395,7 @@ addon = setmetatable(addon, {
 			```
 			--]]
 			addon:RegisterEvent('PLAYER_LOGOUT', function(self)
-				if value(self) then
-					return true -- pass along unregistration state
-				end
+				return value(self)
 			end)
 		elseif type(key) == 'string' and IsEventValid(key) then
 			--[[ namespace:_event_ ![](https://img.shields.io/badge/function-blue)
