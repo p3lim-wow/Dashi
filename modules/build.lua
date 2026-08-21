@@ -54,5 +54,6 @@ local _, _, _, interfaceVersion = GetBuildInfo()
 Checks if the current client is running an interface version equal to or newer than the specified.
 --]]
 function addon:HasVersion(interface)
+	addon:ArgCheck(interface, 1, 'number')
 	return interfaceVersion >= interface
 end
