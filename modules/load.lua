@@ -1,6 +1,6 @@
 local _, addon = ...
 
---[[ namespace:IsAddOnEnabled(addonName) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:IsAddOnEnabled(_addonName_) ![](https://img.shields.io/badge/function-blue)
 Checks whether the addon exists, is loadable, and is enabled.
 --]]
 function addon:IsAddOnEnabled(name)

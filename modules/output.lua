@@ -35,14 +35,14 @@ function addon:Printf(fmt, ...)
 end
 
 --[[ namespace:Dump(_object_[, _startKey_]) ![](https://img.shields.io/badge/function-blue)
-Wrapper for `DevTools_Dump`.
+Wrapper for [`DevTools_Dump`](https://www.townlong-yak.com/framexml/go/DevTools_Dump).
 --]]
 function addon:Dump(value, startKey)
 	DevTools_Dump(value, startKey)
 end
 
 --[[ namespace:DumpUI(_object_) ![](https://img.shields.io/badge/function-blue)
-Similar to `namespace:Dump(object)`; a wrapper for the graphical version.
+Similar to `namespace:Dump(object)`; a wrapper for the [graphical version](https://www.townlong-yak.com/framexml/go/DisplayTableInspectorWindow).
 --]]
 function addon:DumpUI(value)
 	if C_AddOns.LoadAddOn('Blizzard_DebugTools') then

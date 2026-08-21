@@ -1,6 +1,5 @@
 local _, addon = ...
 
--- localization
 local localizations = {}
 local locale = GetLocale()
 

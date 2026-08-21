@@ -2,7 +2,7 @@ local addonName, addon = ...
 
 local counter = 0
 
---[[ namespace:RegisterSlash(_command_[, _commandN,..._], _callback_) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:RegisterSlash(_command_[, ..., _commandN_], _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers chat slash `command`(s) with a `callback` function.
 
 Usage:

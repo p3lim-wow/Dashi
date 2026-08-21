@@ -1,7 +1,7 @@
 local addonName, addon = ...
 
 --[[ namespace:CreateFrame(_..._) ![](https://img.shields.io/badge/function-blue)
-A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API_CreateFrame), mixed in with `namespace.eventMixin`.
+A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API:CreateFrame), mixed in with `namespace.eventMixin`.
 --]]
 function addon:CreateFrame(...)
 	return Mixin(CreateFrame(...), addon.eventMixin)
@@ -53,7 +53,7 @@ local tooltip; do
 
 	--[[ namespace:GetTooltip(_..._) ![](https://img.shields.io/badge/function-blue)
 	Creates and returns a tooltip specific for the addon.  
-	The variable arguments are passed to [SetOwner](https://warcraft.wiki.gg/wiki/API_GameTooltip_SetOwner) if provided.
+	The variable arguments are passed to [SetOwner](https://warcraft.wiki.gg/wiki/API:GameTooltip_SetOwner) if provided.
 	--]]
 	function addon:GetTooltip(...)
 		if not tooltip then
@@ -80,7 +80,7 @@ local tooltip; do
 		return tooltip
 	end
 
-	--[[ namespace:GetTooltipWithDefaultAnchor(_[owner]_) ![](https://img.shields.io/badge/function-blue)
+	--[[ namespace:GetTooltipWithDefaultAnchor([_owner_]) ![](https://img.shields.io/badge/function-blue)
 	Calls GetTooltip and anchors it to the default anchor.  
 	This is a safe alternate to GameTooltip_SetDefaultAnchor.
 	--]]

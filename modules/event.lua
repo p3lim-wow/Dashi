@@ -1,7 +1,7 @@
 local addonName, addon = ...
 
 --[[ namespace.eventMixin ![](https://img.shields.io/badge/object-teal)
-A multi-purpose [event](https://warcraft.wiki.gg/wiki/Events)-[mixin](https://en.wikipedia.org/wiki/Mixin).
+A multi-purpose [event](https://warcraft.wiki.gg/wiki/Events)-[mixin](https://warcraft.wiki.gg/wiki/API:Mixin).
 
 These methods are mixed into `namespace`, and thus are available directly, e.g:
 
@@ -186,8 +186,8 @@ do -- unit events
 		return unitEventHandlers[unit]
 	end
 
-	--[[ namespace.eventMixin:RegisterUnitEvent(_event_, _unit_[, _unitN,..._], _callback_) ![](https://img.shields.io/badge/function-blue)
-	Registers a [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `callback` function.  
+	--[[ namespace.eventMixin:RegisterUnitEvent(_event_, _unit_[, ..., _unitN_], _callback_) ![](https://img.shields.io/badge/function-blue)
+	Registers a [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `callback` function.  
 	If the callback returns truthy it will be unregistered for that unit.
 	--]]
 	function eventMixin:RegisterUnitEvent(event, ...)
@@ -244,8 +244,8 @@ do -- unit events
 		end
 	end
 
-	--[[ namespace.eventMixin:UnregisterUnitEvent(_event_, _unit_[, _unitN,..._], _callback_) ![](https://img.shields.io/badge/function-blue)
-	Unregisters a [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
+	--[[ namespace.eventMixin:UnregisterUnitEvent(_event_, _unit_[, ..., _unitN_], _callback_) ![](https://img.shields.io/badge/function-blue)
+	Unregisters a [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
 	--]]
 	function eventMixin:UnregisterUnitEvent(event, ...)
 		addon:ArgCheck(event, 1, 'string')
@@ -289,8 +289,8 @@ do -- unit events
 		end
 	end
 
-	--[[ namespace.eventMixin:IsUnitEventRegistered(_event_, _unit_[, _unitN,..._], _callback_) ![](https://img.shields.io/badge/function-blue)
-	Checks if the [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
+	--[[ namespace.eventMixin:IsUnitEventRegistered(_event_, _unit_[, ..., _unitN_], _callback_) ![](https://img.shields.io/badge/function-blue)
+	Checks if the [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
 	--]]
 	function eventMixin:IsUnitEventRegistered(event, ...)
 		addon:ArgCheck(event, 1, 'string')
@@ -325,7 +325,7 @@ do -- unit events
 	end
 
 	--[[ namespace.eventMixin:TriggerEvent(_event_, _unit_[, _..._]) ![](https://img.shields.io/badge/function-blue)
-	Manually trigger the [`unit`](https://warcraft.wiki.gg/wiki/UnitId)-specific `event` (with optional arguments) on all registered callbacks.  
+	Manually trigger the [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific `event` (with optional arguments) on all registered callbacks.  
 	If the callback returns truthy it will be unregistered.
 	--]]
 	function eventMixin:TriggerUnitEvent(event, unit, ...)
@@ -399,7 +399,7 @@ setmetatable(addon, {
 			end)
 		elseif type(key) == 'string' and IsEventValid(key) then
 			--[[ namespace:_event_ ![](https://img.shields.io/badge/function-blue)
-			Registers a  to an anonymous function.
+			Registers an event to a method on the namespace with the same name.
 
 			Usage:
 			```lua

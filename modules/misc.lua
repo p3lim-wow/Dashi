@@ -33,7 +33,7 @@ end
 do
 	local ITEM_LINK_FORMAT = '|Hitem:%d|h'
 	--[[ namespace:GetItemLinkFromID(_itemID_) ![](https://img.shields.io/badge/function-blue)
-	Generates an [item link](https://warcraft.wiki.gg/wiki/ItemLink) from an `itemID`.  
+	Generates an [item link](https://warcraft.wiki.gg/wiki/ItemLink) from `itemID`.  
 	This is a crude generation and won't have valid data for complex items.
 	--]]
 	function addon:GetItemLinkFromID(itemID)
@@ -56,11 +56,11 @@ function addon:GetPlayerPosition(mapID)
 	return C_Map.GetPlayerMapPosition(mapID or addon:GetPlayerMapID(), 'player')
 end
 
---[[ namespace:CreateColor(r, g, b[, a]) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:CreateColor(_r_, _g_, _b_[, _a_]) ![](https://img.shields.io/badge/function-blue)
 Wrapper for CreateColor that can handle >1-255 range as well.  
 Alpha (`a`) will always be in the 0-1 range.
 --]]
---[[ namespace:CreateColor(hex) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:CreateColor(_hex_) ![](https://img.shields.io/badge/function-blue)
 Wrapper for CreateColor that can handle hex colors (both `RRGGBB` and `AARRGGBB`).
 --]]
 function addon:CreateColor(r, g, b, a)
@@ -101,7 +101,7 @@ do
 	end
 end
 
---[[ namespace:SafeSetTrue(_object, key_) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:SafeSetTrue(_object_, _key_) ![](https://img.shields.io/badge/function-blue)
 Safely set `object`'s `key` to `true` without tainting it.
 
 Note: This is incredibly hacky and might be fixed.
@@ -110,7 +110,7 @@ function addon:SafeSetTrue(object, key)
 	TextureLoadingGroupMixin.AddTexture({textures = object}, key)
 end
 
---[[ namespace:SafeSetNil(_object, key_) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:SafeSetNil(_object_, _key_) ![](https://img.shields.io/badge/function-blue)
 Safely set `object`'s `key` to `nil` without tainting it.
 
 Note: This is incredibly hacky and might be fixed.
@@ -119,7 +119,7 @@ function addon:SafeSetNil(object, key)
 	TextureLoadingGroupMixin.RemoveTexture({textures = object}, key)
 end
 
---[[ namespace:GetEmptyBagSlot([includeReagentBag]) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:GetEmptyBagSlot([_includeReagentBag_]) ![](https://img.shields.io/badge/function-blue)
 Returns the bagID and slotIndex of the first empty bag slot, if any.
 --]]
 function addon:GetEmptyBagSlot(includeReagentBag)

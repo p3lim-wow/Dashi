@@ -34,7 +34,7 @@ function addon:pack(...)
 	}
 end
 
---[[ namespace:unpack(_tbl[, first][, last]_) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:unpack(_tbl_[, _first_][, _last_]) ![](https://img.shields.io/badge/function-blue)
 Unpacks an indexed table `tbl`.
 By default it will start at the first index unless `first` is provided, and the last index defined
 by addon:pack or `last if provided.
@@ -46,7 +46,7 @@ function addon:unpack(tbl, first, last)
 end
 
 --[[ namespace:T([_tbl_]) ![](https://img.shields.io/badge/function-blue)
-Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new empty table is used.
+Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new table is created.
 
 Included are all meta methods from the `table` library, as well as a few extra handy methods:
 

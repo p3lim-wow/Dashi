@@ -2,7 +2,7 @@ local _, addon = ...
 
 local callbacks = {}
 --[[ namespace:RegisterCallback(_event_, _callback_) ![](https://img.shields.io/badge/function-blue)
-Registers a `callback` with an `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
+Registers a `callback` with an `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry).
 --]]
 function addon:RegisterCallback(event, callback)
 	addon:ArgCheck(event, 1, 'string')
@@ -19,7 +19,7 @@ function addon:RegisterCallback(event, callback)
 end
 
 --[[ namespace:UnregisterCallback(_event_, _callback_) ![](https://img.shields.io/badge/function-blue)
-Unregisters an existing `callback` with an `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
+Unregisters an existing `callback` with an `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry).
 --]]
 function addon:UnregisterCallback(event, callback)
 	addon:ArgCheck(event, 1, 'string')
@@ -37,7 +37,7 @@ function addon:UnregisterCallback(event, callback)
 end
 
 --[[ namespace:UnregisterAllCallbacks(_event_) ![](https://img.shields.io/badge/function-blue)
-Unregisters all callbacks registered with the `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
+Unregisters all callbacks registered with the `event` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry).
 --]]
 function addon:UnregisterAllCallbacks(event)
 	addon:ArgCheck(event, 1, 'string')
@@ -52,7 +52,7 @@ function addon:UnregisterAllCallbacks(event)
 end
 
 --[[ namespace:IsCallbackRegistered(_event_, _callback_) ![](https://img.shields.io/badge/function-blue)
-Checks if the `event` is registered with the `callback` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
+Checks if the `event` is registered with the `callback` in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry).
 --]]
 function addon:IsCallbackRegistered(event, callback)
 	addon:ArgCheck(event, 1, 'string')
@@ -70,7 +70,7 @@ function addon:IsCallbackRegistered(event, callback)
 end
 
 --[[ namespace:TriggerCallback(_event_[, _..._]) ![](https://img.shields.io/badge/function-blue)
-Trigger the callback `event` (with optional arguments) in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry)..
+Trigger the callback `event` (with optional arguments) in the [CallbackRegistry](https://warcraft.wiki.gg/wiki/EventRegistry#CallbackRegistry).
 --]]
 function addon:TriggerCallback(event, ...)
 	addon:ArgCheck(event, 1, 'string')
