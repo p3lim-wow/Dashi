@@ -16,7 +16,7 @@ function addon:ArgCheck(arg, argIndex, expected, message, ...)
 		end
 	end
 
-	local name = debugstack(2, 2, 0):match(": in function [`<](.-)['>]")
+	local name = debugstack(2, 2, 0):match(": in function ['`<](.-)['>]")
 	if message then
 		error(string.format("Bad argument #%d to '%s' (%s)", argIndex, name, message:format(...)), 3)
 	end
@@ -36,7 +36,7 @@ function addon:ArgAssert(state, argIndex, message, ...)
 	assert(type(message) == 'string', "Bad argument #3 to 'ArgAssert' (string expected, got " .. type(message) .. ')')
 
 	if not state then
-		local name = debugstack(2, 2, 0):match(": in function [`<](.-)['>]")
+		local name = debugstack(2, 2, 0):match(": in function ['`<](.-)['>]")
 		error(string.format("Bad argument #%d to '%s' (%s)", argIndex, name, message:format(...)), 3)
 	end
 end
@@ -51,7 +51,7 @@ function addon:Assert(state, message, ...)
 	assert(type(message) == 'string', "Bad argument #2 to 'Assert' (string expected, got " .. type(message) .. ')')
 
 	if not state then
-		local name = debugstack(2, 2, 0):match(": in function [`<](.-)['>]")
+		local name = debugstack(2, 2, 0):match(": in function ['`<](.-)['>]")
 		error(string.format("Error in '%s' (%s)", name, message:format(...)), 3)
 	end
 end
