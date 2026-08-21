@@ -1,5 +1,12 @@
 local _, addon = ...
 
+--[[ namespace:startswith(_str_, _contents_) ![](https://img.shields.io/badge/function-blue)
+Checks if the first string starts with the 2nd string.
+--]]
+function addon:startswith(str, prefix)
+	return str:sub(1, #prefix) == prefix
+end
+
 --[[ namespace:tsize(_tbl_) ![](https://img.shields.io/badge/function-blue)
 Returns the number of entries in the table `tbl`.  
 Works for associative tables as opposed to `#table`.
@@ -36,13 +43,6 @@ Functionally equivalent to [table.unpack](https://www.luadocs.com/docs/functions
 --]]
 function addon:unpack(tbl, first, last)
 	return unpack(tbl, first or 1, last or tbl.n)
-end
-
---[[ namespace:startswith(_str_, _contents_) ![](https://img.shields.io/badge/function-blue)
-Checks if the first string starts with the 2nd string.
---]]
-function addon:startswith(str, prefix)
-	return str:sub(1, #prefix) == prefix
 end
 
 --[[ namespace:T([_tbl_]) ![](https://img.shields.io/badge/function-blue)
