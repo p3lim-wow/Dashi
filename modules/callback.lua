@@ -59,19 +59,11 @@ function addon:IsCallbackRegistered(event, callback)
 	addon:ArgCheck(callback, 2, 'function')
 
 	if callbacks[event] then
-		for _, cbs in next, EventRegistry:GetCallbacksByEvent('Function') do
-			for _, cb in next, cbs do
-				if cb == callback then
-					return true
-				end
+		for _, data in next, callbacks[event] do
+			if data.callback == callback then
+				return true
 			end
 		end
-
-		-- for index, data in next, callbacks[event] do
-		-- 	if data.callback == callback then
-		-- 		return true
-		-- 	end
-		-- end
 	end
 
 	return false
