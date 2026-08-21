@@ -1,17 +1,5 @@
 local _, addon = ...
 
-local function packArgs(...)
-	-- I wish we had table.pack from Lua 5.2...
-	return {
-		n = select('#', ...),
-		...
-	}
-end
-
-local function unpackArgs(args, first, last)
-	return unpack(args, first or 1, last or args.n)
-end
-
 local queue = {}
 local function iterate()
 	local pending = queue
@@ -19,9 +7,9 @@ local function iterate()
 
 	for _, info in ipairs(pending) do
 		if info.callback then
-			xpcall(info.callback, geterrorhandler(), unpackArgs(info.args))
+			xpcall(info.callback, geterrorhandler(), addon:unpack(info.args))
 		else
-			xpcall(info.method, geterrorhandler(), info.object, unpackArgs(info.args))
+			xpcall(info.method, geterrorhandler(), info.object, addon:unpack(info.args))
 		end
 	end
 
@@ -35,7 +23,6 @@ local function defer(info)
 		addon:RegisterEvent('PLAYER_REGEN_ENABLED', iterate)
 	end
 end
-
 
 --[[ namespace:Defer(_callback_[, _..._]) ![](https://img.shields.io/badge/function-blue)
 Defers a function `callback` (with optional arguments) until after combat ends.  
@@ -52,7 +39,7 @@ function addon:Defer(callback, ...)
 	if InCombatLockdown() then
 		defer({
 			callback = callback,
-			args = packArgs(...),
+			args = addon:pack(...),
 		})
 	else
 		xpcall(callback, geterrorhandler(), ...)
@@ -72,7 +59,7 @@ function addon:DeferMethod(object, method, ...)
 		defer({
 			object = object,
 			method = object[method],
-			args = packArgs(...),
+			args = addon:pack(...),
 		})
 	else
 		xpcall(object[method], geterrorhandler(), object, ...)
@@ -101,7 +88,7 @@ Triggers when `event` triggers if not in combat.
 function addon:DeferUnitEvent(event, ...)
 	addon:ArgCheck(event, 1, 'string')
 
-	local args = packArgs(...)
+	local args = addon:pack(...)
 	local callback, callbackIndex
 
 	for index = 1, args.n do

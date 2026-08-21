@@ -15,6 +15,29 @@ function addon:tsize(tbl)
 	return size
 end
 
+--[[ namespace:pack(_..._) ![](https://img.shields.io/badge/function-blue)
+Packs variable arguments into a table, along with a field `n` which holds the number of arguments.
+
+Functionally equivalent to [table.pack](https://www.luadocs.com/docs/functions/table/pack) from Lua 5.2.
+--]]
+function addon:pack(...)
+	return {
+		n = select('#', ...),
+		...
+	}
+end
+
+--[[ namespace:unpack(_tbl[, first][, last]_) ![](https://img.shields.io/badge/function-blue)
+Unpacks an indexed table `tbl`.
+By default it will start at the first index unless `first` is provided, and the last index defined
+by addon:pack or `last if provided.
+
+Functionally equivalent to [table.unpack](https://www.luadocs.com/docs/functions/table/unpack) from Lua 5.2.
+--]]
+function addon:unpack(tbl, first, last)
+	return unpack(tbl, first or 1, last or tbl.n)
+end
+
 --[[ namespace:startswith(_str_, _contents_) ![](https://img.shields.io/badge/function-blue)
 Checks if the first string starts with the 2nd string.
 --]]
