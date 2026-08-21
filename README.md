@@ -8,13 +8,13 @@ No, you should not depend on it being stable.
 
 It contains, among many things, simplifications for:
 
-- event handling
+- [events](https://warcraft.wiki.gg/wiki/Events), callbacks, and hooks
 - [deferring](https://en.wikipedia.org/wiki/Futures_and_promises)
-- localization management
+- localization
 - settings and savedvariables
-- widgets (buttons, scrollboxes, etc)
+- extended [base libraries](https://warcraft.wiki.gg/wiki/Lua_functions)
+- argument validation
 - input and output
-- misc utility
 
 Please see [the wiki](https://github.com/p3lim-wow/Dashi/wiki) for usage.
 
