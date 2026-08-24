@@ -161,7 +161,8 @@ do -- regular events
 		local callbacksForEvent = eventCallbacks[event]
 		if callbacksForEvent then
 			for _, data in next, callbacksForEvent do
-				if data.callback(data.owner, ...) then
+				local success, ret = xpcall(data.callback, geterrorhandler(), data.owner, ...)
+				if success and ret then
 					-- callbacks can unregister themselves by returning truthy,
 					eventMixin.UnregisterEvent(data.owner, event, data.callback)
 				end
@@ -338,7 +339,8 @@ do -- unit events
 		local callbacksForUnitEvent = callbackEventsForUnit and callbackEventsForUnit[event]
 		if callbacksForUnitEvent then
 			for _, data in next, callbacksForUnitEvent do
-				if data.callback(data.owner, ...) then
+				local success, ret = xpcall(data.callback, geterrorhandler(), data.owner, ...)
+				if success and ret then
 					-- callbacks can unregister themselves by returning truthy
 					eventMixin.UnregisterUnitEvent(data.owner, event, unit, data.callback)
 				end
@@ -366,7 +368,8 @@ setmetatable(addon, {
 			--]]
 			addon:RegisterEvent('ADDON_LOADED', function(self, name)
 				if name == addonName then
-					return value(self)
+					xpcall(value, geterrorhandler(), self)
+					return true
 				end
 			end)
 		elseif key == 'OnLogin' then
@@ -381,7 +384,8 @@ setmetatable(addon, {
 			```
 			--]]
 			addon:RegisterEvent('PLAYER_LOGIN', function(self)
-				return value(self)
+				xpcall(value, geterrorhandler(), self)
+				return true
 			end)
 		elseif key == 'OnLogout' then
 			--[[ namespace:OnLogout() ![](https://img.shields.io/badge/function-blue)
@@ -395,7 +399,8 @@ setmetatable(addon, {
 			```
 			--]]
 			addon:RegisterEvent('PLAYER_LOGOUT', function(self)
-				return value(self)
+				xpcall(value, geterrorhandler(), self)
+				return true
 			end)
 		elseif type(key) == 'string' and IsEventValid(key) then
 			--[[ namespace:_event_ ![](https://img.shields.io/badge/function-blue)
