@@ -200,7 +200,7 @@ do -- unit events
 		addon:ArgCheck(callback, numArgs + 1, 'function')
 
 		local numUnits = numArgs - 1
-		addon:ArgAssert(numUnits > 0, 2, 'invalid event')
+		addon:ArgAssert(numUnits > 0, 2, 'no units')
 
 		for i = 1, numUnits do
 			local unit = select(i, ...)
@@ -257,7 +257,7 @@ do -- unit events
 		addon:ArgCheck(callback, numArgs + 1, 'function')
 
 		local numUnits = numArgs - 1
-		addon:ArgAssert(numUnits > 0, 2, 'invalid event')
+		addon:ArgAssert(numUnits > 0, 2, 'no units')
 
 		for i = 1, numUnits do
 			local unit = select(i, ...)
@@ -302,7 +302,7 @@ do -- unit events
 		addon:ArgCheck(callback, numArgs + 1, 'function')
 
 		local numUnits = numArgs - 1
-		addon:ArgAssert(numUnits > 0, 2, 'invalid event')
+		addon:ArgAssert(numUnits > 0, 2, 'no units')
 
 		for i = 1, numUnits do
 			local unit = select(i, ...)
