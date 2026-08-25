@@ -38,6 +38,7 @@ do
 
 		if object then
 			if object.SetRolesets then
+				object:UnregisterAllEvents()
 				object:SetRolesets('alwaysBlocked')
 			else
 				object:Hide()
