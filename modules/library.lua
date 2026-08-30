@@ -28,6 +28,7 @@ Packs variable arguments into a table, along with a field `n` which holds the nu
 Functionally equivalent to [table.pack](https://www.luadocs.com/docs/functions/table/pack) from Lua 5.2.
 --]]
 function addon:pack(...)
+	-- functionally equivalent to SafePack from TableUtil
 	return {
 		n = select('#', ...),
 		...
