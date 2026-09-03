@@ -14,7 +14,7 @@ end)
 
 local eventMixin = {}
 
-local IsEventValid, IsUnitEventValid, IsUnitValid; do
+local IsEventValid, IsUnitEventValid, IsEventUnitValid; do
 	if addon:IsRetail() then
 		IsEventValid = C_EventUtils.IsEventValid
 	else
@@ -39,7 +39,7 @@ local IsEventValid, IsUnitEventValid, IsUnitValid; do
 	end
 
 	local unitValidator = CreateFrame('Frame')
-	function IsUnitValid(unit)
+	function IsEventUnitValid(unit)
 		local success = pcall(unitValidator.RegisterUnitEvent, unitValidator, 'UNIT_HEALTH', unit)
 		if not success then
 			return false
@@ -205,7 +205,7 @@ do -- unit events
 		for i = 1, numUnits do
 			local unit = select(i, ...)
 			addon:ArgCheck(unit, i + 1, 'string')
-			addon:ArgAssert(IsUnitValid(unit), i + 1, 'invalid unit')
+			addon:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
 			addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 		end
 
@@ -262,7 +262,7 @@ do -- unit events
 		for i = 1, numUnits do
 			local unit = select(i, ...)
 			addon:ArgCheck(unit, i + 1, 'string')
-			addon:ArgAssert(IsUnitValid(unit), i + 1, 'invalid unit')
+			addon:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
 			addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 		end
 
@@ -307,7 +307,7 @@ do -- unit events
 		for i = 1, numUnits do
 			local unit = select(i, ...)
 			addon:ArgCheck(unit, i + 1, 'string')
-			addon:ArgAssert(IsUnitValid(unit), i + 1, 'invalid unit')
+			addon:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
 			addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 		end
 
@@ -332,7 +332,7 @@ do -- unit events
 	function eventMixin:TriggerUnitEvent(event, unit, ...)
 		addon:ArgCheck(event, 1, 'string')
 		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
-		addon:ArgAssert(IsUnitValid(unit), 2, 'invalid unit')
+		addon:ArgAssert(IsEventUnitValid(unit), 2, 'invalid unit')
 		addon:ArgAssert(IsUnitEventValid(event, unit), 2, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 
 		local callbackEventsForUnit = unitEventCallbacks[unit]
