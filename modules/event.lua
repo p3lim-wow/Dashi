@@ -423,6 +423,17 @@ setmetatable(addon, {
 			rawset(t, key, value)
 		end
 	end,
+	__index = function(t, key)
+		-- any key that was registered as an event does not exist in the table,
+		-- so we'll have to trigger the event handler instead
+		if IsEventValid(key) then
+			return function(_, ...)
+				eventMixin.TriggerEvent(t, key, ...)
+			end
+		end
+
+		return rawget(t, key)
+	end,
 })
 
 -- mixin to namespace
