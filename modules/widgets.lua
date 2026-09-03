@@ -71,6 +71,16 @@ local tooltip; do
 			embeddedItemTooltip:Hide()
 			embeddedItemTooltip.yspacing = 13
 			tooltip.ItemTooltip = embeddedItemTooltip
+
+			tooltip.supportsItemComparison = true
+			tooltip.shoppingTooltips = {}
+			for index = 1, 2 do
+				local shoppingTooltip = CreateFrame('GameTooltip', addonName .. 'TooltipShopping' .. index, UIParent, 'ShoppingTooltipTemplate')
+				shoppingTooltip:SetClampedToScreen(true)
+				shoppingTooltip:SetFrameStrata('TOOLTIP')
+				shoppingTooltip:Hide()
+				tooltip.shoppingTooltips[index] = shoppingTooltip
+			end
 		end
 
 		if ... then
@@ -98,5 +108,29 @@ Hide the tooltip created above.
 function addon:HideTooltip()
 	if tooltip then
 		tooltip:Hide()
+		addon:HideShoppingTooltips()
+	end
+end
+
+--[[ namespace:ShowShoppingTooltips() ![](https://img.shields.io/badge/function-blue)
+Show shopping tooltips attached to the tooltip created above, if possible.
+--]]
+function addon:ShowShoppingTooltips()
+	local tooltip = addon:GetTooltip()
+	local tooltipData = tooltip:GetPrimaryTooltipData()
+	local comparisonItem = TooltipComparisonManager:CreateComparisonItem(tooltipData)
+	if comparisonItem then
+		C_TooltipComparison.CompareItem(comparisonItem, tooltip)
+	end
+end
+
+--[[ namespace:HideShoppingTooltips() ![](https://img.shields.io/badge/function-blue)
+Hide shopping tooltips attached to the tooltip created above.
+--]]
+function addon:HideShoppingTooltips()
+	if tooltip then
+		for _, shoppingTooltip in next, tooltip.shoppingTooltips do
+			shoppingTooltip:Hide()
+		end
 	end
 end

@@ -39,6 +39,7 @@ read_globals = {
 	'Settings',
 	'SettingsPanel',
 	'TextureLoadingGroupMixin',
+	'TooltipComparisonManager',
 	'UIParent',
 
 	-- FrameXML functions
@@ -76,6 +77,7 @@ read_globals = {
 	'C_EventUtils',
 	'C_Map',
 	'C_SettingsUtil',
+	'C_TooltipComparison',
 	'C_TooltipInfo',
 	'Constants',
 	'Enum',
