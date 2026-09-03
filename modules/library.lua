@@ -3,7 +3,10 @@ local _, addon = ...
 --[[ namespace:startswith(_str_, _contents_) ![](https://img.shields.io/badge/function-blue)
 Checks if the first string starts with the 2nd string.
 --]]
-function addon:startswith(str, prefix)
+function addon:startswith(str, prefix) -- TODO: coming natively in 12.1.5
+	if addon:HasVersion(120105) then
+		return str:startswith(prefix)
+	end
 	return str:sub(1, #prefix) == prefix
 end
 
@@ -57,7 +60,7 @@ Included are all meta methods from the [`table` library](https://warcraft.wiki.g
     - can also be used by using an addition arithmetic metamethod
 - `tbl:random()` returns a random value from the table
 - `tbl:copy(shallow)` creates and returns a copy of the table
-- `tbl:removeValue(value)` removes an entry from the table that matches the value
+- `tbl:removevalue(value)` removes an entry from the table that matches the value
 
 It's also possible to add extra meta methods by supplying mixins through the variable argument.
 
@@ -91,14 +94,16 @@ do
 		return self
 	end
 
-	function tableMethods:contains(value)
-		for _, v in next, self do
-			if value == v then
-				return true
+	if not addon:HasVersion(120105) then
+		function tableMethods:contains(value) -- TODO: coming natively in 12.1.5
+			for _, v in next, self do
+				if value == v then
+					return true
+				end
 			end
-		end
 
-		return false
+			return false
+		end
 	end
 
 	function tableMethods:random()
@@ -120,11 +125,13 @@ do
 		return tbl
 	end
 
-	function tableMethods:removeValue(value)
-		for index = #self, 1, -1 do
-			if self[index] == value then
-				table.remove(self, index)
-				return index
+	if not addon:HasVersion(120105) then
+		function tableMethods:removevalue(value) -- TODO: coming natively in 12.1.5
+			for index = #self, 1, -1 do
+				if self[index] == value then
+					table.remove(self, index)
+					return index
+				end
 			end
 		end
 	end
