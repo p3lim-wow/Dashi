@@ -15,7 +15,7 @@ end
 --[[ namespace:unpack(_tbl_[, _first_][, _last_]) ![](https://img.shields.io/badge/function-blue)
 Unpacks an indexed table `tbl`.  
 By default it will start at the first index unless `first` is provided, and the last index defined
-by [`addon:pack`](#namespacepack-) or `last` if provided.
+by [`namespace:pack`](#namespacepack-) or `last` if provided.
 
 Functionally equivalent to [table.unpack](https://www.luadocs.com/docs/functions/table/unpack) from Lua 5.2.
 --]]
