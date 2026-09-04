@@ -1,15 +1,5 @@
 local _, addon = ...
 
---[[ namespace:startswith(_str_, _contents_) ![](https://img.shields.io/badge/function-blue)
-Checks if the first string starts with the 2nd string.
---]]
-function addon:startswith(str, prefix) -- TODO: coming natively in 12.1.5
-	if addon:HasVersion(120105) then
-		return str:startswith(prefix)
-	end
-	return str:sub(1, #prefix) == prefix
-end
-
 --[[ namespace:tsize(_tbl_) ![](https://img.shields.io/badge/function-blue)
 Returns the number of entries in the table `tbl`.  
 Works for associative tables as opposed to `#table`.
