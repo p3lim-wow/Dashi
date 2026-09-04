@@ -1,4 +1,4 @@
-local addonName, addon = ...
+local addonName, namespace = ...
 
 --[[ namespace.eventMixin ![](https://img.shields.io/badge/object-teal)
 A multi-purpose [event](https://warcraft.wiki.gg/wiki/Events)-[mixin](https://warcraft.wiki.gg/wiki/API:Mixin).
@@ -15,7 +15,7 @@ end)
 local eventMixin = {}
 
 local IsEventValid, IsUnitEventValid, IsEventUnitValid; do
-	if addon:IsRetail() then
+	if namespace:IsRetail() then
 		IsEventValid = C_EventUtils.IsEventValid
 	else
 		local eventValidator = CreateFrame('Frame')
@@ -65,9 +65,9 @@ do -- regular events
 	If the callback returns truthy it will be unregistered.
 	--]]
 	function eventMixin:RegisterEvent(event, callback)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgCheck(callback, 2, 'function')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgCheck(callback, 2, 'function')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 		if not eventCallbacks[event] then
 			eventCallbacks[event] = {}
@@ -94,9 +94,9 @@ do -- regular events
 	Unregisters a [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
 	--]]
 	function eventMixin:UnregisterEvent(event, callback)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgCheck(callback, 2, 'function')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgCheck(callback, 2, 'function')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 		if eventCallbacks[event] then
 			for index, data in next, eventCallbacks[event] do
@@ -116,7 +116,7 @@ do -- regular events
 	Unregisters all [frame events](https://warcraft.wiki.gg/wiki/Events), or specifically from the `callback` function.
 	--]]
 	function eventMixin:UnregisterAllEvents(callback)
-		addon:ArgCheck(callback, 2, 'function|nil')
+		namespace:ArgCheck(callback, 2, 'function|nil')
 
 		for event, cbs in next, eventCallbacks do
 			for _, data in next, cbs do
@@ -137,9 +137,9 @@ do -- regular events
 	Checks if the [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
 	--]]
 	function eventMixin:IsEventRegistered(event, callback)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgCheck(callback, 2, 'function')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgCheck(callback, 2, 'function')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 		if eventCallbacks[event] then
 			for _, data in next, eventCallbacks[event] do
@@ -155,8 +155,8 @@ do -- regular events
 	If the callback returns truthy it will be unregistered.
 	--]]
 	function eventMixin:TriggerEvent(event, ...)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 		local callbacksForEvent = eventCallbacks[event]
 		if callbacksForEvent then
@@ -192,21 +192,21 @@ do -- unit events
 	If the callback returns truthy it will be unregistered for that unit.
 	--]]
 	function eventMixin:RegisterUnitEvent(event, ...)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 		local numArgs = select('#', ...)
 		local callback = select(numArgs, ...)
-		addon:ArgCheck(callback, numArgs + 1, 'function')
+		namespace:ArgCheck(callback, numArgs + 1, 'function')
 
 		local numUnits = numArgs - 1
-		addon:ArgAssert(numUnits > 0, 2, 'no units')
+		namespace:ArgAssert(numUnits > 0, 2, 'no units')
 
 		for i = 1, numUnits do
 			local unit = select(i, ...)
-			addon:ArgCheck(unit, i + 1, 'string')
-			addon:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
-			addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+			namespace:ArgCheck(unit, i + 1, 'string')
+			namespace:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
+			namespace:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 		end
 
 		for i = 1, numUnits do
@@ -249,21 +249,21 @@ do -- unit events
 	Unregisters a [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
 	--]]
 	function eventMixin:UnregisterUnitEvent(event, ...)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 		local numArgs = select('#', ...)
 		local callback = select(numArgs, ...)
-		addon:ArgCheck(callback, numArgs + 1, 'function')
+		namespace:ArgCheck(callback, numArgs + 1, 'function')
 
 		local numUnits = numArgs - 1
-		addon:ArgAssert(numUnits > 0, 2, 'no units')
+		namespace:ArgAssert(numUnits > 0, 2, 'no units')
 
 		for i = 1, numUnits do
 			local unit = select(i, ...)
-			addon:ArgCheck(unit, i + 1, 'string')
-			addon:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
-			addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+			namespace:ArgCheck(unit, i + 1, 'string')
+			namespace:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
+			namespace:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 		end
 
 		for i = 1, numUnits do
@@ -294,21 +294,21 @@ do -- unit events
 	Checks if the [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
 	--]]
 	function eventMixin:IsUnitEventRegistered(event, ...)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
 
 		local numArgs = select('#', ...)
 		local callback = select(numArgs, ...)
-		addon:ArgCheck(callback, numArgs + 1, 'function')
+		namespace:ArgCheck(callback, numArgs + 1, 'function')
 
 		local numUnits = numArgs - 1
-		addon:ArgAssert(numUnits > 0, 2, 'no units')
+		namespace:ArgAssert(numUnits > 0, 2, 'no units')
 
 		for i = 1, numUnits do
 			local unit = select(i, ...)
-			addon:ArgCheck(unit, i + 1, 'string')
-			addon:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
-			addon:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+			namespace:ArgCheck(unit, i + 1, 'string')
+			namespace:ArgAssert(IsEventUnitValid(unit), i + 1, 'invalid unit')
+			namespace:ArgAssert(IsUnitEventValid(event, unit), i + 1, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 		end
 
 		for i = 1, numUnits do
@@ -330,10 +330,10 @@ do -- unit events
 	If the callback returns truthy it will be unregistered.
 	--]]
 	function eventMixin:TriggerUnitEvent(event, unit, ...)
-		addon:ArgCheck(event, 1, 'string')
-		addon:ArgAssert(IsEventValid(event), 1, 'invalid event')
-		addon:ArgAssert(IsEventUnitValid(unit), 2, 'invalid unit')
-		addon:ArgAssert(IsUnitEventValid(event, unit), 2, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
+		namespace:ArgCheck(event, 1, 'string')
+		namespace:ArgAssert(IsEventValid(event), 1, 'invalid event')
+		namespace:ArgAssert(IsEventUnitValid(unit), 2, 'invalid unit')
+		namespace:ArgAssert(IsUnitEventValid(event, unit), 2, "event '" .. event .. "' is invalid for the unit '" .. unit .. "'")
 
 		local callbackEventsForUnit = unitEventCallbacks[unit]
 		local callbacksForUnitEvent = callbackEventsForUnit and callbackEventsForUnit[event]
@@ -350,10 +350,10 @@ do -- unit events
 end
 
 -- expose mixin
-addon.eventMixin = eventMixin
+namespace.eventMixin = eventMixin
 
 -- event registration through the namespace
-setmetatable(addon, {
+setmetatable(namespace, {
 	__newindex = function(t, key, value)
 		if key == 'OnLoad' then
 			--[[ namespace:OnLoad() ![](https://img.shields.io/badge/function-blue)
@@ -366,7 +366,7 @@ setmetatable(addon, {
 			end
 			```
 			--]]
-			addon:RegisterEvent('ADDON_LOADED', function(self, name)
+			namespace:RegisterEvent('ADDON_LOADED', function(self, name)
 				if name == addonName then
 					xpcall(value, geterrorhandler(), self)
 					return true
@@ -383,7 +383,7 @@ setmetatable(addon, {
 			end
 			```
 			--]]
-			addon:RegisterEvent('PLAYER_LOGIN', function(self)
+			namespace:RegisterEvent('PLAYER_LOGIN', function(self)
 				xpcall(value, geterrorhandler(), self)
 				return true
 			end)
@@ -398,7 +398,7 @@ setmetatable(addon, {
 			end
 			```
 			--]]
-			addon:RegisterEvent('PLAYER_LOGOUT', function(self)
+			namespace:RegisterEvent('PLAYER_LOGOUT', function(self)
 				xpcall(value, geterrorhandler(), self)
 				return true
 			end)
@@ -437,4 +437,4 @@ setmetatable(addon, {
 })
 
 -- mixin to namespace
-Mixin(addon, eventMixin)
+Mixin(namespace, eventMixin)

@@ -1,9 +1,9 @@
-local addonName, addon = ...
+local addonName, namespace = ...
 
 --[[ namespace:Print(_..._) ![](https://img.shields.io/badge/function-blue)
 Prints out a message in the chat frame, prefixed with the addon name in color.
 --]]
-function addon:Print(...)
+function namespace:Print(...)
 	-- can't use string join, it fails on nil values
 	local msg = ''
 	for index = 1, select('#', ...) do
@@ -30,21 +30,21 @@ end
 --[[ namespace:Printf(_fmt_, _..._) ![](https://img.shields.io/badge/function-blue)
 Wrapper for `namespace:Print(...)` and `string.format`.
 --]]
-function addon:Printf(fmt, ...)
+function namespace:Printf(fmt, ...)
 	self:Print(fmt:format(...))
 end
 
 --[[ namespace:Dump(_object_[, _startKey_]) ![](https://img.shields.io/badge/function-blue)
 Wrapper for [`DevTools_Dump`](https://www.townlong-yak.com/framexml/go/DevTools_Dump).
 --]]
-function addon:Dump(value, startKey)
+function namespace:Dump(value, startKey)
 	DevTools_Dump(value, startKey)
 end
 
 --[[ namespace:DumpUI(_object_) ![](https://img.shields.io/badge/function-blue)
 Similar to `namespace:Dump(object)`; a wrapper for the [graphical version](https://www.townlong-yak.com/framexml/go/DisplayTableInspectorWindow).
 --]]
-function addon:DumpUI(value)
+function namespace:DumpUI(value)
 	if C_AddOns.LoadAddOn('Blizzard_DebugTools') then
 		DisplayTableInspectorWindow(value)
 	end

@@ -1,10 +1,10 @@
-local addonName, addon = ...
+local addonName, namespace = ...
 
 --[[ namespace:CreateFrame(_..._) ![](https://img.shields.io/badge/function-blue)
 A wrapper for [`CreateFrame`](https://warcraft.wiki.gg/wiki/API:CreateFrame), mixed in with `namespace.eventMixin`.
 --]]
-function addon:CreateFrame(...)
-	return Mixin(CreateFrame(...), addon.eventMixin)
+function namespace:CreateFrame(...)
+	return Mixin(CreateFrame(...), namespace.eventMixin)
 end
 
 do
@@ -19,7 +19,7 @@ do
 
 	local function onCVarUpdate(self, cvar)
 		if cvar == KEY_DIRECTION_CVAR then
-			addon:Defer(updateKeyDirection, self)
+			namespace:Defer(updateKeyDirection, self)
 		end
 	end
 
@@ -27,8 +27,8 @@ do
 	A wrapper for `namespace:CreateFrame(...)`, but will handle key direction preferences of the client.  
 	Use this specifically to create clickable buttons.
 	--]]
-	function addon:CreateButton(...)
-		local button = addon:CreateFrame(...)
+	function namespace:CreateButton(...)
+		local button = namespace:CreateFrame(...)
 		button:RegisterEvent('CVAR_UPDATE', onCVarUpdate)
 
 		-- the CVar doesn't trigger during login, so we'll have to trigger the handlers ourselves
@@ -55,7 +55,7 @@ local tooltip; do
 	Creates and returns a tooltip specific for the addon.  
 	The variable arguments are passed to [SetOwner](https://warcraft.wiki.gg/wiki/API:GameTooltip_SetOwner) if provided.
 	--]]
-	function addon:GetTooltip(...)
+	function namespace:GetTooltip(...)
 		if not tooltip then
 			tooltip = CreateFrame('GameTooltip', addonName .. 'Tooltip', UIParent, 'GameTooltipTemplate')
 			tooltip:SetFrameStrata('TOOLTIP')
@@ -63,7 +63,7 @@ local tooltip; do
 			tooltip.RefreshDataNextUpdate = refreshTooltip
 
 			-- hide this tooltip whenever GameTooltip shows up
-			GameTooltip:HookScript('OnShow', GenerateFlatClosure(addon.HideTooltip))
+			GameTooltip:HookScript('OnShow', GenerateFlatClosure(namespace.HideTooltip))
 
 			local embeddedItemTooltip = CreateFrame('Frame', nil, tooltip, 'InternalEmbeddedItemTooltipTemplate')
 			embeddedItemTooltip:SetPoint('BOTTOMLEFT', 10, 13)
@@ -94,8 +94,8 @@ local tooltip; do
 	Calls GetTooltip and anchors it to the default anchor.  
 	This is a safe alternate to GameTooltip_SetDefaultAnchor.
 	--]]
-	function addon:GetTooltipWithDefaultAnchor(owner)
-		local tooltip = addon:GetTooltip()
+	function namespace:GetTooltipWithDefaultAnchor(owner)
+		local tooltip = namespace:GetTooltip()
 		tooltip:SetOwner(owner or UIParent, 'ANCHOR_NONE')
 		tooltip:SetPoint('BOTTOMRIGHT', GameTooltipDefaultContainer)
 		return tooltip
@@ -105,18 +105,18 @@ end
 --[[ namespace:HideTooltip() ![](https://img.shields.io/badge/function-blue)
 Hide the tooltip created above.
 --]]
-function addon:HideTooltip()
+function namespace:HideTooltip()
 	if tooltip then
 		tooltip:Hide()
-		addon:HideShoppingTooltips()
+		namespace:HideShoppingTooltips()
 	end
 end
 
 --[[ namespace:ShowShoppingTooltips() ![](https://img.shields.io/badge/function-blue)
 Show shopping tooltips attached to the tooltip created above, if possible.
 --]]
-function addon:ShowShoppingTooltips()
-	local tooltip = addon:GetTooltip()
+function namespace:ShowShoppingTooltips()
+	local tooltip = namespace:GetTooltip()
 	local tooltipData = tooltip:GetPrimaryTooltipData()
 	local comparisonItem = TooltipComparisonManager:CreateComparisonItem(tooltipData)
 	if comparisonItem then
@@ -127,7 +127,7 @@ end
 --[[ namespace:HideShoppingTooltips() ![](https://img.shields.io/badge/function-blue)
 Hide shopping tooltips attached to the tooltip created above.
 --]]
-function addon:HideShoppingTooltips()
+function namespace:HideShoppingTooltips()
 	if tooltip then
 		for _, shoppingTooltip in next, tooltip.shoppingTooltips do
 			shoppingTooltip:Hide()

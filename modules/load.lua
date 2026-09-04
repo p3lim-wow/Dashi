@@ -1,10 +1,10 @@
-local _, addon = ...
+local _, namespace = ...
 
 --[[ namespace:IsAddOnEnabled(_addonName_) ![](https://img.shields.io/badge/function-blue)
 Checks whether the addon exists, is loadable, and is enabled.
 --]]
-function addon:IsAddOnEnabled(name)
-	addon:ArgCheck(name, 1, 'string')
+function namespace:IsAddOnEnabled(name)
+	namespace:ArgCheck(name, 1, 'string')
 	return C_AddOns.GetAddOnEnableState(name, UnitName('player')) > 0 and (C_AddOns.IsAddOnLoadable(name))
 end
 
@@ -12,9 +12,9 @@ local addonCallbacks = {}
 --[[ namespace:HookAddOn(_addonName_, _callback_) ![](https://img.shields.io/badge/function-blue)
 Registers a hook for when an addon with the name `addonName` loads with a `callback` function.
 --]]
-function addon:HookAddOn(addonName, callback)
-	addon:ArgCheck(addonName, 1, 'string')
-	addon:ArgCheck(callback, 2, 'function')
+function namespace:HookAddOn(addonName, callback)
+	namespace:ArgCheck(addonName, 1, 'string')
+	namespace:ArgCheck(callback, 2, 'function')
 
 	if C_AddOns.IsAddOnLoaded(addonName) then
 		callback()
@@ -26,7 +26,7 @@ function addon:HookAddOn(addonName, callback)
 	end
 end
 
-addon:RegisterEvent('ADDON_LOADED', function(self, addonName)
+namespace:RegisterEvent('ADDON_LOADED', function(self, addonName)
 	for _, info in next, addonCallbacks do
 		if info.addonName == addonName then
 			xpcall(info.callback, geterrorhandler())

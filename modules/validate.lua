@@ -1,4 +1,4 @@
-local _, addon = ...
+local _, namespace = ...
 
 --[[ namespace:ArgCheck(_arg_, _argIndex_, _types_[, _message_][, _..._]) ![](https://img.shields.io/badge/function-blue)
 Checks if the argument `arg` at position `argIndex` is of `types`.  
@@ -6,7 +6,7 @@ Types can be one or multiple types, separated by |.
 
 The `message` will be formatted with the variable arguments if provided.
 --]]
-function addon:ArgCheck(arg, argIndex, expected, message, ...)
+function namespace:ArgCheck(arg, argIndex, expected, message, ...)
 	assert(type(argIndex) == 'number', "Bad argument #2 to 'ArgCheck' (number expected, got " .. type(argIndex) .. ')')
 	assert(type(expected) == 'string', "Bad argument #3 to 'ArgCheck' (string expected, got " .. type(expected) .. ')')
 
@@ -30,7 +30,7 @@ If state is false; throw an error for arg at index `argIndex` with a `message`.
 
 The `message` will be formatted with the variable arguments if provided.
 --]]
-function addon:ArgAssert(state, argIndex, message, ...)
+function namespace:ArgAssert(state, argIndex, message, ...)
 	assert(type(state) == 'boolean', "Bad argument #1 to 'ArgAssert' (boolean expected, got " .. type(state) .. ')')
 	assert(type(argIndex) == 'number', "Bad argument #2 to 'ArgAssert' (number expected, got " .. type(argIndex) .. ')')
 	assert(type(message) == 'string', "Bad argument #3 to 'ArgAssert' (string expected, got " .. type(message) .. ')')
@@ -46,7 +46,7 @@ If state is false; throw an error with a `message`.
 
 The `message` will be formatted with the variable arguments if provided.
 --]]
-function addon:Assert(state, message, ...)
+function namespace:Assert(state, message, ...)
 	assert(type(state) == 'boolean', "Bad argument #1 to 'Assert' (boolean expected, got " .. type(state) .. ')')
 	assert(type(message) == 'string', "Bad argument #2 to 'Assert' (string expected, got " .. type(message) .. ')')
 

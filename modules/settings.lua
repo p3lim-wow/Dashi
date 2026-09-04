@@ -1,7 +1,7 @@
-local addonName, addon = ...
+local addonName, namespace = ...
 
 local function onSettingChanged(setting, value)
-	addon:TriggerOptionCallback(setting.variableKey, value)
+	namespace:TriggerOptionCallback(setting.variableKey, value)
 end
 
 -- local function onOptionChanged(setting, value)
@@ -62,11 +62,11 @@ local function defaultSliderFormatter(value)
 end
 
 local function registerSetting(category, savedvariable, info)
-	addon:ArgCheck(info.key, 3, 'string')
-	addon:ArgCheck(info.title, 3, 'string')
-	addon:ArgCheck(info.type, 3, 'string')
-	addon:ArgCheck(info.requires, 3, 'string|nil')
-	addon:ArgAssert(info.default ~= nil, 3, 'default must be set')
+	namespace:ArgCheck(info.key, 3, 'string')
+	namespace:ArgCheck(info.title, 3, 'string')
+	namespace:ArgCheck(info.type, 3, 'string')
+	namespace:ArgCheck(info.requires, 3, 'string|nil')
+	namespace:ArgAssert(info.default ~= nil, 3, 'default must be set')
 
 	local uniqueKey = savedvariable .. '_' .. info.key
 	local setting = Settings.RegisterAddOnSetting(category, uniqueKey, info.key, _G[savedvariable], type(info.default), info.title, info.default)
@@ -75,9 +75,9 @@ local function registerSetting(category, savedvariable, info)
 	if info.type == 'toggle' then
 		initializer = Settings.CreateCheckbox(category, setting, info.tooltip)
 	elseif info.type == 'slider' then
-		addon:ArgCheck(info.minValue, 3, 'number')
-		addon:ArgCheck(info.maxValue, 3, 'number')
-		addon:ArgCheck(info.valueFormat, 3, 'string|function|nil')
+		namespace:ArgCheck(info.minValue, 3, 'number')
+		namespace:ArgCheck(info.maxValue, 3, 'number')
+		namespace:ArgCheck(info.valueFormat, 3, 'string|function|nil')
 
 		local options = Settings.CreateSliderOptions(info.minValue, info.maxValue, info.valueStep or 1)
 		if type(info.valueFormat) == 'string' then
@@ -90,7 +90,7 @@ local function registerSetting(category, savedvariable, info)
 
 		initializer = Settings.CreateSlider(category, setting, options, info.tooltip)
 	elseif info.type == 'menu' then
-		addon:ArgCheck(info.options, 3, 'table')
+		namespace:ArgCheck(info.options, 3, 'table')
 		local options = function()
 			local container = Settings.CreateControlTextContainer()
 			for _, option in next, info.options do
@@ -145,10 +145,10 @@ local function registerSetting(category, savedvariable, info)
 
 	-- callback when we change settings elsewhere
 	-- TODO: reconsider this usecase
-	-- addon:RegisterOptionCallback(info.key, GenerateClosure(onOptionChanged, setting))
+	-- namespace:RegisterOptionCallback(info.key, GenerateClosure(onOptionChanged, setting))
 
 	-- trigger load callback
-	addon:TriggerOptionCallback(info.key, setting:GetValue())
+	namespace:TriggerOptionCallback(info.key, setting:GetValue())
 
 	return initializer
 end
@@ -177,8 +177,8 @@ local function registerSettings(savedvariable, settings)
 
 	local keys = {}
 	local initializers = {}
-	local dependents = addon:T()
-	local children = addon:T()
+	local dependents = namespace:T()
+	local children = namespace:T()
 	for index, setting in next, settings do
 		-- if firstInstall then
 		-- 	setting.firstInstall = true
@@ -198,8 +198,8 @@ local function registerSettings(savedvariable, settings)
 	if dependents:count() > 0 then
 		for key, requires in next, dependents do
 			-- check if there are bad dependencies
-			addon:ArgAssert(not not keys[requires], 2, "setting '%s' can't depend on invalid setting '%s'", key, requires)
-			addon:ArgAssert(settings[keys[requires]].type == 'toggle', 2, "setting '%s' can't depend on a non-toggle setting", key)
+			namespace:ArgAssert(not not keys[requires], 2, "setting '%s' can't depend on invalid setting '%s'", key, requires)
+			namespace:ArgAssert(settings[keys[requires]].type == 'toggle', 2, "setting '%s' can't depend on a non-toggle setting", key)
 
 			-- depend on "parent" setting
 			initializers[key]:SetParentInitializer(initializers[requires], GenerateClosure(isSettingEnabled, initializers[requires]))
@@ -209,7 +209,7 @@ local function registerSettings(savedvariable, settings)
 	if children:count() > 0 then
 		for key, parent in next, children do
 			-- check if there are bad dependencies
-			addon:ArgAssert(not not keys[parent], 2, "setting '%s' can't depend on invalid setting '%s'", key, parent)
+			namespace:ArgAssert(not not keys[parent], 2, "setting '%s' can't depend on invalid setting '%s'", key, parent)
 
 			-- set "parent" setting
 			initializers[key]:SetParentInitializer(initializers[parent], alwaysEnabled)
@@ -217,7 +217,7 @@ local function registerSettings(savedvariable, settings)
 	end
 
 	-- sub-categories
-	for _, info in next, addon.settingsChildren do
+	for _, info in next, namespace.settingsChildren do
 		if info.settings then
 			local child = Settings.RegisterVerticalLayoutSubcategory(category, info.name)
 			for _, setting in next, info.settings do
@@ -290,10 +290,10 @@ namespace:RegisterSettings('MyAddOnDB', {
 })
 ```
 --]]
-function addon:RegisterSettings(savedvariable, settings)
-	addon:ArgCheck(savedvariable, 1, 'string')
-	addon:ArgAssert(not self.registeredVariables, 1, "can't register settings more than once")
-	addon:ArgCheck(settings, 2, 'table')
+function namespace:RegisterSettings(savedvariable, settings)
+	namespace:ArgCheck(savedvariable, 1, 'string')
+	namespace:ArgAssert(not self.registeredVariables, 1, "can't register settings more than once")
+	namespace:ArgCheck(settings, 2, 'table')
 	self.registeredVariables = savedvariable
 
 	if not self.settingsChildren then
@@ -306,7 +306,7 @@ function addon:RegisterSettings(savedvariable, settings)
 		registerSettings(savedvariable, settings)
 	else
 		-- don't abuse OnLoad internally
-		addon:RegisterEvent('ADDON_LOADED', function(_, name)
+		namespace:RegisterEvent('ADDON_LOADED', function(_, name)
 			if name == addonName then
 				registerSettings(savedvariable, settings)
 				return true -- unregister
@@ -321,11 +321,11 @@ The savedvariables will be stored under the main savedvariables in a table entry
 
 The `settings` are identical to that of `namespace:RegisterSettings`.
 --]]
-function addon:RegisterSubSettings(name, settings)
-	addon:ArgCheck(name, 1, 'string')
-	addon:ArgAssert(not not self.settingsChildren, 1, "can't register sub-settings without root settings")
-	addon:ArgAssert(not self.settingsChildren[name], 1, "can't register two sub-settings with the same name")
-	addon:ArgCheck(settings, 2, 'table')
+function namespace:RegisterSubSettings(name, settings)
+	namespace:ArgCheck(name, 1, 'string')
+	namespace:ArgAssert(not not self.settingsChildren, 1, "can't register sub-settings without root settings")
+	namespace:ArgAssert(not self.settingsChildren[name], 1, "can't register two sub-settings with the same name")
+	namespace:ArgCheck(settings, 2, 'table')
 
 	self.settingsChildren[name] = {
 		name = name,
@@ -341,11 +341,11 @@ Registers a canvas sub-category. This does not handle savedvariables.
 Canvas frame has a custom method `SetDefaultsHandler` which takes a callback as arg1.
 This callback is triggered when the "Defaults" button is clicked.
 --]]
-function addon:RegisterSubSettingsCanvas(name, callback)
-	addon:ArgCheck(name, 1, 'string')
-	addon:ArgAssert(not not self.settingsChildren, 1, "can't register sub-settings without root settings")
-	addon:ArgAssert(not self.settingsChildren[name], 1, "can't register two sub-settings with the same name")
-	addon:ArgCheck(callback, 2, 'function')
+function namespace:RegisterSubSettingsCanvas(name, callback)
+	namespace:ArgCheck(name, 1, 'string')
+	namespace:ArgAssert(not not self.settingsChildren, 1, "can't register sub-settings without root settings")
+	namespace:ArgAssert(not self.settingsChildren[name], 1, "can't register two sub-settings with the same name")
+	namespace:ArgCheck(callback, 2, 'function')
 
 	self.settingsChildren[name] = {
 		name = name,
@@ -356,11 +356,11 @@ end
 --[[ namespace:OpenSettings() ![](https://img.shields.io/badge/function-blue)
 Opens the settings panel for this addon.
 --]]
-function addon:OpenSettings()
-	addon:Assert(not not settingsCategoryID, 'must register settings first')
+function namespace:OpenSettings()
+	namespace:Assert(not not settingsCategoryID, 'must register settings first')
 
 	if InCombatLockdown() then
-		addon:Print("Can't open settings this way in combat")
+		namespace:Print("Can't open settings this way in combat")
 	else
 		C_SettingsUtil.OpenSettingsPanel(settingsCategoryID)
 	end
@@ -369,23 +369,23 @@ end
 --[[ namespace:RegisterSettingsSlash(_..._) ![](https://img.shields.io/badge/function-blue)
 Wrapper for `namespace:RegisterSlash(...)`, except the callback is provided and will open the settings panel for this addon.
 --]]
-function addon:RegisterSettingsSlash(...)
+function namespace:RegisterSettingsSlash(...)
 	-- gotta do this dumb shit because `..., callback` is not valid Lua
 	local data = {...}
 	table.insert(data, function()
-		addon:OpenSettings()
+		namespace:OpenSettings()
 	end)
 
-	addon:RegisterSlash(unpack(data))
+	namespace:RegisterSlash(unpack(data))
 end
 
 --[[ namespace:GetOption(_key_) ![](https://img.shields.io/badge/function-blue)
 Returns the value for the given option `key`.
 --]]
-function addon:GetOption(key)
-	addon:ArgCheck(key, 1, 'string')
-	addon:Assert(addon:AreOptionsLoaded(), "options aren't loaded")
-	addon:ArgAssert(_G[self.registeredVariables][key] ~= nil, 1, "key doesn't exist")
+function namespace:GetOption(key)
+	namespace:ArgCheck(key, 1, 'string')
+	namespace:Assert(namespace:AreOptionsLoaded(), "options aren't loaded")
+	namespace:ArgAssert(_G[self.registeredVariables][key] ~= nil, 1, "key doesn't exist")
 
 	return _G[self.registeredVariables][key]
 end
@@ -393,28 +393,28 @@ end
 --[[ namespace:SetOption(_key_, _value_) ![](https://img.shields.io/badge/function-blue)
 Sets a new `value` to the given options `key`.
 --]]
-function addon:SetOption(key, value)
-	addon:ArgCheck(key, 1, 'string')
-	addon:Assert(addon:AreOptionsLoaded(), "options aren't loaded")
-	addon:ArgAssert(_G[self.registeredVariables][key] ~= nil, 1, "key doesn't exist")
+function namespace:SetOption(key, value)
+	namespace:ArgCheck(key, 1, 'string')
+	namespace:Assert(namespace:AreOptionsLoaded(), "options aren't loaded")
+	namespace:ArgAssert(_G[self.registeredVariables][key] ~= nil, 1, "key doesn't exist")
 
 	_G[self.registeredVariables][key] = value -- this circumvents the setting system, bad?
-	addon:TriggerOptionCallback(key, value)
+	namespace:TriggerOptionCallback(key, value)
 end
 
 --[[ namespace:AreOptionsLoaded() ![](https://img.shields.io/badge/function-blue)
 Checks to see if the savedvariables has been loaded in the game.
 --]]
-function addon:AreOptionsLoaded()
+function namespace:AreOptionsLoaded()
 	return (not not self.registeredVariables) and (not not _G[self.registeredVariables])
 end
 
 --[[ namespace:RegisterOptionCallback(_key_, _callback_) ![](https://img.shields.io/badge/function-blue)
 Register a `callback` function with the option `key`.
 --]]
-function addon:RegisterOptionCallback(key, callback)
-	addon:ArgCheck(key, 1, 'string')
-	addon:ArgCheck(callback, 2, 'function')
+function namespace:RegisterOptionCallback(key, callback)
+	namespace:ArgCheck(key, 1, 'string')
+	namespace:ArgCheck(callback, 2, 'function')
 
 	if not self.settingsCallbacks then
 		self.settingsCallbacks = {}
@@ -430,8 +430,8 @@ end
 --[[ namespace:TriggerOptionCallbacks(_key_, _value_) ![](https://img.shields.io/badge/function-blue)
 Trigger all registered option callbacks for the given `key`, supplying the `value`.
 --]]
-function addon:TriggerOptionCallback(key, value)
-	addon:ArgCheck(key, 1, 'string')
+function namespace:TriggerOptionCallback(key, value)
+	namespace:ArgCheck(key, 1, 'string')
 
 	if self.settingsCallbacks and self.settingsCallbacks[key] then
 		for _, callback in next, self.settingsCallbacks[key] do
@@ -475,30 +475,30 @@ do
 		local r, g, b = ColorPickerFrame:GetColorRGB()
 		if #setting.default == 8 then
 			local a = ColorPickerFrame:GetColorAlpha()
-			addon:SetOption(setting.key, addon:CreateColor(r, g, b, a):GenerateHexColor())
+			namespace:SetOption(setting.key, namespace:CreateColor(r, g, b, a):GenerateHexColor())
 		else
-			addon:SetOption(setting.key, addon:CreateColor(r, g, b):GenerateHexColorNoAlpha())
+			namespace:SetOption(setting.key, namespace:CreateColor(r, g, b):GenerateHexColorNoAlpha())
 		end
 	end
 	local function colorPickerReset(setting, previousColor)
-		local color = addon:CreateColor(previousColor)
+		local color = namespace:CreateColor(previousColor)
 		if #setting.default == 8 then
-			addon:SetOption(setting.key, color:GenerateHexColor())
+			namespace:SetOption(setting.key, color:GenerateHexColor())
 		else
-			addon:SetOption(setting.key, color:GenerateHexColorNoAlpha())
+			namespace:SetOption(setting.key, color:GenerateHexColorNoAlpha())
 		end
 	end
 
 	local function menuGetter(setting, value)
-		return addon:GetOption(setting.key) == value
+		return namespace:GetOption(setting.key) == value
 	end
 	local function menuSetter(setting, value)
-		addon:SetOption(setting.key, value)
+		namespace:SetOption(setting.key, value)
 	end
 
 	local function menuTooltip(button, element)
 		-- copied logic from MENU_WORLD_MAP_TRACKING filters
-		local tooltip = addon:GetTooltip()
+		local tooltip = namespace:GetTooltip()
 		tooltip:ClearAllPoints()
 		tooltip:SetPoint('RIGHT', button, 'LEFT', -3, 0)
 		tooltip:SetOwner(button, 'ANCHOR_PRESERVE')
@@ -509,7 +509,7 @@ do
 	end
 
 	local function registerMapSettings(savedvariable, settings)
-		if not addon.registeredVariables then
+		if not namespace.registeredVariables then
 			-- these savedvariables are not handled by other means, let's deal with defaults and
 			-- merging ourselves
 			if not _G[savedvariable] then
@@ -523,7 +523,7 @@ do
 				end
 			end
 
-			addon.registeredVariables = savedvariable
+			namespace.registeredVariables = savedvariable
 		end
 
 		-- TODO: menus also has "new feature" flags/textures, see if we can hook into that
@@ -536,9 +536,9 @@ do
 				local element
 				if setting.type == 'toggle' then
 					element = root:CreateCheckbox(setting.title, function()
-						return addon:GetOption(setting.key)
+						return namespace:GetOption(setting.key)
 					end, function()
-						addon:SetOption(setting.key, not addon:GetOption(setting.key))
+						namespace:SetOption(setting.key, not namespace:GetOption(setting.key))
 					end)
 				elseif setting.type == 'slider' then
 					local formatter
@@ -551,13 +551,13 @@ do
 					end
 
 					element = createSlider(root, setting.title, function()
-						return addon:GetOption(setting.key)
+						return namespace:GetOption(setting.key)
 					end, function(_, value)
-						addon:SetOption(setting.key, value)
+						namespace:SetOption(setting.key, value)
 					end, setting.minValue, setting.maxValue, setting.valueStep or 1, formatter)
 				elseif setting.type == 'color' then
-					local value = addon:GetOption(setting.key)
-					local r, g, b, a = addon:CreateColor(value):GetRGBA()
+					local value = namespace:GetOption(setting.key)
+					local r, g, b, a = namespace:CreateColor(value):GetRGBA()
 					element = root:CreateColorSwatch(setting.title, colorPickerClick, {
 						swatchFunc = GenerateClosure(colorPickerChange, setting),
 						opacityFunc = GenerateClosure(colorPickerChange, setting),
@@ -583,7 +583,7 @@ do
 				if element and setting.tooltip then
 					element.tooltip = setting.tooltip
 					element:SetOnEnter(menuTooltip)
-					element:SetOnLeave(addon.HideTooltip)
+					element:SetOnLeave(namespace.HideTooltip)
 				end
 			end
 		end)
@@ -595,9 +595,9 @@ do
 
 	The `settings` object is identical to the one for [namespace:RegisterSetting()](#namespaceregistersettingssavedvariables-settings-).
 	--]]
-	function addon:RegisterMapSettings(savedvariable, settings)
-		addon:ArgCheck(savedvariable, 1, 'string')
-		addon:ArgCheck(settings, 2, 'table')
+	function namespace:RegisterMapSettings(savedvariable, settings)
+		namespace:ArgCheck(savedvariable, 1, 'string')
+		namespace:ArgCheck(settings, 2, 'table')
 
 		-- ensure we only add the settings after savedvariables are available to the client
 		local _, isReady = C_AddOns.IsAddOnLoaded(addonName)
@@ -605,7 +605,7 @@ do
 			registerMapSettings(savedvariable, settings)
 		else
 			-- don't abuse OnLoad internally
-			addon:RegisterEvent('ADDON_LOADED', function(_, name)
+			namespace:RegisterEvent('ADDON_LOADED', function(_, name)
 				if name == addonName then
 					registerMapSettings(savedvariable, settings)
 					return true -- unregister

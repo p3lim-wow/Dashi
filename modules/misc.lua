@@ -1,4 +1,4 @@
-local _, addon = ...
+local _, namespace = ...
 
 --[[ namespace:header
 In each example `namespace` refers to the 2nd value of the addon vararg, e.g:
@@ -24,7 +24,7 @@ do
 	namespace:Hide(someFrame, 'ResetButton')
 	```
 	--]]
-	function addon:Hide(object, ...)
+	function namespace:Hide(object, ...)
 		if type(object) == 'string' then
 			object = _G[object]
 		end
@@ -65,7 +65,7 @@ do
 
 	* Warning: this depends on the cache, and might not yield results the first time.
 	--]]
-	function addon:GetCreatureName(creatureID)
+	function namespace:GetCreatureName(creatureID)
 		return creatureNames[creatureID]
 	end
 end
@@ -76,7 +76,7 @@ do
 	Generates an [item link](https://warcraft.wiki.gg/wiki/ItemLink) from `itemID`.  
 	This is a crude generation and won't have valid data for complex items.
 	--]]
-	function addon:GetItemLinkFromID(itemID)
+	function namespace:GetItemLinkFromID(itemID)
 		return ITEM_LINK_FORMAT:format(itemID)
 	end
 end
@@ -84,7 +84,7 @@ end
 --[[ namespace:GetPlayerMapID() ![](https://img.shields.io/badge/function-blue)
 Returns the ID of the current map/zone the player is located in.
 --]]
-function addon:GetPlayerMapID()
+function namespace:GetPlayerMapID()
 	-- TODO: maybe use HBD data if it's available
 	return C_Map.GetBestMapForUnit('player') or -1
 end
@@ -92,8 +92,8 @@ end
 --[[ namespace:GetPlayerPosition(_mapID_) ![](https://img.shields.io/badge/function-blue)
 Returns a position vector object of coordinates for the player in the given `mapID` (if they are valid).
 --]]
-function addon:GetPlayerPosition(mapID)
-	return C_Map.GetPlayerMapPosition(mapID or addon:GetPlayerMapID(), 'player')
+function namespace:GetPlayerPosition(mapID)
+	return C_Map.GetPlayerMapPosition(mapID or namespace:GetPlayerMapID(), 'player')
 end
 
 --[[ namespace:CreateColor(_r_, _g_, _b_[, _a_]) ![](https://img.shields.io/badge/function-blue)
@@ -103,9 +103,9 @@ Alpha (`a`) will always be in the 0-1 range.
 --[[ namespace:CreateColor(_hex_) ![](https://img.shields.io/badge/function-blue)
 Wrapper for CreateColor that can handle hex colors (`RRGGBB` or `AARRGGBB`).
 --]]
-function addon:CreateColor(r, g, b, a)
+function namespace:CreateColor(r, g, b, a)
 	if type(r) == 'table' then
-		return addon:CreateColor(r.r, r.g, r.b, r.a)
+		return namespace:CreateColor(r.r, r.g, r.b, r.a)
 	elseif type(r) == 'string' then
 		-- load from hex
 		local hex = r:gsub('#', '')
@@ -136,7 +136,7 @@ do
 	--[[ namespace:FormatTime(_timeInSeconds_) ![](https://img.shields.io/badge/function-blue)
 	Formats the given `timeInSeconds` to a readable, but abbreviated format.
 	--]]
-	function addon:FormatTime(timeInSeconds)
+	function namespace:FormatTime(timeInSeconds)
 		return timeFormatter:Format(tonumber(timeInSeconds))
 	end
 end
@@ -146,7 +146,7 @@ Safely set `object`'s `key` to `true` without tainting it.
 
 Note: This is incredibly hacky and might be fixed.
 --]]
-function addon:SafeSetTrue(object, key)
+function namespace:SafeSetTrue(object, key)
 	TextureLoadingGroupMixin.AddTexture({textures = object}, key)
 end
 
@@ -155,14 +155,14 @@ Safely set `object`'s `key` to `nil` without tainting it.
 
 Note: This is incredibly hacky and might be fixed.
 --]]
-function addon:SafeSetNil(object, key)
+function namespace:SafeSetNil(object, key)
 	TextureLoadingGroupMixin.RemoveTexture({textures = object}, key)
 end
 
 --[[ namespace:GetEmptyBagSlot([_includeReagentBag_]) ![](https://img.shields.io/badge/function-blue)
 Returns the bagID and slotIndex of the first empty bag slot, if any.
 --]]
-function addon:GetEmptyBagSlot(includeReagentBag)
+function namespace:GetEmptyBagSlot(includeReagentBag)
 	local numBags = Constants.InventoryConstants.NumBagSlots
 	if includeReagentBag then
 		numBags = numBags + Constants.InventoryConstants.NumReagentBagSlots

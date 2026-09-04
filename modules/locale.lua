@@ -1,4 +1,4 @@
-local _, addon = ...
+local _, namespace = ...
 
 local localizations = {}
 local locale = GetLocale()
@@ -34,7 +34,7 @@ print(namespace.L['New string']) --> "Neue saite" on german clients, "New string
 print(namespace.L['Unknown']) --> "Unknown" on all clients since there are no localizations
 ```
 --]]
-addon.L = setmetatable({}, {
+namespace.L = setmetatable({}, {
 	__index = function(_, key)
 		local localeTable = localizations[locale]
 		return localeTable and localeTable[key] or tostring(key)

@@ -1,4 +1,4 @@
-local addonName, addon = ...
+local addonName, namespace = ...
 
 local counter = 0
 
@@ -12,20 +12,20 @@ namespace:RegisterSlash('/hello', '/hi', function(input)
 end)
 ```
 --]]
-function addon:RegisterSlash(...)
+function namespace:RegisterSlash(...)
 	counter = counter + 1
 	local name = addonName .. 'Slash' .. counter
 
 	local numArgs = select('#', ...)
-	addon:ArgAssert(numArgs >= 2, 2, 'at least one slash command and a callback must be supplied')
+	namespace:ArgAssert(numArgs >= 2, 2, 'at least one slash command and a callback must be supplied')
 
 	local callback = select(numArgs, ...)
-	addon:ArgCheck(callback, numArgs, 'function')
+	namespace:ArgCheck(callback, numArgs, 'function')
 
 	for index = 1, numArgs - 1 do
 		local slash = select(index, ...)
-		addon:ArgCheck(slash, index, 'string')
-		addon:ArgAssert(not not slash:match('^/%a+$'), index, 'invalid slash command')
+		namespace:ArgCheck(slash, index, 'string')
+		namespace:ArgAssert(not not slash:match('^/%a+$'), index, 'invalid slash command')
 	end
 
 	for index = 1, numArgs - 1 do

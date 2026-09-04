@@ -1,11 +1,11 @@
-local _, addon = ...
+local _, namespace = ...
 
 --[[ namespace:pack(_..._) ![](https://img.shields.io/badge/function-blue)
 Packs variable arguments into a table, along with a field `n` which holds the number of arguments.
 
 Functionally equivalent to [table.pack](https://www.luadocs.com/docs/functions/table/pack) from Lua 5.2 and TableUtil's [`SafePack`](https://www.townlong-yak.com/framexml/go/SafePack).
 --]]
-function addon:pack(...)
+function namespace:pack(...)
 	return {
 		n = select('#', ...),
 		...
@@ -19,7 +19,7 @@ by [`namespace:pack`](#namespacepack-) or `last` if provided.
 
 Functionally equivalent to [table.unpack](https://www.luadocs.com/docs/functions/table/unpack) from Lua 5.2.
 --]]
-function addon:unpack(tbl, first, last)
+function namespace:unpack(tbl, first, last)
 	return unpack(tbl, first or 1, last or tbl.n)
 end
 
@@ -49,7 +49,7 @@ t + {'five', 'six'} --> {'one', 'two', 'three', 'five', 'six'}
 do
 	local tableMethods = CreateFromMixins(table)
 	function tableMethods:merge(tbl)
-		addon:ArgCheck(tbl, 1, 'table')
+		namespace:ArgCheck(tbl, 1, 'table')
 
 		for k, v in next, tbl do
 			if type(self[k]) == 'table' and type(v) == 'table' then
@@ -62,7 +62,7 @@ do
 		return self
 	end
 
-	if not addon:HasVersion(120105) then
+	if not namespace:HasVersion(120105) then
 		function tableMethods:contains(value) -- TODO: coming natively in 12.1.5
 			for _, v in next, self do
 				if value == v then
@@ -82,7 +82,7 @@ do
 	end
 
 	function tableMethods:copy(shallow)
-		local tbl = addon:T()
+		local tbl = namespace:T()
 		for k, v in next, self do
 			if type(v) == 'table' and not shallow then
 				tbl[k] = tableMethods.copy(v)
@@ -93,7 +93,7 @@ do
 		return tbl
 	end
 
-	if not addon:HasVersion(120105) then
+	if not namespace:HasVersion(120105) then
 		function tableMethods:removevalue(value) -- TODO: coming natively in 12.1.5
 			for index = #self, 1, -1 do
 				if self[index] == value then
@@ -107,7 +107,7 @@ do
 	local function newIndex(self, key, value)
 		-- turn child tables into this metatable too
 		if type(value) == 'table' and not getmetatable(value) then
-			rawset(self, key, addon:T(value))
+			rawset(self, key, namespace:T(value))
 		else
 			rawset(self, key, value)
 		end
@@ -119,8 +119,8 @@ do
 		__add = tableMethods.merge,
 	}
 
-	function addon:T(tbl)
-		addon:ArgCheck(tbl, 1, 'table|nil')
+	function namespace:T(tbl)
+		namespace:ArgCheck(tbl, 1, 'table|nil')
 		return setmetatable(tbl or {}, meta)
 	end
 end
