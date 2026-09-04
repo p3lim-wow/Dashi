@@ -3,10 +3,9 @@ local _, addon = ...
 --[[ namespace:pack(_..._) ![](https://img.shields.io/badge/function-blue)
 Packs variable arguments into a table, along with a field `n` which holds the number of arguments.
 
-Functionally equivalent to [table.pack](https://www.luadocs.com/docs/functions/table/pack) from Lua 5.2.
+Functionally equivalent to [table.pack](https://www.luadocs.com/docs/functions/table/pack) from Lua 5.2 and TableUtil's [`SafePack`](https://www.townlong-yak.com/framexml/go/SafePack).
 --]]
 function addon:pack(...)
-	-- functionally equivalent to SafePack from TableUtil
 	return {
 		n = select('#', ...),
 		...
