@@ -14,7 +14,11 @@ end
 Returns the number of entries in the table `tbl`.  
 Works for associative tables as opposed to `#table`.
 --]]
-function addon:tsize(tbl)
+function addon:tsize(tbl) -- TODO: coming natively in 12.1.5
+	if addon:HasVersion(120105) then
+		return table.count(tbl)
+	end
+
 	-- would really like Lua 5.2 for this
 	local size = 0
 	if tbl then

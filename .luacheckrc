@@ -24,7 +24,7 @@ globals = {
 
 read_globals = {
 	-- library
-	table = {fields = {'wipe'}},
+	table = {fields = {'wipe', 'count'}},
 	string = {fields = {'join'}},
 	'strlenutf8',
 
