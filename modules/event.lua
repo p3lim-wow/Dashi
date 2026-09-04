@@ -187,7 +187,7 @@ do -- unit events
 		return unitEventHandlers[unit]
 	end
 
-	--[[ namespace.eventMixin:RegisterUnitEvent(_event_, _unit_[, ..., _unitN_], _callback_) ![](https://img.shields.io/badge/function-blue)
+	--[[ namespace.eventMixin:RegisterUnitEvent(_event_, _...unit_, _callback_) ![](https://img.shields.io/badge/function-blue)
 	Registers a [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) with the `callback` function.  
 	If the callback returns truthy it will be unregistered for that unit.
 	--]]
@@ -245,7 +245,7 @@ do -- unit events
 		end
 	end
 
-	--[[ namespace.eventMixin:UnregisterUnitEvent(_event_, _unit_[, ..., _unitN_], _callback_) ![](https://img.shields.io/badge/function-blue)
+	--[[ namespace.eventMixin:UnregisterUnitEvent(_event_, _...unit_, _callback_) ![](https://img.shields.io/badge/function-blue)
 	Unregisters a [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) from the `callback` function.
 	--]]
 	function eventMixin:UnregisterUnitEvent(event, ...)
@@ -290,7 +290,7 @@ do -- unit events
 		end
 	end
 
-	--[[ namespace.eventMixin:IsUnitEventRegistered(_event_, _unit_[, ..., _unitN_], _callback_) ![](https://img.shields.io/badge/function-blue)
+	--[[ namespace.eventMixin:IsUnitEventRegistered(_event_, _...unit_, _callback_) ![](https://img.shields.io/badge/function-blue)
 	Checks if the [`unit`](https://warcraft.wiki.gg/wiki/UnitToken)-specific [frame `event`](https://warcraft.wiki.gg/wiki/Events) is registered with the `callback` function.
 	--]]
 	function eventMixin:IsUnitEventRegistered(event, ...)

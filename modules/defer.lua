@@ -81,7 +81,7 @@ function addon:DeferEvent(event, callback, ...)
 	addon:RegisterEvent(event, GenerateClosure(deferEventCallback, callback, ...))
 end
 
---[[ namespace:DeferUnitEvent(_event_, _unit_[, ..., _unitN_], _callback_[, _..._]) ![](https://img.shields.io/badge/function-blue)
+--[[ namespace:DeferUnitEvent(_event_, _...unit_, _callback_[, _..._]) ![](https://img.shields.io/badge/function-blue)
 Defers a function `callback` (with optional arguments) until after combat ends and `event` has triggered for _unit_(s).
 Triggers when `event` triggers if not in combat.
 --]]

@@ -101,7 +101,7 @@ Wrapper for CreateColor that can handle >1-255 range as well.
 Alpha (`a`) will always be in the 0-1 range.
 --]]
 --[[ namespace:CreateColor(_hex_) ![](https://img.shields.io/badge/function-blue)
-Wrapper for CreateColor that can handle hex colors (both `RRGGBB` and `AARRGGBB`).
+Wrapper for CreateColor that can handle hex colors (`RRGGBB` or `AARRGGBB`).
 --]]
 function addon:CreateColor(r, g, b, a)
 	if type(r) == 'table' then
