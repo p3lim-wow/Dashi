@@ -177,8 +177,8 @@ local function registerSettings(savedvariable, settings)
 
 	local keys = {}
 	local initializers = {}
-	local dependents = addon.T{}
-	local children = addon.T{}
+	local dependents = addon:T()
+	local children = addon:T()
 	for index, setting in next, settings do
 		-- if firstInstall then
 		-- 	setting.firstInstall = true
@@ -195,7 +195,7 @@ local function registerSettings(savedvariable, settings)
 		end
 	end
 
-	if dependents:size() > 0 then
+	if dependents:count() > 0 then
 		for key, requires in next, dependents do
 			-- check if there are bad dependencies
 			addon:ArgAssert(not not keys[requires], 2, "setting '%s' can't depend on invalid setting '%s'", key, requires)
@@ -206,7 +206,7 @@ local function registerSettings(savedvariable, settings)
 		end
 	end
 
-	if children:size() > 0 then
+	if children:count() > 0 then
 		for key, parent in next, children do
 			-- check if there are bad dependencies
 			addon:ArgAssert(not not keys[parent], 2, "setting '%s' can't depend on invalid setting '%s'", key, parent)
