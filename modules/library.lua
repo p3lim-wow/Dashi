@@ -1,24 +1,5 @@
 local _, addon = ...
 
---[[ namespace:tsize(_tbl_) ![](https://img.shields.io/badge/function-blue)
-Returns the number of entries in the table `tbl`.  
-Works for associative tables as opposed to `#table`.
---]]
-function addon:tsize(tbl) -- TODO: coming natively in 12.1.5
-	if addon:HasVersion(120105) then
-		return table.count(tbl)
-	end
-
-	-- would really like Lua 5.2 for this
-	local size = 0
-	if tbl then
-		for _ in next, tbl do
-			size = size + 1
-		end
-	end
-	return size
-end
-
 --[[ namespace:pack(_..._) ![](https://img.shields.io/badge/function-blue)
 Packs variable arguments into a table, along with a field `n` which holds the number of arguments.
 
@@ -48,13 +29,11 @@ Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new ta
 
 Included are all meta methods from the [`table` library](https://warcraft.wiki.gg/wiki/Lua_functions#Table_library), as well as a few extra handy methods:
 
-- `tbl:size()` returns the number of entries in the table
 - `tbl:contains(value)` returns `true` if the table contains the given `value`, otherwise `false`
 - `tbl:merge(t)` merges (and returns) the table with the supplied table `t`
     - can also be used by using an addition arithmetic metamethod
 - `tbl:random()` returns a random value from the table
 - `tbl:copy(shallow)` creates and returns a copy of the table
-- `tbl:removevalue(value)` removes an entry from the table that matches the value
 
 It's also possible to add extra meta methods by supplying mixins through the variable argument.
 
@@ -70,10 +49,6 @@ t + {'five', 'six'} --> {'one', 'two', 'three', 'five', 'six'}
 --]]
 do
 	local tableMethods = CreateFromMixins(table)
-	function tableMethods:size()
-		return addon:tsize(self)
-	end
-
 	function tableMethods:merge(tbl)
 		addon:ArgCheck(tbl, 1, 'table')
 
@@ -101,7 +76,7 @@ do
 	end
 
 	function tableMethods:random()
-		local size = self:size()
+		local size = self:count()
 		if size > 0 then
 			return self[math.random(size)]
 		end
