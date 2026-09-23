@@ -57,3 +57,10 @@ function namespace:HasVersion(interface)
 	namespace:ArgCheck(interface, 1, 'number')
 	return interfaceVersion >= interface
 end
+
+--[[ namespace:IsForever() ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is forever.
+--]]
+function namespace:IsForever()
+	return interfaceVersion >= 16000 and interfaceVersion < 20000
+end
