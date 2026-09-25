@@ -1,10 +1,13 @@
 local _, namespace = ...
 
+local _, _, _, interfaceVersion = GetBuildInfo()
+
 --[[ namespace:IsRetail() ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running the "retail" version.
 --]]
 function namespace:IsRetail()
-	return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+	-- return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+	return interfaceVersion >= 120000 -- temporary(?)
 end
 
 --[[ namespace:IsVanilla() ![](https://img.shields.io/badge/function-blue)
@@ -49,18 +52,17 @@ function namespace:IsClassic()
 	return namespace:IsMists()
 end
 
-local _, _, _, interfaceVersion = GetBuildInfo()
+--[[ namespace:IsForever() ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is forever.
+--]]
+function namespace:IsForever()
+	return interfaceVersion >= 16000 and interfaceVersion < 20000
+end
+
 --[[ namespace:HasVersion(_interfaceVersion_) ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running an interface version equal to or newer than the specified.
 --]]
 function namespace:HasVersion(interface)
 	namespace:ArgCheck(interface, 1, 'number')
 	return interfaceVersion >= interface
-end
-
---[[ namespace:IsForever() ![](https://img.shields.io/badge/function-blue)
-Checks if the current client is forever.
---]]
-function namespace:IsForever()
-	return interfaceVersion >= 16000 and interfaceVersion < 20000
 end
