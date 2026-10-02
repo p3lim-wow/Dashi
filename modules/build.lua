@@ -6,8 +6,7 @@ local _, _, _, interfaceVersion = GetBuildInfo()
 Checks if the current client is running the "retail" version.
 --]]
 function namespace:IsRetail()
-	-- return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-	return interfaceVersion >= 120000 -- temporary(?)
+	return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
 
 --[[ namespace:IsVanilla() ![](https://img.shields.io/badge/function-blue)
@@ -56,7 +55,7 @@ end
 Checks if the current client is forever.
 --]]
 function namespace:IsForever()
-	return interfaceVersion >= 16000 and interfaceVersion < 20000
+	return WOW_PROJECT_ID == WOW_PROJECT_CAMELOT
 end
 
 --[[ namespace:HasVersion(_interfaceVersion_) ![](https://img.shields.io/badge/function-blue)
