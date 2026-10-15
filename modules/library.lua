@@ -28,7 +28,6 @@ Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new ta
 
 Included are all meta methods from the [`table` library](https://warcraft.wiki.gg/wiki/Lua_functions#Table_library), as well as a few extra handy methods:
 
-- `tbl:contains(value)` returns `true` if the table contains the given `value`, otherwise `false`
 - `tbl:merge(t)` merges (and returns) the table with the supplied table `t`
     - can also be used by using an addition arithmetic metamethod
 - `tbl:random()` returns a random value from the table
