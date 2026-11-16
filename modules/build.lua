@@ -1,6 +1,6 @@
 local _, namespace = ...
 
-local _, _, _, interfaceVersion = GetBuildInfo()
+local buildVersion, _, _, interfaceVersion = GetBuildInfo()
 
 --[[ namespace:IsRetail() ![](https://img.shields.io/badge/function-blue)
 Checks if the current client is running the "retail" version.
@@ -64,4 +64,12 @@ Checks if the current client is running an interface version equal to or newer t
 function namespace:HasVersion(interface)
 	namespace:ArgCheck(interface, 1, 'number')
 	return interfaceVersion >= interface
+end
+
+--[[ namespace:HasBuild(_buildVersion_) ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is running a build version equal to or newer than the specified.
+--]]
+function namespace:HasBuild(build)
+	namespace:ArgCheck(build, 1, 'number')
+	return buildVersion >= build
 end
