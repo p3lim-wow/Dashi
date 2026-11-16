@@ -23,8 +23,9 @@ function namespace:unpack(tbl, first, last)
 	return unpack(tbl, first or 1, last or tbl.n)
 end
 
---[[ namespace:T([_tbl_]) ![](https://img.shields.io/badge/function-blue)
-Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new table is created.
+--[=[ namespace:T([_tbl_[, _index_]]) ![](https://img.shields.io/badge/function-blue)
+Returns the table _`tbl`_ with meta methods. If _`tbl`_ is not provided a new table is created.  
+Optionally provide an extra fallback `index` function, which will be called like `__index`.
 
 Included are all meta methods from the [`table` library](https://warcraft.wiki.gg/wiki/Lua_functions#Table_library), as well as a few extra handy methods:
 
@@ -44,7 +45,7 @@ t:size() --> 3
 t:contains('four') --> false
 t + {'five', 'six'} --> {'one', 'two', 'three', 'five', 'six'}
 ```
---]]
+--]=]
 do
 	local tableMethods = CreateFromMixins(table)
 	function tableMethods:merge(tbl)
@@ -80,12 +81,12 @@ do
 		return tbl
 	end
 
-	local function newIndex(self, key, value)
+	local function newIndex(t, key, value)
 		-- turn child tables into this metatable too
 		if type(value) == 'table' and not getmetatable(value) then
-			rawset(self, key, namespace:T(value))
+			rawset(t, key, namespace:T(value))
 		else
-			rawset(self, key, value)
+			rawset(t, key, value)
 		end
 	end
 
@@ -95,8 +96,18 @@ do
 		__add = tableMethods.merge,
 	}
 
-	function namespace:T(tbl)
+	function namespace:T(tbl, index)
 		namespace:ArgCheck(tbl, 1, 'table|nil')
-		return setmetatable(tbl or {}, meta)
+		namespace:ArgCheck(index, 2, 'function|nil')
+
+		return setmetatable(tbl or {}, index and CreateFromMixins(meta, {
+			__index = function(t, key)
+				local method = tableMethods[key]
+				if method ~= nil then
+					return method
+				end
+				return index(t, key)
+			end,
+		}) or meta)
 	end
 end
