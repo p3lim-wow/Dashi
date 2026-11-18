@@ -385,7 +385,6 @@ Returns the value for the given option `key`.
 function namespace:GetOption(key)
 	namespace:ArgCheck(key, 1, 'string')
 	namespace:Assert(namespace:AreOptionsLoaded(), "options aren't loaded")
-	namespace:ArgAssert(_G[self.registeredVariables][key] ~= nil, 1, "key doesn't exist")
 
 	return _G[self.registeredVariables][key]
 end
